@@ -312,11 +312,11 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    public static function getAutoRequestInsertSQL($argTable, $argVars = null, $argSpecialFiled = null, $argSource = null, $argNamePre = '', $argNameSuffix = '', $argMode = 0)
+    public static function getAutoRequestInsertSQL($argTable, $argVars = null, $argSpecialField = null, $argSource = null, $argNamePre = '', $argNameSuffix = '', $argMode = 0)
     {
       $tmpstr = '';
       $table = $argTable;
-      $specialFiled = $argSpecialFiled;
+      $specialField = $argSpecialField;
       $namePre = $argNamePre;
       $nameSuffix = $argNameSuffix;
       $vars = $argVars;
@@ -333,25 +333,25 @@ namespace jtbc {
           $tmpstr = 'insert into ' . $table . ' (';
           foreach ($columns as $i => $item)
           {
-            $filedValid = false;
-            $filedName = $item['Field'];
-            $filedType = $item['Type'];
+            $fieldValid = false;
+            $fieldName = $item['Field'];
+            $fieldType = $item['Type'];
             $comment = base::getString($item['Comment']);
-            $filedTypeN = $filedType;
-            $filedTypeL = null;
-            if (is_numeric(strpos($filedType, '(')))
+            $fieldTypeN = $fieldType;
+            $fieldTypeL = null;
+            if (is_numeric(strpos($fieldType, '(')))
             {
-              $filedTypeN = base::getLRStr($filedType, '(', 'left');
-              $filedTypeL = base::getNum(base::getLRStr(base::getLRStr($filedType, '(', 'right'), ')', 'left'), 0);
+              $fieldTypeN = base::getLRStr($fieldType, '(', 'left');
+              $fieldTypeL = base::getNum(base::getLRStr(base::getLRStr($fieldType, '(', 'right'), ')', 'left'), 0);
             }
             $requestValue = '';
-            $requestName = base::getLRStr($filedName, '_', 'rightr');
+            $requestName = base::getLRStr($fieldName, '_', 'rightr');
             if (!base::isEmpty($namePre)) $requestName = $namePre . $requestName;
             if (!base::isEmpty($nameSuffix)) $requestName = $requestName . $nameSuffix;
-            if (is_array($vars)) $requestValue = base::getString(@$vars[$filedName]);
+            if (is_array($vars)) $requestValue = base::getString(@$vars[$fieldName]);
             if ($mode == 0)
             {
-              if (!base::checkInstr($specialFiled, $filedName, ','))
+              if (!base::checkInstr($specialField, $fieldName, ','))
               {
                 $manual = false;
                 if (!base::isEmpty($comment))
@@ -364,7 +364,7 @@ namespace jtbc {
                 }
                 if ($manual == false)
                 {
-                  $filedValid = true;
+                  $fieldValid = true;
                   if (base::isEmpty($requestValue))
                   {
                     if (is_array($source)) $requestValue = base::getString($source[$requestName]);
@@ -382,39 +382,39 @@ namespace jtbc {
             {
               if (is_array($vars))
               {
-                if (array_key_exists($filedName, $vars)) $filedValid = true;
+                if (array_key_exists($fieldName, $vars)) $fieldValid = true;
               }
             }
-            if ($filedValid == true)
+            if ($fieldValid == true)
             {
-              if ($filedTypeN == 'int' || $filedTypeN == 'integer' || $filedTypeN == 'double')
+              if ($fieldTypeN == 'int' || $fieldTypeN == 'integer' || $fieldTypeN == 'double')
               {
-                $fieldString .= $filedName . ',';
+                $fieldString .= $fieldName . ',';
                 $fieldValues .= base::getNum($requestValue, 0) . ',';
               }
-              else if ($filedTypeN == 'varchar')
+              else if ($fieldTypeN == 'varchar')
               {
-                $fieldString .= $filedName . ',';
-                $fieldValues .= '\'' . addslashes(base::getLeft($requestValue, $filedTypeL)) . '\',';
+                $fieldString .= $fieldName . ',';
+                $fieldValues .= '\'' . addslashes(base::getLeft($requestValue, $fieldTypeL)) . '\',';
               }
-              else if ($filedTypeN == 'datetime')
+              else if ($fieldTypeN == 'datetime')
               {
-                $fieldString .= $filedName . ',';
+                $fieldString .= $fieldName . ',';
                 $fieldValues .= '\'' . addslashes(base::getDateTime($requestValue)) . '\',';
               }
-              else if ($filedTypeN == 'text')
+              else if ($fieldTypeN == 'text')
               {
-                $fieldString .= $filedName . ',';
+                $fieldString .= $fieldName . ',';
                 $fieldValues .= '\'' . addslashes(base::getLeft($requestValue, 20000)) . '\',';
               }
-              else if ($filedTypeN == 'mediumtext')
+              else if ($fieldTypeN == 'mediumtext')
               {
-                $fieldString .= $filedName . ',';
+                $fieldString .= $fieldName . ',';
                 $fieldValues .= '\'' . addslashes(base::getLeft($requestValue, 5000000)) . '\',';
               }
-              else if ($filedTypeN == 'longtext')
+              else if ($fieldTypeN == 'longtext')
               {
-                $fieldString .= $filedName . ',';
+                $fieldString .= $fieldName . ',';
                 $fieldValues .= '\'' . addslashes(base::getLeft($requestValue, 1000000000)) . '\',';
               }
             }
@@ -430,22 +430,22 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    public static function getAutoUpdateSQLByVars($argTable, $argIdFiled, $argId, $argVars)
+    public static function getAutoUpdateSQLByVars($argTable, $argIdField, $argId, $argVars)
     {
       $table = $argTable;
       $vars = $argVars;
-      $idFiled = $argIdFiled;
+      $idField = $argIdField;
       $id = base::getNum($argId, 0);
-      $tmpstr = self::getAutoRequestUpdateSQL($table, $idFiled, $id, $vars, null, null, '', '', 1);
+      $tmpstr = self::getAutoRequestUpdateSQL($table, $idField, $id, $vars, null, null, '', '', 1);
       return $tmpstr;
     }
 
-    public static function getAutoRequestUpdateSQL($argTable, $argIdFiled, $argId, $argVars = null, $argSpecialFiled = null, $argSource = null, $argNamePre = '', $argNameSuffix = '', $argMode = 0)
+    public static function getAutoRequestUpdateSQL($argTable, $argIdField, $argId, $argVars = null, $argSpecialField = null, $argSource = null, $argNamePre = '', $argNameSuffix = '', $argMode = 0)
     {
       $tmpstr = '';
       $table = $argTable;
-      $specialFiled = $argSpecialFiled;
-      $idFiled = $argIdFiled;
+      $specialField = $argSpecialField;
+      $idField = $argIdField;
       $id = base::getNum($argId, 0);
       $namePre = $argNamePre;
       $nameSuffix = $argNameSuffix;
@@ -462,25 +462,25 @@ namespace jtbc {
           $tmpstr = 'update ' . $table . ' set ';
           foreach ($columns as $i => $item)
           {
-            $filedValid = false;
-            $filedName = $item['Field'];
-            $filedType = $item['Type'];
+            $fieldValid = false;
+            $fieldName = $item['Field'];
+            $fieldType = $item['Type'];
             $comment = base::getString($item['Comment']);
-            $filedTypeN = $filedType;
-            $filedTypeL = null;
-            if (is_numeric(strpos($filedType, '(')))
+            $fieldTypeN = $fieldType;
+            $fieldTypeL = null;
+            if (is_numeric(strpos($fieldType, '(')))
             {
-              $filedTypeN = base::getLRStr($filedType, '(', 'left');
-              $filedTypeL = base::getNum(base::getLRStr(base::getLRStr($filedType, '(', 'right'), ')', 'left'), 0);
+              $fieldTypeN = base::getLRStr($fieldType, '(', 'left');
+              $fieldTypeL = base::getNum(base::getLRStr(base::getLRStr($fieldType, '(', 'right'), ')', 'left'), 0);
             }
             $requestValue = '';
-            $requestName = base::getLRStr($filedName, '_', 'rightr');
+            $requestName = base::getLRStr($fieldName, '_', 'rightr');
             if (!base::isEmpty($namePre)) $requestName = $namePre . $requestName;
             if (!base::isEmpty($nameSuffix)) $requestName = $requestName . $nameSuffix;
-            if (is_array($vars)) $requestValue = base::getString(@$vars[$filedName]);
+            if (is_array($vars)) $requestValue = base::getString(@$vars[$fieldName]);
             if ($mode == 0)
             {
-              if (!base::checkInstr($specialFiled, $filedName, ','))
+              if (!base::checkInstr($specialField, $fieldName, ','))
               {
                 $manual = false;
                 if (!base::isEmpty($comment))
@@ -493,7 +493,7 @@ namespace jtbc {
                 }
                 if ($manual == false)
                 {
-                  $filedValid = true;
+                  $fieldValid = true;
                   if (base::isEmpty($requestValue))
                   {
                     if (is_array($source)) $requestValue = base::getString($source[$requestName]);
@@ -511,40 +511,40 @@ namespace jtbc {
             {
               if (is_array($vars))
               {
-                if (array_key_exists($filedName, $vars)) $filedValid = true;
+                if (array_key_exists($fieldName, $vars)) $fieldValid = true;
               }
             }
-            if ($filedValid == true)
+            if ($fieldValid == true)
             {
-              if ($filedTypeN == 'int' || $filedTypeN == 'integer' || $filedTypeN == 'double')
+              if ($fieldTypeN == 'int' || $fieldTypeN == 'integer' || $fieldTypeN == 'double')
               {
-                $fieldStringValues .= $filedName . '=' . base::getNum($requestValue, 0) . ',';
+                $fieldStringValues .= $fieldName . '=' . base::getNum($requestValue, 0) . ',';
               }
-              else if ($filedTypeN == 'varchar')
+              else if ($fieldTypeN == 'varchar')
               {
-                $fieldStringValues .= $filedName . '=\'' . addslashes(base::getLeft($requestValue, $filedTypeL)) . '\',';
+                $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($requestValue, $fieldTypeL)) . '\',';
               }
-              else if ($filedTypeN == 'datetime')
+              else if ($fieldTypeN == 'datetime')
               {
-                $fieldStringValues .= $filedName . '=\'' . addslashes(base::getDateTime($requestValue)) . '\',';
+                $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getDateTime($requestValue)) . '\',';
               }
-              else if ($filedTypeN == 'text')
+              else if ($fieldTypeN == 'text')
               {
-                $fieldStringValues .= $filedName . '=\'' . addslashes(base::getLeft($requestValue, 20000)) . '\',';
+                $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($requestValue, 20000)) . '\',';
               }
-              else if ($filedTypeN == 'mediumtext')
+              else if ($fieldTypeN == 'mediumtext')
               {
-                $fieldStringValues .= $filedName . '=\'' . addslashes(base::getLeft($requestValue, 5000000)) . '\',';
+                $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($requestValue, 5000000)) . '\',';
               }
-              else if ($filedTypeN == 'longtext')
+              else if ($fieldTypeN == 'longtext')
               {
-                $fieldStringValues .= $filedName . '=\'' . addslashes(base::getLeft($requestValue, 1000000000)) . '\',';
+                $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($requestValue, 1000000000)) . '\',';
               }
             }
           }
           if (!base::isEmpty($fieldStringValues)) $fieldStringValues = base::getLRStr($fieldStringValues, ',', 'leftr');
           $tmpstr .= $fieldStringValues;
-          $tmpstr .= ' where ' . $idFiled . '=' . $id;
+          $tmpstr .= ' where ' . $idField . '=' . $id;
         }
       }
       return $tmpstr;
@@ -565,10 +565,10 @@ namespace jtbc {
         $columns = $db -> showFullColumns($table);
         foreach ($columns as $i => $item)
         {
-          $filedName = $item['Field'];
-          $filedDefault = $item['Default'];
+          $fieldName = $item['Field'];
+          $fieldDefault = $item['Default'];
           $comment = base::getString($item['Comment']);
-          $simplifiedFiledName = base::getLRStr($filedName, '_', 'rightr');
+          $simplifiedFieldName = base::getLRStr($fieldName, '_', 'rightr');
           if (!base::isEmpty($comment))
           {
             $commentAry = json_decode($comment, true);
@@ -580,7 +580,7 @@ namespace jtbc {
               if (strpos($currentFieldType, '.')) $fieldFormatLine = tpl::take($currentFieldType, 'tpl');
               else $fieldFormatLine = tpl::take($tplPath . '.fieldformat-' . $currentFieldType, 'tpl');
               $fieldFormatLine = str_replace('{$-required}', $currentFieldRequired, $fieldFormatLine);
-              $fieldFormatLine = str_replace('{$filedname}', base::htmlEncode($simplifiedFiledName), $fieldFormatLine);
+              $fieldFormatLine = str_replace('{$fieldname}', base::htmlEncode($simplifiedFieldName), $fieldFormatLine);
               if ($currentFieldType == 'att')
               {
                 $fieldRelatedEditor = base::getString(@$commentAry['fieldRelatedEditor']);
@@ -594,10 +594,10 @@ namespace jtbc {
               }
               if (array_key_exists('fieldHasTips', $commentAry))
               {
-                $fieldTipsKey = $simplifiedFiledName;
+                $fieldTipsKey = $simplifiedFieldName;
                 $fieldHasTips = base::getString($commentAry['fieldHasTips']);
                 $fieldFormatLineTips = tpl::take($tplPath . '.field-tips', 'tpl');
-                if ($fieldHasTips != 'auto') $fieldTipsKey = $simplifiedFiledName;
+                if ($fieldHasTips != 'auto') $fieldTipsKey = $simplifiedFieldName;
                 $currentFieldTips = @tpl::take($filePrefix . '.text-tips-field-' . $fieldTipsKey, 'lng');
                 if (base::isEmpty($currentFieldTips)) $currentFieldTips = tpl::take($tplPath . '.text-tips-field-' . $fieldTipsKey, 'lng');
                 $fieldFormatLineTips = str_replace('{$tips}', base::htmlEncode($currentFieldTips), $fieldFormatLineTips);
@@ -606,7 +606,7 @@ namespace jtbc {
               if ($mode == 0)
               {
                 $bindDefault = true;
-                if (base::isEmpty($filedDefault)) $bindDefault = false;
+                if (base::isEmpty($fieldDefault)) $bindDefault = false;
                 else
                 {
                   if (array_key_exists('fieldBindDefault', $commentAry))
@@ -617,21 +617,21 @@ namespace jtbc {
                 }
                 if ($bindDefault == false)
                 {
-                  $fieldFormatLine = str_replace('{$' . $simplifiedFiledName . '}', '', $fieldFormatLine);
+                  $fieldFormatLine = str_replace('{$' . $simplifiedFieldName . '}', '', $fieldFormatLine);
                 }
                 else
                 {
-                  if ($filedDefault == '$NOW') $filedDefault = base::getDateTime();
-                  else if ($filedDefault == '$CURRENT_TIMESTAMP') $filedDefault = strtotime(base::getDateTime());
-                  else if ($filedDefault == '$REMOTE_IP') $filedDefault = request::getRemortIP();
-                  else if ($filedDefault == '$RANDOM_STRING') $filedDefault = base::getRandomString();
-                  else if ($filedDefault == '$RANDOM_STRING_8') $filedDefault = base::getRandomString(8);
-                  else if ($filedDefault == '$RANDOM_STRING_16') $filedDefault = base::getRandomString(16);
-                  else if ($filedDefault == '$RANDOM_STRING_32') $filedDefault = base::getRandomString(32);
-                  else if ($filedDefault == '$RANDOM_STRING_N4') $filedDefault = base::getRandomString(4, 'number');
-                  else if ($filedDefault == '$RANDOM_STRING_N6') $filedDefault = base::getRandomString(6, 'number');
-                  else if ($filedDefault == '$RANDOM_STRING_N8') $filedDefault = base::getRandomString(8, 'number');
-                  $fieldFormatLine = str_replace('{$' . $simplifiedFiledName . '}', base::htmlEncode($filedDefault), $fieldFormatLine);
+                  if ($fieldDefault == '$NOW') $fieldDefault = base::getDateTime();
+                  else if ($fieldDefault == '$CURRENT_TIMESTAMP') $fieldDefault = strtotime(base::getDateTime());
+                  else if ($fieldDefault == '$REMOTE_IP') $fieldDefault = request::getRemortIP();
+                  else if ($fieldDefault == '$RANDOM_STRING') $fieldDefault = base::getRandomString();
+                  else if ($fieldDefault == '$RANDOM_STRING_8') $fieldDefault = base::getRandomString(8);
+                  else if ($fieldDefault == '$RANDOM_STRING_16') $fieldDefault = base::getRandomString(16);
+                  else if ($fieldDefault == '$RANDOM_STRING_32') $fieldDefault = base::getRandomString(32);
+                  else if ($fieldDefault == '$RANDOM_STRING_N4') $fieldDefault = base::getRandomString(4, 'number');
+                  else if ($fieldDefault == '$RANDOM_STRING_N6') $fieldDefault = base::getRandomString(6, 'number');
+                  else if ($fieldDefault == '$RANDOM_STRING_N8') $fieldDefault = base::getRandomString(8, 'number');
+                  $fieldFormatLine = str_replace('{$' . $simplifiedFieldName . '}', base::htmlEncode($fieldDefault), $fieldFormatLine);
                 }
               }
               $currentFieldHideMode = base::getNum(@$commentAry['fieldHideMode'], -1);
@@ -662,9 +662,9 @@ namespace jtbc {
         $columns = $db -> showFullColumns($table);
         foreach ($columns as $i => $item)
         {
-          $filedName = $item['Field'];
+          $fieldName = $item['Field'];
           $comment = base::getString($item['Comment']);
-          $requestName = base::getLRStr($filedName, '_', 'rightr');
+          $requestName = base::getLRStr($fieldName, '_', 'rightr');
           if (!base::isEmpty($comment))
           {
             $commentAry = json_decode($comment, true);
