@@ -16,11 +16,11 @@
     <item>
       <name><![CDATA[fieldformat-att]]></name>
       <default><![CDATA[<tr>
-  <th valign="top"><t>{$=getSwapString($take('config.{$filedname}', 'lng'), $take('global.config.{$filedname}', 'lng'))}{$-required}</t></th>
+  <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
   <td>
     <div class="att" mode="att" folder="{$=$folder}" editor="{$-fieldRelatedEditor}">
       <div class="icons"><icons><icon class="db" root="{$=getActualRoute()}" title="{$=take('::console.from-material', 'lng')}"></icon><icon class="upload" title="{$=take('global.config.upload', 'lng')}"></icon></icons></div>
-      <h6>{$=take('::console.att-list', 'lng')}<input type="hidden" name="{$filedname}" value="{${$filedname}}" /><input type="file" class="upload hide" multiple="multiple" action="?type=action&amp;action=upload" /></h6>
+      <h6>{$=take('::console.att-list', 'lng')}<input type="hidden" name="{$fieldname}" value="{${$fieldname}}" /><input type="file" class="upload hide" multiple="multiple" action="?type=action&amp;action=upload" /></h6>
       <ul text-null="{$=take('::console.att-list-null', 'lng')}" text-preview-link="{$=take('::console.att-preview-link', 'lng')}" text-insert="{$=take('global.config.insert', 'lng')}" text-delete="{$=take('global.config.delete', 'lng')}">
         <li class="null">{$=take('::console.att-list-null', 'lng')}</li>
       </ul>
@@ -32,78 +32,78 @@
     <item>
       <name><![CDATA[fieldformat-category]]></name>
       <default><![CDATA[<tr>
-  <th valign="top"><t>{$=getSwapString($take('config.{$filedname}', 'lng'), $take('global.config.{$filedname}', 'lng'))}{$-required}</t></th>
+  <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
   <td><select name="category" class="s1">{$-category-select}</select></td>
 </tr>]]></default>
     </item>
     <item>
       <name><![CDATA[fieldformat-checkbox]]></name>
       <default><![CDATA[<tr>
-  <th valign="top"><t>{$=getSwapString($take('config.{$filedname}', 'lng'), $take('global.config.{$filedname}', 'lng'))}{$-required}</t></th>
-  <td>{$=xmlSelect('{$-fieldRelatedFile}.*', '{${$filedname}}', 'checkbox', '{$filedname}[]')}</td>
+  <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
+  <td>{$=xmlSelect('{$-fieldRelatedFile}.*', '{${$fieldname}}', 'checkbox', '{$fieldname}[]')}</td>
 </tr>]]></default>
     </item>
     <item>
       <name><![CDATA[fieldformat-dispose]]></name>
       <default><![CDATA[<tr class="show-{$-account-popedom-dispose}">
-  <th valign="top"><t>{$=getSwapString($take('config.{$filedname}', 'lng'), $take('global.config.{$filedname}', 'lng'))}{$-required}</t></th>
-  <td><span mode="inputswitch" class="switch switch-{${$filedname}}"><b></b><u></u><em></em><input type="hidden" name="{$filedname}" class="val" value="{${$filedname}}" /></span></td>
+  <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
+  <td><span mode="inputswitch" class="switch switch-{${$fieldname}}"><b></b><u></u><em></em><input type="hidden" name="{$fieldname}" class="val" value="{${$fieldname}}" /></span></td>
 </tr>]]></default>
     </item>
     <item>
       <name><![CDATA[fieldformat-editor]]></name>
       <default><![CDATA[<tr>
-  <th valign="top"><t>{$=getSwapString($take('config.{$filedname}', 'lng'), $take('global.config.{$filedname}', 'lng'))}{$-required}</t></th>
-  <td><textarea name="{$filedname}" mode="editor" class="t1 {$filedname} editor">{${$filedname}}</textarea></td>
+  <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
+  <td><textarea name="{$fieldname}" mode="editor" class="t1 {$fieldname} editor">{${$fieldname}}</textarea></td>
 </tr>]]></default>
     </item>
     <item>
       <name><![CDATA[fieldformat-publish]]></name>
       <default><![CDATA[<tr class="show-{$-account-popedom-publish}">
-  <th valign="top"><t>{$=getSwapString($take('config.{$filedname}', 'lng'), $take('global.config.{$filedname}', 'lng'))}{$-required}</t></th>
-  <td><span mode="inputswitch" class="switch switch-{${$filedname}}"><b></b><u></u><em></em><input type="hidden" name="{$filedname}" class="val" value="{${$filedname}}" /></span></td>
+  <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
+  <td><span mode="inputswitch" class="switch switch-{${$fieldname}}"><b></b><u></u><em></em><input type="hidden" name="{$fieldname}" class="val" value="{${$fieldname}}" /></span></td>
 </tr>]]></default>
     </item>
     <item>
       <name><![CDATA[fieldformat-radio]]></name>
       <default><![CDATA[<tr>
-  <th valign="top"><t>{$=getSwapString($take('config.{$filedname}', 'lng'), $take('global.config.{$filedname}', 'lng'))}{$-required}</t></th>
-  <td>{$=xmlSelect('{$-fieldRelatedFile}.*', '{${$filedname}}', 'radio', '{$filedname}[]')}</td>
+  <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
+  <td>{$=xmlSelect('{$-fieldRelatedFile}.*', '{${$fieldname}}', 'radio', '{$fieldname}[]')}</td>
 </tr>]]></default>
     </item>
     <item>
       <name><![CDATA[fieldformat-select]]></name>
       <default><![CDATA[<tr>
-  <th valign="top"><t>{$=getSwapString($take('config.{$filedname}', 'lng'), $take('global.config.{$filedname}', 'lng'))}{$-required}</t></th>
-  <td><select name="{$filedname}" class="s1">{$=xmlSelect('{$-fieldRelatedFile}.*', '{${$filedname}}', 'select')}</select></td>
+  <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
+  <td><select name="{$fieldname}" class="s1">{$=xmlSelect('{$-fieldRelatedFile}.*', '{${$fieldname}}', 'select')}</select></td>
 </tr>]]></default>
     </item>
     <item>
       <name><![CDATA[fieldformat-switch]]></name>
       <default><![CDATA[<tr>
-  <th valign="top"><t>{$=getSwapString($take('config.{$filedname}', 'lng'), $take('global.config.{$filedname}', 'lng'))}{$-required}</t></th>
-  <td><span mode="inputswitch" class="switch switch-{${$filedname}}"><b></b><u></u><em></em><input type="hidden" name="{$filedname}" class="val" value="{${$filedname}}" /></span></td>
+  <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
+  <td><span mode="inputswitch" class="switch switch-{${$fieldname}}"><b></b><u></u><em></em><input type="hidden" name="{$fieldname}" class="val" value="{${$fieldname}}" /></span></td>
 </tr>]]></default>
     </item>
     <item>
       <name><![CDATA[fieldformat-text]]></name>
       <default><![CDATA[<tr>
-  <th valign="top"><t>{$=getSwapString($take('config.{$filedname}', 'lng'), $take('global.config.{$filedname}', 'lng'))}{$-required}</t></th>
-  <td><input type="text" name="{$filedname}" class="i1" value="{${$filedname}}" /></td>
+  <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
+  <td><input type="text" name="{$fieldname}" class="i1" value="{${$fieldname}}" /></td>
 </tr>]]></default>
     </item>
     <item>
       <name><![CDATA[fieldformat-textarea]]></name>
       <default><![CDATA[<tr>
-  <th valign="top"><t>{$=getSwapString($take('config.{$filedname}', 'lng'), $take('global.config.{$filedname}', 'lng'))}{$-required}</t></th>
-  <td><textarea name="{$filedname}" class="t1">{${$filedname}}</textarea></td>
+  <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
+  <td><textarea name="{$fieldname}" class="t1">{${$fieldname}}</textarea></td>
 </tr>]]></default>
     </item>
     <item>
       <name><![CDATA[fieldformat-upfile]]></name>
       <default><![CDATA[<tr>
-  <th valign="top"><t>{$=getSwapString($take('config.{$filedname}', 'lng'), $take('global.config.{$filedname}', 'lng'))}{$-required}</t></th>
-  <td><div mode="upfile" class="upfile"><input type="hidden" name="{$filedname}" class="upsource" value="{${$filedname}}" /><input type="text" name="{$filedname}-fileurl" class="i1 fileurl" text-preview-title="{$=take('::console.att-preview-title', 'lng')}" text-preview-link="{$=take('::console.att-preview-link', 'lng')}" /><button class="b4 upbtn" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" action="?type=action&amp;action=upload&amp;limit={$filedname}" /></div></td>
+  <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
+  <td><div mode="upfile" class="upfile"><input type="hidden" name="{$fieldname}" class="upsource" value="{${$fieldname}}" /><input type="text" name="{$fieldname}-fileurl" class="i1 fileurl" text-preview-title="{$=take('::console.att-preview-title', 'lng')}" text-preview-link="{$=take('::console.att-preview-link', 'lng')}" /><button class="b4 upbtn" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" action="?type=action&amp;action=upload&amp;limit={$fieldname}" /></div></td>
 </tr>]]></default>
     </item>
     <item>
