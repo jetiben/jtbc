@@ -606,7 +606,14 @@ namespace jtbc {
               if ($mode == 0)
               {
                 $bindDefault = true;
-                if (base::isEmpty($fieldDefault)) $bindDefault = false;
+                if (base::isEmpty($fieldDefault))
+                {
+                  if (array_key_exists('fieldDefault', $commentAry))
+                  {
+                    $fieldDefault = base::getString($commentAry['fieldDefault']);
+                    if (base::isEmpty($fieldDefault)) $bindDefault = false;
+                  }
+                }
                 else
                 {
                   if (array_key_exists('fieldBindDefault', $commentAry))
