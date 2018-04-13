@@ -63,7 +63,8 @@ class ui extends page {
         $myval = $val;
         if (!base::isEmpty($pre))
         {
-          if (!is_numeric(strpos($myval, $pre))) $myval = '';
+          $mypos = strpos($myval, $pre);
+          if (!is_numeric($mypos) || $mypos != 0) $myval = '';
           else $myval = base::getLRStr($myval, $pre, 'rightr');
         }
         if (!base::isEmpty($myval) && !is_numeric(strpos($myval, '/')))
