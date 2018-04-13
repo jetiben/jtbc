@@ -243,7 +243,7 @@ namespace jtbc {
               if (file_exists($filename))
               {
                 $list .= $prefixVal . $val . '|+|';
-                if (tpl::getXRootAtt($filename, 'mode') == 'jtbcf') $list .= self::getFolderByGuide($fileprefix, $path . $val . '/', '', $val . '/');
+                if (tpl::getXRootAtt($filename, 'mode') == 'jtbcf') $list .= self::getFolderByGuide($fileprefix, $path . $val . '/', '', $prefixVal . $val . '/');
               }
             }
           }
