@@ -73,7 +73,7 @@ class ui extends page {
           $checked = '';
           $guide = json_decode(tpl::take('global.' . $val . ':guide.guide', 'cfg'), true);
           $guidePopedom = tpl::take('global.' . $val . ':guide.popedom', 'cfg');
-          $chindMenu = self::ppGetSelectPopedomHTML($myval . '/', $popedom);
+          $chindMenu = self::ppGetSelectPopedomHTML($pre . $myval . '/', $popedom);
           if (array_key_exists($val, $popedomArray)) $checked = ' checked="checked"';
           $loopLineString = $loopString;
           $loopLineString = str_replace('{$genre}', base::htmlEncode($val), $loopLineString);
