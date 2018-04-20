@@ -159,6 +159,12 @@ namespace jtbc {
         {
           $tmpstr = tpl::take('.default', 'tpl');
           $tmpstr = tpl::parse($tmpstr);
+          if (base::isEmpty($tmpstr))
+          {
+            $adjunctDefault = self::getPara('adjunct_default');
+            $adjunctDefaultModule = 'module' . ucfirst($adjunctDefault);
+            if (method_exists($class, $adjunctDefaultModule)) $tmpstr = call_user_func(array($class, $adjunctDefaultModule));
+          }
         }
       }
       return $tmpstr;

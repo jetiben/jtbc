@@ -3,6 +3,7 @@ namespace jtbc;
 class ui extends page {
   public static function start()
   {
+    self::setPara('adjunct_default', 'list');
     self::setPageTitle(tpl::take('index.title', 'lng'));
   }
 
@@ -42,14 +43,6 @@ class ui extends page {
       $tmpstr = tpl::replaceTagByAry($tmpstr, $variable);
       $tmpstr = tpl::parse($tmpstr);
     }
-    return $tmpstr;
-  }
-
-  public static function moduleDefault()
-  {
-    $tmpstr = tpl::take('index.default', 'tpl');
-    $tmpstr = tpl::parse($tmpstr);
-    if (base::isEmpty($tmpstr)) $tmpstr = self::moduleList();
     return $tmpstr;
   }
 }
