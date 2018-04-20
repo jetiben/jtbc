@@ -87,7 +87,11 @@ class ui extends page {
     $id = base::getNum(request::get('id'), 0);
     $table = tpl::take('config.db_table', 'cfg');
     $prefix = tpl::take('config.db_prefix', 'cfg');
-    if (smart::dbFieldNumberAdd($table, $prefix, 'hot', $id)) $status = 1;
+    $db = self::db();
+    if (!is_null($db))
+    {
+      if ($db -> fieldNumberAdd($table, $prefix, 'hot', $id)) $status = 1;
+    }
     $tmpstr = self::formatMsgResult($status, $message);
     return $tmpstr;
   }

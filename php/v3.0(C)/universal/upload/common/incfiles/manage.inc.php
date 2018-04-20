@@ -69,12 +69,16 @@ class ui extends page {
     {
       $table = tpl::take('config.db_table', 'cfg');
       $prefix = tpl::take('config.db_prefix', 'cfg');
-      if ($batch == 'delete' && $account -> checkPopedom(self::getPara('genre'), 'delete'))
+      $db = self::db();
+      if (!is_null($db))
       {
-        if (smart::dbFieldSwitch($table, $prefix, 'delete', $ids))
+        if ($batch == 'delete' && $account -> checkPopedom(self::getPara('genre'), 'delete'))
         {
-          $status = 1;
-          universal\upload::unlinkByIds($ids);
+          if ($db -> fieldSwitch($table, $prefix, 'delete', $ids))
+          {
+            $status = 1;
+            universal\upload::unlinkByIds($ids);
+          }
         }
       }
       if ($status == 1)
@@ -101,11 +105,15 @@ class ui extends page {
     {
       $table = tpl::take('config.db_table', 'cfg');
       $prefix = tpl::take('config.db_prefix', 'cfg');
-      if (smart::dbFieldSwitch($table, $prefix, 'delete', $id, 1))
+      $db = self::db();
+      if (!is_null($db))
       {
-        $status = 1;
-        universal\upload::unlinkByIds($id);
-        $account -> creatAutoLog('manage.log-delete-1', array('id' => $id));
+        if ($db -> fieldSwitch($table, $prefix, 'delete', $id, 1))
+        {
+          $status = 1;
+          universal\upload::unlinkByIds($id);
+          $account -> creatAutoLog('manage.log-delete-1', array('id' => $id));
+        }
       }
     }
     $tmpstr = self::formatMsgResult($status, $message);

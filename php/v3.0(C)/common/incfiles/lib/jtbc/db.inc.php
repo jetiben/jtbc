@@ -96,6 +96,39 @@ namespace jtbc {
       }
       return $fullColumns;
     }
+
+    public function fieldSwitch($argTable, $argPrefix, $argField, $argIds, $argValue = null)
+    {
+      $exec = 0;
+      $table = $argTable;
+      $prefix = $argPrefix;
+      $field = $argField;
+      $ids = $argIds;
+      $value = $argValue;
+      if (base::checkIDAry($ids))
+      {
+        $sqlstr = "update " . $table . " set " . $prefix . $field . "=abs(" . $prefix . $field . "-1) where " . $prefix . "id in (" . $ids . ")";
+        if (is_numeric($value)) $sqlstr = "update " . $table . " set " . $prefix . $field . "=" . base::getNum($value, 0) . " where " . $prefix . "id in (" . $ids . ")";
+        $exec = $this -> exec($sqlstr);
+      }
+      return $exec;
+    }
+
+    public function fieldNumberAdd($argTable, $argPrefix, $argField, $argIds, $argValue = 1)
+    {
+      $exec = 0;
+      $table = $argTable;
+      $prefix = $argPrefix;
+      $field = $argField;
+      $ids = $argIds;
+      $value = base::getNum($argValue, 0);
+      if (base::checkIDAry($ids))
+      {
+        $sqlstr = "update " . $table . " set " . $prefix . $field . "=" . $prefix . $field . "+" . $value . " where " . $prefix . "id in (" . $ids . ")";
+        $exec = $this -> exec($sqlstr);
+      }
+      return $exec;
+    }
   }
 }
 //******************************//

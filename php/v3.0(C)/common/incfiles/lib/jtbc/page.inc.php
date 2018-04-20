@@ -131,12 +131,15 @@ namespace jtbc {
 
     public static function getPara($argName)
     {
+      $para = null;
+      $name = $argName;
       if (self::$init == false)
       {
         self::$init = true;
         self::init();
       }
-      return self::$para[$argName];
+      if (array_key_exists($name, self::$para)) $para = self::$para[$name];
+      return $para;
     }
 
     public static function getResult()
@@ -150,13 +153,21 @@ namespace jtbc {
       if ($type == 'action') $module = 'moduleAction' . ucfirst($action);
       if (method_exists($class, 'start')) call_user_func(array($class, 'start'));
       if (method_exists($class, $module)) $tmpstr = call_user_func(array($class, $module));
+      else
+      {
+        if ($type == 'default')
+        {
+          $tmpstr = tpl::take('.default', 'tpl');
+          $tmpstr = tpl::parse($tmpstr);
+        }
+      }
       return $tmpstr;
     }
 
     public static function getPagePara($argName)
     {
       $name = $argName;
-      $para = @self::$para[$name];
+      $para = self::getPara($name);
       if (base::isEmpty($para)) $para = tpl::take('global.public.' . $name, 'lng');
       return $para;
     }
@@ -176,12 +187,19 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    public static function setPagePara($argName, $argValue)
+    public static function setPara($argName, $argValue)
     {
       $name = $argName;
       $value = $argValue;
       self::$para[$name] = $value;
       return $value;
+    }
+
+    public static function setPagePara($argName, $argValue)
+    {
+      $name = $argName;
+      $value = $argValue;
+      return self::setPara($name, $value);
     }
 
     public static function setPageTitle($argTitle)

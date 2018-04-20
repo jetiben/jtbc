@@ -60,41 +60,6 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    public static function dbFieldSwitch($argTable, $argPrefix, $argField, $argIds, $argValue = null)
-    {
-      $exec = 0;
-      $table = $argTable;
-      $prefix = $argPrefix;
-      $field = $argField;
-      $ids = $argIds;
-      $value = $argValue;
-      $db = page::db();
-      if (!is_null($db) && base::checkIDAry($ids))
-      {
-        $sqlstr = "update " . $table . " set " . $prefix . $field . "=abs(" . $prefix . $field . "-1) where " . $prefix . "id in (" . $ids . ")";
-        if (is_numeric($value)) $sqlstr = "update " . $table . " set " . $prefix . $field . "=" . base::getNum($value, 0) . " where " . $prefix . "id in (" . $ids . ")";
-        $exec = $db -> exec($sqlstr);
-      }
-      return $exec;
-    }
-
-    public static function dbFieldNumberAdd($argTable, $argPrefix, $argField, $argIds, $argValue = 1)
-    {
-      $exec = 0;
-      $table = $argTable;
-      $prefix = $argPrefix;
-      $field = $argField;
-      $ids = $argIds;
-      $value = base::getNum($argValue, 0);
-      $db = page::db();
-      if (!is_null($db) && base::checkIDAry($ids))
-      {
-        $sqlstr = "update " . $table . " set " . $prefix . $field . "=" . $prefix . $field . "+" . $value . " where " . $prefix . "id in (" . $ids . ")";
-        $exec = $db -> exec($sqlstr);
-      }
-      return $exec;
-    }
-
     public static function getRoute()
     {
       $route = '';
