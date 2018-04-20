@@ -15,7 +15,7 @@
 <meta name="format-detection" content="telephone=no,email=no,adress=no" />
 <meta http-equiv="Content-Type" content="text/html; charset={$=CHARSET}" />
 <title>{$=take('index.title', 'lng')}</title>
-<script type="text/javascript" src="{$=$global.assetspath}/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="{$=$global.assetspath}/js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="{$=$global.assetspath}/js/jtbc.js"></script>
 <script type="text/javascript" src="{$=$assetspath}/js/jtbc.console.min.js"></script>
 <link type="text/css" rel="stylesheet" href="{$=$assetspath}/global.css" />
