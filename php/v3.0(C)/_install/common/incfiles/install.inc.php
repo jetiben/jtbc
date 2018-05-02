@@ -59,7 +59,7 @@ class ui extends page {
               $exec = $db -> exec($mysql);
               if (is_numeric($exec))
               {
-                self::$db = $db;
+                conn::$db = $db;
                 $table = tpl::take(':/account:config.db_table', 'cfg');
                 $prefix = tpl::take(':/account:config.db_prefix', 'cfg');
                 $preset = array();
