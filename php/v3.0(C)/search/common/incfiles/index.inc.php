@@ -22,7 +22,7 @@ class ui extends page {
       $tpl -> tplString = $tmpstr;
       $loopString = $tpl -> getLoopString('{@}');
       $sqlstr = "select * from (";
-      $folder = smart::getFolderByGuide('search');
+      $folder = route::getFolderByGuide('search');
       $folderAry = explode('|+|', $folder);
       foreach($folderAry as $key => $val)
       {
@@ -38,7 +38,7 @@ class ui extends page {
         }
       }
       $sqlstr = base::getLRStr($sqlstr, ' union all ', 'leftr');
-      $sqlstr .= ") jtbc where 1=1" . smart::getCutKeywordSQL('un_topic', $keyword);
+      $sqlstr .= ") jtbc where 1=1" . sql::getCutKeywordSQL('un_topic', $keyword);
       $sqlstr .= " order by un_time desc";
       $pagi = new pagi($db);
       $rsAry = $pagi -> getDataAry($sqlstr, $page, $pagesize);
@@ -48,7 +48,7 @@ class ui extends page {
         {
           $rsTopic = base::getString($rs['un_topic']);
           $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
-          $loopLineString = str_replace('{$-topic-keyword-highlight}', smart::replaceKeyWordHighlight(base::htmlEncode(smart::replaceKeyWordHighlight($rsTopic, $keyword))), $loopLineString);
+          $loopLineString = str_replace('{$-topic-keyword-highlight}', base::replaceKeyWordHighlight(base::htmlEncode(base::replaceKeyWordHighlight($rsTopic, $keyword))), $loopLineString);
           $tpl -> insertLoopLine(tpl::parse($loopLineString));
         }
       }

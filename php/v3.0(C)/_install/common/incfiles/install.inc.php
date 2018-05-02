@@ -70,11 +70,11 @@ class ui extends page {
                 $preset[$prefix . 'lastip'] = request::getRemortIP();
                 $preset[$prefix . 'lasttime'] = base::getDateTime();
                 $preset[$prefix . 'time'] = base::getDateTime();
-                $sqlstr = smart::getAutoInsertSQLByVars($table, $preset);
+                $sqlstr = auto::getAutoInsertSQLByVars($table, $preset);
                 $re = $db -> exec($sqlstr);
                 if (is_numeric($re))
                 {
-                  $constPath = smart::getActualRoute('common/incfiles/const.inc.php');
+                  $constPath = route::getActualRoute('common/incfiles/const.inc.php');
                   $constContent = file_get_contents($constPath);
                   $constContent = str_replace('{$db_host}', $db_host, $constContent);
                   $constContent = str_replace('{$db_username}', $db_username, $constContent);
@@ -84,11 +84,11 @@ class ui extends page {
                   $constContentSave = file_put_contents($constPath, $constContent);
                   if ($constContentSave)
                   {
-                    $indexPath = smart::getActualRoute('index.php');
+                    $indexPath = route::getActualRoute('index.php');
                     $indexContent = file_get_contents($indexPath);
                     $indexContent = str_replace('<?php if (SITESTATUS == 0) header(\'location: _install\');?>', '', $indexContent);
                     $fileBool1 = file_put_contents($indexPath, $indexContent);
-                    $completePath = smart::getActualRoute('complete.php');
+                    $completePath = route::getActualRoute('complete.php');
                     $completeContent = '<?php' . chr(10);
                     $completeContent .= 'require_once(\'common/incfiles/page.inc.php\');' . chr(10);
                     $completeContent .= 'jtbc\\base::removeDir(\'_install\');' . chr(10);
@@ -99,7 +99,7 @@ class ui extends page {
                     if ($fileBool1 && $fileBool2)
                     {
                       $status = 1;
-                      $para = smart::getActualRoute('complete.php');
+                      $para = route::getActualRoute('complete.php');
                     }
                     else $message = tpl::take('install.text-tips-install-error-10', 'lng');
                   }

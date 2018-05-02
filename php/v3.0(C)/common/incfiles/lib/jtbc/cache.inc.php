@@ -63,7 +63,7 @@ namespace jtbc {
     {
       $bool = false;
       $name = $argName;
-      $cacheFilename = smart::getActualRoute(CACHEDIR) . '/' . $name . '.inc.php';
+      $cacheFilename = route::getActualRoute(CACHEDIR) . '/' . $name . '.inc.php';
       if (is_file($cacheFilename)) $bool = true;
       return $bool;
     }
@@ -75,7 +75,7 @@ namespace jtbc {
       $cacheData = null;
       $cache = new cache();
       $cache -> cachename = $name;
-      $cache -> filename = smart::getActualRoute(CACHEDIR) . '/' . $name . '.inc.php';
+      $cache -> filename = route::getActualRoute(CACHEDIR) . '/' . $name . '.inc.php';
       switch ($type)
       {
         case -1:
@@ -97,7 +97,7 @@ namespace jtbc {
       $type = $argType;
       $data = $argData;
       $cacheBool = false;
-      $dir = smart::getActualRoute(CACHEDIR);
+      $dir = route::getActualRoute(CACHEDIR);
       if (!(is_dir($dir))) @mkdir($dir, 0777);
       $cache = new cache();
       $cache -> cachename = $name;
@@ -122,7 +122,7 @@ namespace jtbc {
     {
       $name = $argName;
       $cacheBool = false;
-      $dir = smart::getActualRoute(CACHEDIR);
+      $dir = route::getActualRoute(CACHEDIR);
       if (!base::isEmpty($name))
       {
         $cacheFilename = $dir . '/' . $name . '.inc.php';
@@ -150,7 +150,7 @@ namespace jtbc {
       $key = $argKey;
       $mode = base::getNum($argMode, 0);
       $cacheBool = false;
-      $dir = smart::getActualRoute(CACHEDIR);
+      $dir = route::getActualRoute(CACHEDIR);
       if (!base::isEmpty($key))
       {
         $cacheBool = true;

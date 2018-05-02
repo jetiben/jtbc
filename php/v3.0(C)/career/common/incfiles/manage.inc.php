@@ -19,7 +19,7 @@ class ui extends page {
     if ($account -> checkPopedom(self::getPara('genre'), 'add'))
     {
       $table = tpl::take('config.db_table', 'cfg');
-      $autoFieldFormatByTable = smart::getAutoFieldFormatByTable($table);
+      $autoFieldFormatByTable = auto::getAutoFieldFormatByTable($table);
       $tmpstr = tpl::take('manage.add', 'tpl');
       $tmpstr = str_replace('{$-auto-field-format-by-table}', $autoFieldFormatByTable, $tmpstr);
       $tmpstr = tpl::parse($tmpstr);
@@ -49,7 +49,7 @@ class ui extends page {
         if (is_array($rs))
         {
           $tmpstr = tpl::take('manage.edit', 'tpl');
-          $autoFieldFormatByTable = smart::getAutoFieldFormatByTable($table, 1);
+          $autoFieldFormatByTable = auto::getAutoFieldFormatByTable($table, 1);
           $tmpstr = str_replace('{$-auto-field-format-by-table}', $autoFieldFormatByTable, $tmpstr);
           $tmpstr = tpl::replaceTagByAry($tmpstr, $rs, 10);
           $tmpstr = tpl::parse($tmpstr);
@@ -124,7 +124,7 @@ class ui extends page {
     {
       $table = tpl::take('config.db_table', 'cfg');
       $prefix = tpl::take('config.db_prefix', 'cfg');
-      smart::pushAutoRequestErrorByTable($error, $table);
+      auto::pushAutoRequestErrorByTable($error, $table);
       if (count($error) == 0)
       {
         $db = self::db();
@@ -135,7 +135,7 @@ class ui extends page {
           $preset[$prefix . 'lang'] = $account -> getLang();
           $preset[$prefix . 'time'] = base::getDateTime();
           if ($account -> checkPopedom(self::getPara('genre'), 'publish')) $preset[$prefix . 'publish'] = base::getNum(request::getPost('publish'), 0);
-          $sqlstr = smart::getAutoRequestInsertSQL($table, $preset);
+          $sqlstr = auto::getAutoRequestInsertSQL($table, $preset);
           $re = $db -> exec($sqlstr);
           if (is_numeric($re))
           {
@@ -166,7 +166,7 @@ class ui extends page {
     {
       $table = tpl::take('config.db_table', 'cfg');
       $prefix = tpl::take('config.db_prefix', 'cfg');
-      smart::pushAutoRequestErrorByTable($error, $table);
+      auto::pushAutoRequestErrorByTable($error, $table);
       if (count($error) == 0)
       {
         $db = self::db();
@@ -176,7 +176,7 @@ class ui extends page {
           $preset[$prefix . 'publish'] = 0;
           $preset[$prefix . 'lang'] = $account -> getLang();
           if ($account -> checkPopedom(self::getPara('genre'), 'publish')) $preset[$prefix . 'publish'] = base::getNum(request::getPost('publish'), 0);
-          $sqlstr = smart::getAutoRequestUpdateSQL($table, $prefix . 'id', $id, $preset);
+          $sqlstr = auto::getAutoRequestUpdateSQL($table, $prefix . 'id', $id, $preset);
           $re = $db -> exec($sqlstr);
           if (is_numeric($re))
           {

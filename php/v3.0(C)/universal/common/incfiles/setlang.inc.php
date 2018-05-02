@@ -5,7 +5,7 @@ class ui extends page {
   {
     $backurl = request::get('backurl');
     $language = request::get('language');
-    if (base::isEmpty($backurl)) $backurl = smart::getActualRoute('./');
+    if (base::isEmpty($backurl)) $backurl = route::getActualRoute('./');
     $lang = base::getNum(tpl::take('global.config.lang-' . $language, 'cfg'), -1);
     if ($lang != -1)
     {

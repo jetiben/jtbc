@@ -33,7 +33,7 @@ class ui extends page {
     $status = 1;
     $tmpstr = '';
     $path = base::getString(request::get('path'));
-    $pathRoot = smart::getActualRoute('./');
+    $pathRoot = route::getActualRoute('./');
     $pathnavHTML = tpl::take('::console.link', 'tpl', 0, array('text' => '/', 'link' => '?type=list'));
     if (base::isEmpty($path)) $path = $pathRoot;
     else
@@ -111,7 +111,7 @@ class ui extends page {
     $tmpstr = '';
     $filemode = 'xml';
     $path = base::getString(request::get('path'));
-    $pathRoot = smart::getActualRoute('./');
+    $pathRoot = route::getActualRoute('./');
     $filetype = strtolower(base::getLRStr($path, '.', 'right'));
     $pathnavHTML = tpl::take('::console.link', 'tpl', 0, array('text' => '/', 'link' => '?type=list'));
     if ($filetype == 'css') $filemode = 'css';
@@ -187,7 +187,7 @@ class ui extends page {
     $message = '';
     $name = base::getString(request::get('name'));
     $path = base::getString(request::get('path'));
-    $pathRoot = smart::getActualRoute('./');
+    $pathRoot = route::getActualRoute('./');
     $account = self::account();
     if (!$account -> checkPopedom(self::getPara('genre'), 'add'))
     {
@@ -215,7 +215,7 @@ class ui extends page {
     $status = 0;
     $message = '';
     $path = base::getString(request::get('path'));
-    $pathRoot = smart::getActualRoute('./');
+    $pathRoot = route::getActualRoute('./');
     $account = self::account();
     if (!$account -> checkPopedom(self::getPara('genre'), 'add'))
     {
@@ -247,7 +247,7 @@ class ui extends page {
     $message = '';
     $content = base::getString(request::getPost('content'));
     $path = base::getString(request::get('path'));
-    $pathRoot = smart::getActualRoute('./');
+    $pathRoot = route::getActualRoute('./');
     $account = self::account();
     if (!$account -> checkPopedom(self::getPara('genre'), 'edit'))
     {
@@ -279,7 +279,7 @@ class ui extends page {
     $message = '';
     $name = base::getString(request::get('name'));
     $path = base::getString(request::get('path'));
-    $pathRoot = smart::getActualRoute('./');
+    $pathRoot = route::getActualRoute('./');
     $account = self::account();
     if (!$account -> checkPopedom(self::getPara('genre'), 'edit'))
     {
@@ -307,7 +307,7 @@ class ui extends page {
     $status = 0;
     $message = '';
     $path = base::getString(request::get('path'));
-    $pathRoot = smart::getActualRoute('./');
+    $pathRoot = route::getActualRoute('./');
     $account = self::account();
     if (!$account -> checkPopedom(self::getPara('genre'), 'delete'))
     {

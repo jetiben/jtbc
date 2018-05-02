@@ -3,12 +3,13 @@
 // JTBC Powered by jtbc.cn      //
 //******************************//
 namespace jtbc\console {
+  use jtbc\auto;
   use jtbc\base;
-  use jtbc\tpl;
-  use jtbc\request;
-  use jtbc\sql;
   use jtbc\page;
-  use jtbc\smart;
+  use jtbc\request;
+  use jtbc\route;
+  use jtbc\sql;
+  use jtbc\tpl;
   class account
   {
     private $lang;
@@ -100,7 +101,7 @@ namespace jtbc\console {
                 $preset = array();
                 $preset[$prefix . 'lasttime'] = base::getDateTime();
                 $preset[$prefix . 'lastip'] = request::getRemortIP();
-                $sqlstr = smart::getAutoUpdateSQLByVars($table, $prefix . 'id', $rsId, $preset);
+                $sqlstr = auto::getAutoUpdateSQLByVars($table, $prefix . 'id', $rsId, $preset);
                 $re = $db -> exec($sqlstr);
               }
               if ($rsRole == -1)
@@ -146,7 +147,7 @@ namespace jtbc\console {
               $preset[$prefixLogin . 'account_id'] = $rsId;
               $preset[$prefixLogin . 'date'] = $todayDate;
               $preset[$prefixLogin . 'status'] = $loginStatus;
-              $sqlstr = smart::getAutoInsertSQLByVars($tableLogin, $preset);
+              $sqlstr = auto::getAutoInsertSQLByVars($tableLogin, $preset);
               $db -> exec($sqlstr);
             }
           }
@@ -231,7 +232,7 @@ namespace jtbc\console {
         $preset[$prefix . 'userip'] = $userip;
         $preset[$prefix . 'account_id'] = $accountId;
         $preset[$prefix . 'time'] = base::getDateTime();
-        $sqlstr = smart::getAutoInsertSQLByVars($table, $preset);
+        $sqlstr = auto::getAutoInsertSQLByVars($table, $preset);
         $re = $db -> exec($sqlstr);
         if (is_numeric($re)) $bool = true;
       }
@@ -271,7 +272,7 @@ namespace jtbc\console {
       $tpl1 = $argTPL1;
       $tpl2 = $argTPL2;
       $pre = $argPre;
-      $folder = smart::getFolderByGuide();
+      $folder = route::getFolderByGuide();
       $folderAry = explode('|+|', $folder);
       $tmpstr = $tpl1;
       if (!base::isEmpty($pre)) $tmpstr = $tpl2;
@@ -397,7 +398,7 @@ namespace jtbc\console {
         {
           $preset = array();
           $preset[$prefix . 'password'] = md5($newpassword);
-          $sqlstr = smart::getAutoUpdateSQLByVars($table, $prefix . 'id', $accountId, $preset);
+          $sqlstr = auto::getAutoUpdateSQLByVars($table, $prefix . 'id', $accountId, $preset);
           $re = $db -> exec($sqlstr);
           if (is_numeric($re))
           {

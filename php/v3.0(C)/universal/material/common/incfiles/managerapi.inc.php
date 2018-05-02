@@ -64,7 +64,7 @@ class ui extends page {
         $rsTopic = base::getString($rs[$prefix . 'topic']);
         $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
         $loopLineString = str_replace('{$-filejson}', base::htmlEncode(self::ppGetFileJSON($rs, $prefix)), $loopLineString);
-        $loopLineString = str_replace('{$-topic-keyword-highlight}', smart::replaceKeyWordHighlight(base::htmlEncode(smart::replaceKeyWordHighlight($rsTopic, $keyword))), $loopLineString);
+        $loopLineString = str_replace('{$-topic-keyword-highlight}', base::replaceKeyWordHighlight(base::htmlEncode(base::replaceKeyWordHighlight($rsTopic, $keyword))), $loopLineString);
         $tpl -> insertLoopLine(tpl::parse($loopLineString));
       }
       $tmpstr = $tpl -> mergeTemplate();

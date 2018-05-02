@@ -15,7 +15,7 @@ class ui extends page {
   {
     $status = 1;
     $tmpstr = '';
-    $path = smart::getActualRoute('cache/');
+    $path = route::getActualRoute('cache/');
     $db = self::db();
     if (!is_null($db))
     {

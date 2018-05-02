@@ -156,7 +156,7 @@ class ui extends page {
     {
       $table = tpl::take('config.db_table', 'cfg');
       $prefix = tpl::take('config.db_prefix', 'cfg');
-      smart::pushAutoRequestErrorByTable($error, $table);
+      auto::pushAutoRequestErrorByTable($error, $table);
       if (base::isEmpty($password)) array_push($error, tpl::take('manage.text-tips-field-error-1', 'lng'));
       if ($password != $cpassword) array_push($error, tpl::take('manage.text-tips-field-error-2', 'lng'));
       if (count($error) == 0)
@@ -174,7 +174,7 @@ class ui extends page {
             $preset = array();
             $preset[$prefix . 'password'] = md5($password);
             $preset[$prefix . 'time'] = base::getDateTime();
-            $sqlstr = smart::getAutoRequestInsertSQL($table, $preset);
+            $sqlstr = auto::getAutoRequestInsertSQL($table, $preset);
             $re = $db -> exec($sqlstr);
             if (is_numeric($re))
             {
@@ -209,7 +209,7 @@ class ui extends page {
     {
       $table = tpl::take('config.db_table', 'cfg');
       $prefix = tpl::take('config.db_prefix', 'cfg');
-      smart::pushAutoRequestErrorByTable($error, $table);
+      auto::pushAutoRequestErrorByTable($error, $table);
       if (!base::isEmpty($password) && $password != $cpassword) array_push($error, tpl::take('manage.text-tips-field-error-2', 'lng'));
       if (count($error) == 0)
       {
@@ -225,7 +225,7 @@ class ui extends page {
           else
           {
             $specialFiled = $prefix . 'password';
-            $sqlstr = smart::getAutoRequestUpdateSQL($table, $prefix . 'id', $id, null, $specialFiled);
+            $sqlstr = auto::getAutoRequestUpdateSQL($table, $prefix . 'id', $id, null, $specialFiled);
             $re = $db -> exec($sqlstr);
             if (is_numeric($re))
             {

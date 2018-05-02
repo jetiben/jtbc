@@ -19,6 +19,19 @@ namespace jtbc {
       return $tmpstr;
     }
 
+    public static function getForeLang()
+    {
+      $language = LANGUAGE;
+      $lang = base::getNum(tpl::take('global.config.lang-' . $language, 'cfg'), 0);
+      $cookieValue = base::getString(@$_COOKIE[APPNAME . 'config']['language']);
+      if (!base::isEmpty($cookieValue))
+      {
+        $cookieLang = base::getNum(tpl::take('global.config.lang-' . $cookieValue, 'cfg'), -1);
+        if ($cookieLang != -1) $lang = $cookieLang;
+      }
+      return $lang;
+    }
+
     public static function getHTTPPara($argName, $argType = 'auto')
     {
       $tmpstr = '';

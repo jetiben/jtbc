@@ -22,7 +22,7 @@ class ui extends page {
       $symbolAry = explode('.', $symbol);
       if (count($symbolAry) == 3)
       {
-        $filepath = smart::getActualRoute($symbolAry[0]);
+        $filepath = route::getActualRoute($symbolAry[0]);
         if (base::getRight($filepath, 1) != '/') $filepath .= '/';
         $filepath .= tpl::getXMLDirByType($symbolAry[1]) . '/';
         $filepath .= $symbolAry[2] . XMLSFX;
@@ -139,7 +139,7 @@ class ui extends page {
     if ($account -> checkPopedom(self::getPara('genre')))
     {
       $ary = array();
-      $folder = smart::getFolderByGuide();
+      $folder = route::getFolderByGuide();
       $folderAry = explode('|+|', $folder);
       foreach($folderAry as $key => $val)
       {
@@ -170,7 +170,7 @@ class ui extends page {
       $ary = array();
       if (base::isEmpty($genre)) $genre = './';
       else if (base::getRight($genre, 1) != '/') $genre .= '/';
-      $path = smart::getActualRoute($genre);
+      $path = route::getActualRoute($genre);
       $path .= tpl::getXMLDirByType($mold) . '/';
       if (is_dir($path))
       {

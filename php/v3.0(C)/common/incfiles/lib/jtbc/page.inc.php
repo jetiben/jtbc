@@ -39,7 +39,7 @@ namespace jtbc {
       $baseArrowHTML = tpl::take('global.config.breadcrumb-arrow', 'tpl');
       $breadcrumb = $baseHTML;
       $breadcrumb = str_replace('{$text}', base::htmlEncode(tpl::take('global.public.homepage', 'lng')), $breadcrumb);
-      $breadcrumb = str_replace('{$link}', base::htmlEncode(smart::getActualRoute('./')), $breadcrumb);
+      $breadcrumb = str_replace('{$link}', base::htmlEncode(route::getActualRoute('./')), $breadcrumb);
       if (!base::isEmpty($genre))
       {
         $baseGenre = '';
@@ -52,7 +52,7 @@ namespace jtbc {
             $currentGenre = $baseGenre . $val;
             $breadcrumb .= $baseArrowHTML . $baseHTML;
             $breadcrumb = str_replace('{$text}', base::htmlEncode(tpl::take('global.' . $currentGenre . ':index.title', 'lng')), $breadcrumb);
-            $breadcrumb = str_replace('{$link}', base::htmlEncode(smart::getActualRoute($currentGenre)), $breadcrumb);
+            $breadcrumb = str_replace('{$link}', base::htmlEncode(route::getActualRoute($currentGenre)), $breadcrumb);
             $baseGenre = $currentGenre . '/';
           }
         }
@@ -219,13 +219,13 @@ namespace jtbc {
     {
       self::$para['http'] = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
       self::$para['http_host'] = $_SERVER['HTTP_HOST'];
-      self::$para['route'] = smart::getRoute();
-      self::$para['genre'] = smart::getActualGenre(self::$para['route']);
+      self::$para['route'] = route::getRoute();
+      self::$para['genre'] = route::getActualGenre(self::$para['route']);
       self::$para['assetspath'] = ASSETSPATH;
-      self::$para['global.assetspath'] = smart::getActualRoute(ASSETSPATH);
+      self::$para['global.assetspath'] = route::getActualRoute(ASSETSPATH);
       self::$para['folder'] = base::getLRStr($_SERVER['SCRIPT_NAME'], '/', 'leftr') . '/';
       self::$para['filename'] = base::getLRStr($_SERVER['SCRIPT_NAME'], '/', 'right');
-      self::$para['lang'] = smart::getForeLang();
+      self::$para['lang'] = request::getForeLang();
       self::$para['referer'] = @$_SERVER['HTTP_REFERER'];
       self::$para['uri'] = $_SERVER['SCRIPT_NAME'];
       self::$para['urs'] = $_SERVER['QUERY_STRING'];

@@ -128,7 +128,7 @@ class ui extends page {
               $preset[$prefix . 'filegroup'] = base::getFileGroup($paraArray['filetype']);
               $preset[$prefix . 'lang'] = $account -> getLang();
               $preset[$prefix . 'time'] = base::getDateTime();
-              $sqlstr = smart::getAutoInsertSQLByVars($table, $preset);
+              $sqlstr = auto::getAutoInsertSQLByVars($table, $preset);
               $re = $db -> exec($sqlstr);
               if (is_numeric($re))
               {
@@ -182,7 +182,7 @@ class ui extends page {
                 $preset = array();
                 $preset[$prefix . 'topic'] = $paraArray['filename'];
                 $preset[$prefix . 'filesize'] = $paraArray['filesize'];
-                $sqlstr = smart::getAutoUpdateSQLByVars($table, $prefix . 'id', $id, $preset);
+                $sqlstr = auto::getAutoUpdateSQLByVars($table, $prefix . 'id', $id, $preset);
                 $re = $db -> exec($sqlstr);
                 if (is_numeric($re))
                 {
@@ -224,7 +224,7 @@ class ui extends page {
           $specialFiled = $prefix . 'filepath,' . $prefix . 'fileurl,' . $prefix . 'filetype,' . $prefix . 'filesize,' . $prefix . 'filegroup,' . $prefix . 'hot';
           $preset = array();
           $preset[$prefix . 'lang'] = $account -> getLang();
-          $sqlstr = smart::getAutoRequestUpdateSQL($table, $prefix . 'id', $id, $preset, $specialFiled);
+          $sqlstr = auto::getAutoRequestUpdateSQL($table, $prefix . 'id', $id, $preset, $specialFiled);
           $re = $db -> exec($sqlstr);
           if (is_numeric($re))
           {

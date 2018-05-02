@@ -3,12 +3,13 @@
 // JTBC Powered by jtbc.cn      //
 //******************************//
 namespace jtbc\universal {
+  use jtbc\auto;
   use jtbc\base;
-  use jtbc\page;
-  use jtbc\smart;
-  use jtbc\tpl;
   use jtbc\image;
+  use jtbc\page;
+  use jtbc\route;
   use jtbc\sql;
+  use jtbc\tpl;
   class upload
   {
     public static function getUploadId($argFileInfo)
@@ -33,7 +34,7 @@ namespace jtbc\universal {
             $preset[$prefix . 'filesizetext'] = $fileInfo['filesizetext'];
             $preset[$prefix . 'genre'] = page::getPara('genre');
             $preset[$prefix . 'time'] = base::getDateTime();
-            $sqlstr = smart::getAutoInsertSQLByVars($table, $preset);
+            $sqlstr = auto::getAutoInsertSQLByVars($table, $preset);
             $re = $db -> exec($sqlstr);
             if (is_numeric($re)) $uploadid = $db -> lastInsertId;
           }
@@ -85,7 +86,7 @@ namespace jtbc\universal {
               $preset[$prefix . 'status'] = 1;
               $preset[$prefix . 'genre'] = $genre;
               $preset[$prefix . 'associated_id'] = $associatedId;
-              $sqlstr = smart::getAutoUpdateSQLByVars($table, $prefix . 'id', $myUploadId, $preset);
+              $sqlstr = auto::getAutoUpdateSQLByVars($table, $prefix . 'id', $myUploadId, $preset);
               $re = $db -> exec($sqlstr);
               if (is_numeric($re)) $bool = true;
             };
@@ -167,7 +168,7 @@ namespace jtbc\universal {
           {
             $rsGenre = base::getString($rs[$prefix . 'genre']);
             $rsFilepath = base::getString($rs[$prefix . 'filepath']);
-            $fileFullPath = smart::getActualRoute($rsGenre . '/' . $rsFilepath);
+            $fileFullPath = route::getActualRoute($rsGenre . '/' . $rsFilepath);
             if (is_file($fileFullPath))
             {
               if (!unlink($fileFullPath)) $bool = false;

@@ -277,6 +277,22 @@ namespace jtbc {
       return $tmpstr;
     }
 
+    public static function getCutKeywordSQL($argField, $argKeyword)
+    {
+      $sql = '';
+      $field = $argField;
+      $keyword = $argKeyword;
+      if (!base::isEmpty($keyword))
+      {
+        $keywordAry = explode(' ', $keyword);
+        foreach ($keywordAry as $key => $val)
+        {
+          if (!base::isEmpty($val)) $sql .= " and " . $field . " like '%" . addslashes($val) . "%'";
+        }
+      }
+      return $sql;
+    }
+
     public function __set($argName, $argValue)
     {
       $this -> set($argName, $argValue);

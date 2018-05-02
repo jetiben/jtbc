@@ -122,9 +122,9 @@ namespace jtbc {
       {
         if (substr($codename, 0, 3) == '../')
         {
-          $parent = smart::getGenreByAppellation('parent');
-          $grandparent = smart::getGenreByAppellation('grandparent');
-          $greatgrandparent = smart::getGenreByAppellation('greatgrandparent');
+          $parent = route::getGenreByAppellation('parent');
+          $grandparent = route::getGenreByAppellation('grandparent');
+          $greatgrandparent = route::getGenreByAppellation('greatgrandparent');
           if (substr($codename, 0, 9) == '../../../')
           {
             if (!is_null($greatgrandparent))
@@ -181,6 +181,7 @@ namespace jtbc {
         {
           if (is_numeric(strpos($string, '(')))
           {
+            $classArray = array('pagi', 'page', 'base', 'request', 'route', 'tpl', 'transfer');
             if (is_numeric(strpos($string, '$')))
             {
               $regm = preg_match_all('(\$(.[^\(]*)\()', $string, $innerFun);
@@ -191,12 +192,14 @@ namespace jtbc {
                   $funName = $innerFun[1][$i];
                   if (!function_exists($funName))
                   {
-                    if ($funName == 'pagi') $string = str_replace('$' . $funName, $ns . '\\pagi::' . $funName, $string);
-                    else if (method_exists($ns . '\\page', $funName)) $string = str_replace('$' . $funName, $ns . '\\page::' . $funName, $string);
-                    else if (method_exists($ns . '\\request', $funName)) $string = str_replace('$' . $funName, $ns . '\\request::' . $funName, $string);
-                    else if (method_exists($ns . '\\base', $funName)) $string = str_replace('$' . $funName, $ns . '\\base::' . $funName, $string);
-                    else if (method_exists($ns . '\\tpl', $funName)) $string = str_replace('$' . $funName, $ns . '\\tpl::' . $funName, $string);
-                    else if (method_exists($ns . '\\smart', $funName)) $string = str_replace('$' . $funName, $ns . '\\smart::' . $funName, $string);
+                    foreach ($classArray as $key => $val)
+                    {
+                      if (method_exists($ns . '\\' . $val, $funName))
+                      {
+                        $string = str_replace('$' . $funName, $ns . '\\' . $val . '::' . $funName, $string);
+                        break;
+                      }
+                    }
                   }
                 }
               }
@@ -221,12 +224,14 @@ namespace jtbc {
             if (function_exists($fun)) eval('$tstr = ' . $string . ';');
             else
             {
-              if ($fun == 'pagi') eval('$tstr = ' . $ns . '\\pagi::' . $string . ';');
-              else if (method_exists($ns . '\\page', $fun)) eval('$tstr = ' . $ns . '\\page::' . $string . ';');
-              else if (method_exists($ns . '\\request', $fun)) eval('$tstr = ' . $ns . '\\request::' . $string . ';');
-              else if (method_exists($ns . '\\base', $fun)) eval('$tstr = ' . $ns . '\\base::' . $string . ';');
-              else if (method_exists($ns . '\\tpl', $fun)) eval('$tstr = ' . $ns . '\\tpl::' . $string . ';');
-              else if (method_exists($ns . '\\smart', $fun)) eval('$tstr = ' . $ns . '\\smart::' . $string . ';');
+              foreach ($classArray as $key => $val)
+              {
+                if (method_exists($ns . '\\' . $val, $fun))
+                {
+                  eval('$tstr = ' . $ns . '\\' . $val . '::' . $string . ';');
+                  break;
+                }
+              }
             }
           }
           else eval('$tstr = ' . $string . ';');
@@ -345,7 +350,7 @@ namespace jtbc {
         }
         if (!base::isEmpty($genre)) $routeStr = $genre . '/' . $routeStr;
       }
-      $routeStr = smart::getActualRoute($routeStr);
+      $routeStr = route::getActualRoute($routeStr);
       return $routeStr;
     }
 
@@ -544,12 +549,12 @@ namespace jtbc {
           $result = str_replace('{$>ns}', $ns . '\\', $result);
           $result = str_replace('{$>this}', $tthis, $result);
           $result = str_replace('{$>this.genre}', $tthisGenre, $result);
-          $result = str_replace('{$>genre.parent}', smart::getGenreByAppellation('parent', $genre), $result);
-          $result = str_replace('{$>genre.grandparent}', smart::getGenreByAppellation('grandparent', $genre), $result);
-          $result = str_replace('{$>genre.greatgrandparent}', smart::getGenreByAppellation('greatgrandparent', $genre), $result);
-          $result = str_replace('{$>this.genre.parent}', smart::getGenreByAppellation('parent', $tthisGenre), $result);
-          $result = str_replace('{$>this.genre.grandparent}', smart::getGenreByAppellation('grandparent', $tthisGenre), $result);
-          $result = str_replace('{$>this.genre.greatgrandparent}', smart::getGenreByAppellation('greatgrandparent', $tthisGenre), $result);
+          $result = str_replace('{$>genre.parent}', route::getGenreByAppellation('parent', $genre), $result);
+          $result = str_replace('{$>genre.grandparent}', route::getGenreByAppellation('grandparent', $genre), $result);
+          $result = str_replace('{$>genre.greatgrandparent}', route::getGenreByAppellation('greatgrandparent', $genre), $result);
+          $result = str_replace('{$>this.genre.parent}', route::getGenreByAppellation('parent', $tthisGenre), $result);
+          $result = str_replace('{$>this.genre.grandparent}', route::getGenreByAppellation('grandparent', $tthisGenre), $result);
+          $result = str_replace('{$>this.genre.greatgrandparent}', route::getGenreByAppellation('greatgrandparent', $tthisGenre), $result);
         }
         if (is_array($vars))
         {

@@ -3,18 +3,19 @@
 // JTBC Powered by jtbc.cn      //
 //******************************//
 namespace jtbc\universal {
+  use jtbc\auto;
   use jtbc\base;
   use jtbc\cache;
   use jtbc\page;
+  use jtbc\route;
   use jtbc\sql;
-  use jtbc\smart;
   use jtbc\tpl;
   class category
   {
     public static function getAllGenre()
     {
       $allGenre = array();
-      $folder = smart::getFolderByGuide('category');
+      $folder = route::getFolderByGuide('category');
       $folderAry = explode('|+|', $folder);
       foreach($folderAry as $key => $val)
       {
@@ -162,7 +163,7 @@ namespace jtbc\universal {
             {
               $tmpstr = $baseArrowHTML . $baseHTML;
               $tmpstr = str_replace('{$text}', base::htmlEncode($rsTopic), $tmpstr);
-              $tmpstr = str_replace('{$link}', base::htmlEncode(smart::createURL('list', $rsId, null, $genre)), $tmpstr);
+              $tmpstr = str_replace('{$link}', base::htmlEncode(route::createURL('list', $rsId, null, $genre)), $tmpstr);
               if ($rsFid != 0) $tmpstr = self::getCategoryBreadcrumbByID($genre, $lang, $rsFid) . $tmpstr;
             }
           }

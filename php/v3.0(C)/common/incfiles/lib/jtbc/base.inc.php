@@ -517,6 +517,35 @@ namespace jtbc {
       if(@rmdir($dir)) $bool = true;
       return $bool;
     }
+
+    public static function replaceKeyWordHighlight($argString, $argKeyword = null)
+    {
+      $string = $argString;
+      $keyword = $argKeyword;
+      $spkey = 'jtbc~$~key~$~jtbc';
+      if (!base::isEmpty($string))
+      {
+        if (!is_null($keyword))
+        {
+          $keywordAry = explode(' ', $keyword);
+          $string = str_replace('*', $spkey, $string);
+          foreach ($keywordAry as $key => $val)
+          {
+            if (!base::isEmpty($val))
+            {
+              $string = str_replace($val, '*key*' . $val . '*yek*', $string);
+            }
+          }
+        }
+        else
+        {
+          $string = str_replace('*key*', '<span class="highlight">', $string);
+          $string = str_replace('*yek*', '</span>', $string);
+          $string = str_replace($spkey, '*', $string);
+        }
+      }
+      return $string;
+    }
   }
 }
 //******************************//
