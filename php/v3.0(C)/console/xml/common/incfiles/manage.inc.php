@@ -9,7 +9,7 @@ class ui extends page {
   {
     $account = null;
     if (!is_null(self::$account)) $account = self::$account;
-    else $account = self::$account = new console\account();
+    else $account = self::$account = new console\account(self::getPara('genre'));
     return $account;
   }
 
@@ -39,7 +39,7 @@ class ui extends page {
     $tmpstr = '';
     $account = self::account();
     $symbol = base::getString(request::get('symbol'));
-    if ($account -> checkPopedom(self::getPara('genre'), 'add'))
+    if ($account -> checkCurrentGenrePopedom('add'))
     {
       $tmpstr = tpl::take('manage.add', 'tpl');
       $tmpstr = str_replace('{$-symbol}', base::htmlEncode($symbol), $tmpstr);
@@ -110,7 +110,7 @@ class ui extends page {
     $tmpstr = '';
     $account = self::account();
     $symbol = base::getString(request::get('symbol'));
-    if ($account -> checkPopedom(self::getPara('genre')))
+    if ($account -> checkCurrentGenrePopedom())
     {
       if (!base::isEmpty($symbol))
       {
@@ -136,7 +136,7 @@ class ui extends page {
     $status = 1;
     $tmpstr = '';
     $account = self::account();
-    if ($account -> checkPopedom(self::getPara('genre')))
+    if ($account -> checkCurrentGenrePopedom())
     {
       $ary = array();
       $folder = route::getFolderByGuide();
@@ -165,7 +165,7 @@ class ui extends page {
     $account = self::account();
     $genre = base::getString(request::get('genre'));
     $mold = base::getString(request::get('mold'));
-    if ($account -> checkPopedom(self::getPara('genre')))
+    if ($account -> checkCurrentGenrePopedom())
     {
       $ary = array();
       if (base::isEmpty($genre)) $genre = './';
@@ -201,7 +201,7 @@ class ui extends page {
     $account = self::account();
     $nodename = base::getString(request::getPost('nodename'));
     $symbol = base::getString(request::getPost('symbol'));
-    if (!$account -> checkPopedom(self::getPara('genre'), 'add'))
+    if (!$account -> checkCurrentGenrePopedom('add'))
     {
       array_push($error, tpl::take('::console.text-tips-error-403', 'lng'));
     }
@@ -255,7 +255,7 @@ class ui extends page {
               {
                 $status = 1;
                 $message = tpl::take('manage.text-tips-add-done', 'lng');
-                $account -> creatAutoLog('manage.log-add-1', array('symbol' => $symbol, 'node' => $nodename));
+                $account -> creatCurrentGenreLog('manage.log-add-1', array('symbol' => $symbol, 'node' => $nodename));
               }
             }
           }
@@ -279,7 +279,7 @@ class ui extends page {
     $node = base::getString(request::getPost('node'));
     $symbol = base::getString(request::getPost('symbol'));
     $content = base::getString(request::getPost('content'));
-    if (!$account -> checkPopedom(self::getPara('genre'), 'edit'))
+    if (!$account -> checkCurrentGenrePopedom('edit'))
     {
       array_push($error, tpl::take('::console.text-tips-error-403', 'lng'));
     }
@@ -296,7 +296,7 @@ class ui extends page {
         {
           $status = 1;
           $message = tpl::take('manage.text-tips-edit-done', 'lng');
-          $account -> creatAutoLog('manage.log-edit-1', array('symbol' => $symbol, 'node' => $node));
+          $account -> creatCurrentGenreLog('manage.log-edit-1', array('symbol' => $symbol, 'node' => $node));
         }
       }
       else array_push($error, tpl::take('manage.text-tips-edit-error-1', 'lng'));
@@ -315,7 +315,7 @@ class ui extends page {
     $account = self::account();
     $nodename = base::getString(request::getPost('nodename'));
     $symbol = base::getString(request::getPost('symbol'));
-    if (!$account -> checkPopedom(self::getPara('genre'), 'delete'))
+    if (!$account -> checkCurrentGenrePopedom('delete'))
     {
       array_push($error, tpl::take('::console.text-tips-error-403', 'lng'));
     }
@@ -357,7 +357,7 @@ class ui extends page {
               {
                 $status = 1;
                 $message = tpl::take('manage.text-tips-delete-done', 'lng');
-                $account -> creatAutoLog('manage.log-delete-1', array('symbol' => $symbol, 'node' => $nodename));
+                $account -> creatCurrentGenreLog('manage.log-delete-1', array('symbol' => $symbol, 'node' => $nodename));
               }
             }
             else array_push($error, tpl::take('manage.text-tips-delete-error-3', 'lng'));
@@ -378,7 +378,7 @@ class ui extends page {
     $account = self::account();
     if ($account -> checkLogin())
     {
-      if ($account -> checkPopedom(self::getPara('genre')))
+      if ($account -> checkCurrentGenrePopedom())
       {
         $tmpstr = parent::getResult();
       }

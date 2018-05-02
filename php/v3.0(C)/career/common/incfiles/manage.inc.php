@@ -7,7 +7,7 @@ class ui extends page {
   {
     $account = null;
     if (!is_null(self::$account)) $account = self::$account;
-    else $account = self::$account = new console\account();
+    else $account = self::$account = new console\account(self::getPara('genre'));
     return $account;
   }
 
@@ -16,7 +16,7 @@ class ui extends page {
     $status = 1;
     $tmpstr = '';
     $account = self::account();
-    if ($account -> checkPopedom(self::getPara('genre'), 'add'))
+    if ($account -> checkCurrentGenrePopedom('add'))
     {
       $table = tpl::take('config.db_table', 'cfg');
       $autoFieldFormatByTable = auto::getAutoFieldFormatByTable($table);
@@ -35,7 +35,7 @@ class ui extends page {
     $tmpstr = '';
     $id = base::getNum(request::get('id'), 0);
     $account = self::account();
-    if ($account -> checkPopedom(self::getPara('genre'), 'edit'))
+    if ($account -> checkCurrentGenrePopedom('edit'))
     {
       $db = self::db();
       if (!is_null($db))
@@ -94,8 +94,8 @@ class ui extends page {
       }
       $tmpstr = $tpl -> mergeTemplate();
       $batchAry = array();
-      if ($account -> checkPopedom(self::getPara('genre'), 'publish')) array_push($batchAry, 'publish');
-      if ($account -> checkPopedom(self::getPara('genre'), 'delete')) array_push($batchAry, 'delete');
+      if ($account -> checkCurrentGenrePopedom('publish')) array_push($batchAry, 'publish');
+      if ($account -> checkCurrentGenrePopedom('delete')) array_push($batchAry, 'delete');
       $variable['-batch-list'] = implode(',', $batchAry);
       $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
       $variable['-pagi-rscount'] = $pagi -> rscount;
@@ -116,7 +116,7 @@ class ui extends page {
     $message = '';
     $error = array();
     $account = self::account();
-    if (!$account -> checkPopedom(self::getPara('genre'), 'add'))
+    if (!$account -> checkCurrentGenrePopedom('add'))
     {
       array_push($error, tpl::take('::console.text-tips-error-403', 'lng'));
     }
@@ -134,13 +134,13 @@ class ui extends page {
           $preset[$prefix . 'publish'] = 0;
           $preset[$prefix . 'lang'] = $account -> getLang();
           $preset[$prefix . 'time'] = base::getDateTime();
-          if ($account -> checkPopedom(self::getPara('genre'), 'publish')) $preset[$prefix . 'publish'] = base::getNum(request::getPost('publish'), 0);
+          if ($account -> checkCurrentGenrePopedom('publish')) $preset[$prefix . 'publish'] = base::getNum(request::getPost('publish'), 0);
           $sqlstr = auto::getAutoRequestInsertSQL($table, $preset);
           $re = $db -> exec($sqlstr);
           if (is_numeric($re))
           {
             $status = 1;
-            $account -> creatAutoLog('manage.log-add-1', array('id' => $db -> lastInsertId));
+            $account -> creatCurrentGenreLog('manage.log-add-1', array('id' => $db -> lastInsertId));
           }
         }
       }
@@ -158,7 +158,7 @@ class ui extends page {
     $error = array();
     $account = self::account();
     $id = base::getNum(request::get('id'), 0);
-    if (!$account -> checkPopedom(self::getPara('genre'), 'edit'))
+    if (!$account -> checkCurrentGenrePopedom('edit'))
     {
       array_push($error, tpl::take('::console.text-tips-error-403', 'lng'));
     }
@@ -175,14 +175,14 @@ class ui extends page {
           $preset = array();
           $preset[$prefix . 'publish'] = 0;
           $preset[$prefix . 'lang'] = $account -> getLang();
-          if ($account -> checkPopedom(self::getPara('genre'), 'publish')) $preset[$prefix . 'publish'] = base::getNum(request::getPost('publish'), 0);
+          if ($account -> checkCurrentGenrePopedom('publish')) $preset[$prefix . 'publish'] = base::getNum(request::getPost('publish'), 0);
           $sqlstr = auto::getAutoRequestUpdateSQL($table, $prefix . 'id', $id, $preset);
           $re = $db -> exec($sqlstr);
           if (is_numeric($re))
           {
             $status = 1;
             $message = tpl::take('manage.text-tips-edit-done', 'lng');
-            $account -> creatAutoLog('manage.log-edit-1', array('id' => $id));
+            $account -> creatCurrentGenreLog('manage.log-edit-1', array('id' => $id));
           }
         }
       }
@@ -207,18 +207,18 @@ class ui extends page {
       $db = self::db();
       if (!is_null($db))
       {
-        if ($batch == 'delete' && $account -> checkPopedom(self::getPara('genre'), 'delete'))
+        if ($batch == 'delete' && $account -> checkCurrentGenrePopedom('delete'))
         {
           if ($db -> fieldSwitch($table, $prefix, 'delete', $ids)) $status = 1;
         }
-        else if ($batch == 'publish' && $account -> checkPopedom(self::getPara('genre'), 'publish'))
+        else if ($batch == 'publish' && $account -> checkCurrentGenrePopedom('publish'))
         {
           if ($db -> fieldSwitch($table, $prefix, 'publish', $ids)) $status = 1;
         }
       }
       if ($status == 1)
       {
-        $account -> creatAutoLog('manage.log-batch-1', array('id' => $ids, 'batch' => $batch));
+        $account -> creatCurrentGenreLog('manage.log-batch-1', array('id' => $ids, 'batch' => $batch));
       }
     }
     $tmpstr = self::formatMsgResult($status, $message);
@@ -232,7 +232,7 @@ class ui extends page {
     $message = '';
     $id = base::getNum(request::get('id'), 0);
     $account = self::account();
-    if (!$account -> checkPopedom(self::getPara('genre'), 'delete'))
+    if (!$account -> checkCurrentGenrePopedom('delete'))
     {
       $message = tpl::take('::console.text-tips-error-403', 'lng');
     }
@@ -246,7 +246,7 @@ class ui extends page {
         if ($db -> fieldSwitch($table, $prefix, 'delete', $id, 1))
         {
           $status = 1;
-          $account -> creatAutoLog('manage.log-delete-1', array('id' => $id));
+          $account -> creatCurrentGenreLog('manage.log-delete-1', array('id' => $id));
         }
       }
     }
@@ -260,7 +260,7 @@ class ui extends page {
     $account = self::account();
     if ($account -> checkLogin())
     {
-      if ($account -> checkPopedom(self::getPara('genre')))
+      if ($account -> checkCurrentGenrePopedom())
       {
         $tmpstr = parent::getResult();
       }

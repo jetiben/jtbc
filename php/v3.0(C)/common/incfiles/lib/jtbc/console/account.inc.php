@@ -13,6 +13,7 @@ namespace jtbc\console {
   class account
   {
     private $lang;
+    public $currentGenre;
     public $cookiesUserName;
     public $cookiesAuthentication;
     public $sessionInfo;
@@ -214,6 +215,20 @@ namespace jtbc\console {
       return $bool;
     }
 
+    public function checkCurrentGenrePopedom($argSegment = '')
+    {
+      $segment = $argSegment;
+      $bool = $this -> checkPopedom($this -> currentGenre, $segment);
+      return $bool;
+    }
+
+    public function checkCurrentGenrePopedomByCategory($argCategory = 0)
+    {
+      $category = base::getNum($argCategory, 0);
+      $bool = $this -> checkPopedomByCategory($this -> currentGenre, $category);
+      return $bool;
+    }
+
     public function creatLog($argGenre, $argContent, $argUserIp)
     {
       $bool = false;
@@ -239,13 +254,13 @@ namespace jtbc\console {
       return $bool;
     }
 
-    public function creatAutoLog($argCodeName, $argAry = null)
+    public function creatCurrentGenreLog($argCodeName, $argAry = null)
     {
       $codeName = $argCodeName;
       $ary = $argAry;
       $logString = tpl::take($codeName, 'lng');
       $logString = tpl::replaceOriginalTagByAry($logString, $ary);
-      $bool = $this -> creatLog(page::getPara('genre'), $logString, request::getRemortIP());
+      $bool = $this -> creatLog($this -> currentGenre, $logString, request::getRemortIP());
       return $bool;
     }
 
@@ -262,6 +277,13 @@ namespace jtbc\console {
           $tmpstr = @$popedom[$genre][$item];
         }
       }
+      return $tmpstr;
+    }
+
+    public function getCurrentGenrePopedom($argItem)
+    {
+      $item = $argItem;
+      $tmpstr = $this -> getGenrePopedom($this -> currentGenre, $item);
       return $tmpstr;
     }
 
@@ -413,7 +435,7 @@ namespace jtbc\console {
     public function replaceAccountTag($argHTML)
     {
       $html = $argHTML;
-      $genre = page::getPara('genre');
+      $genre = $this -> currentGenre;
       $baseNavHTML = tpl::take('::manage.part-nav', 'tpl');
       $baseNavArrowHTML = tpl::take('::manage.part-nav-arrow', 'tpl');
       $accountNavHTML = $baseNavHTML;
@@ -475,8 +497,9 @@ namespace jtbc\console {
       return $bool;
     }
 
-    function __construct()
+    function __construct($argCurrentGenre = null)
     {
+      $this -> currentGenre = $argCurrentGenre;
       $this -> sessionInfo = @$_SESSION[APPNAME . 'console_info'];
       $this -> sessionRole = @$_SESSION[APPNAME . 'console_role'];
       $this -> sessionPopedom = @$_SESSION[APPNAME . 'console_popedom'];

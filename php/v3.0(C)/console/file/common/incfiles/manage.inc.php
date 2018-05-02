@@ -8,7 +8,7 @@ class ui extends page {
   {
     $account = null;
     if (!is_null(self::$account)) $account = self::$account;
-    else $account = self::$account = new console\account();
+    else $account = self::$account = new console\account(self::getPara('genre'));
     return $account;
   }
 
@@ -141,7 +141,7 @@ class ui extends page {
       }
     }
     $account = self::account();
-    if ($account -> checkPopedom(self::getPara('genre'), 'edit'))
+    if ($account -> checkCurrentGenrePopedom('edit'))
     {
       if (base::checkInstr(self::$allowFiletype, $filetype, ','))
       {
@@ -189,7 +189,7 @@ class ui extends page {
     $path = base::getString(request::get('path'));
     $pathRoot = route::getActualRoute('./');
     $account = self::account();
-    if (!$account -> checkPopedom(self::getPara('genre'), 'add'))
+    if (!$account -> checkCurrentGenrePopedom('add'))
     {
       $message = tpl::take('::console.text-tips-error-403', 'lng');
     }
@@ -201,7 +201,7 @@ class ui extends page {
         if (@mkdir($path . $name))
         {
           $status = 1;
-          $account -> creatAutoLog('manage.log-addfolder-1', array('path' => $myPath . $name));
+          $account -> creatCurrentGenreLog('manage.log-addfolder-1', array('path' => $myPath . $name));
         }
       }
     }
@@ -217,7 +217,7 @@ class ui extends page {
     $path = base::getString(request::get('path'));
     $pathRoot = route::getActualRoute('./');
     $account = self::account();
-    if (!$account -> checkPopedom(self::getPara('genre'), 'add'))
+    if (!$account -> checkCurrentGenrePopedom('add'))
     {
       $message = tpl::take('::console.text-tips-error-403', 'lng');
     }
@@ -232,7 +232,7 @@ class ui extends page {
         if (move_uploaded_file($tmp_filename, $newfilepath))
         {
           $status = 1;
-          $account -> creatAutoLog('manage.log-addfile-1', array('path' => $myPath . $filename));
+          $account -> creatCurrentGenreLog('manage.log-addfile-1', array('path' => $myPath . $filename));
         }
       }
     }
@@ -249,7 +249,7 @@ class ui extends page {
     $path = base::getString(request::get('path'));
     $pathRoot = route::getActualRoute('./');
     $account = self::account();
-    if (!$account -> checkPopedom(self::getPara('genre'), 'edit'))
+    if (!$account -> checkCurrentGenrePopedom('edit'))
     {
       $message = tpl::take('::console.text-tips-error-403', 'lng');
     }
@@ -262,7 +262,7 @@ class ui extends page {
         {
           $status = 1;
           $message = tpl::take('manage.text-tips-edit-done', 'lng');
-          $account -> creatAutoLog('manage.log-editfile-1', array('path' => $myPath));
+          $account -> creatCurrentGenreLog('manage.log-editfile-1', array('path' => $myPath));
         }
         else $message = tpl::take('manage.text-tips-edit-error-2', 'lng');
       }
@@ -281,7 +281,7 @@ class ui extends page {
     $path = base::getString(request::get('path'));
     $pathRoot = route::getActualRoute('./');
     $account = self::account();
-    if (!$account -> checkPopedom(self::getPara('genre'), 'edit'))
+    if (!$account -> checkCurrentGenrePopedom('edit'))
     {
       $message = tpl::take('::console.text-tips-error-403', 'lng');
     }
@@ -293,7 +293,7 @@ class ui extends page {
         if (@rename($path, base::getLRStr($path, '/', 'leftr') . '/' . $name))
         {
           $status = 1;
-          $account -> creatAutoLog('manage.log-rename-1', array('name' => $name, 'path' => $myPath));
+          $account -> creatCurrentGenreLog('manage.log-rename-1', array('name' => $name, 'path' => $myPath));
         }
       }
     }
@@ -309,7 +309,7 @@ class ui extends page {
     $path = base::getString(request::get('path'));
     $pathRoot = route::getActualRoute('./');
     $account = self::account();
-    if (!$account -> checkPopedom(self::getPara('genre'), 'delete'))
+    if (!$account -> checkCurrentGenrePopedom('delete'))
     {
       $message = tpl::take('::console.text-tips-error-403', 'lng');
     }
@@ -322,7 +322,7 @@ class ui extends page {
         if (@unlink($path))
         {
           $status = 1;
-          $account -> creatAutoLog('manage.log-delete-1', array('path' => $myPath));
+          $account -> creatCurrentGenreLog('manage.log-delete-1', array('path' => $myPath));
         }
       }
       else if (is_dir($path))
@@ -330,7 +330,7 @@ class ui extends page {
         if (base::removeDir($path))
         {
           $status = 1;
-          $account -> creatAutoLog('manage.log-delete-1', array('path' => $myPath));
+          $account -> creatCurrentGenreLog('manage.log-delete-1', array('path' => $myPath));
         }
       }
     }
@@ -344,7 +344,7 @@ class ui extends page {
     $account = self::account();
     if ($account -> checkLogin())
     {
-      if ($account -> checkPopedom(self::getPara('genre')))
+      if ($account -> checkCurrentGenrePopedom())
       {
         $tmpstr = parent::getResult();
       }

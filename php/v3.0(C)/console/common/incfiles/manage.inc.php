@@ -7,7 +7,7 @@ class ui extends page {
   {
     $account = null;
     if (!is_null(self::$account)) $account = self::$account;
-    else $account = self::$account = new console\account();
+    else $account = self::$account = new console\account(self::getPara('genre'));
     return $account;
   }
 
@@ -128,7 +128,7 @@ class ui extends page {
         if ($remember == '1') $cookiesExpireTime = time() + 31536000;
         setcookie(APPNAME . 'console[username]', $username, $cookiesExpireTime, COOKIESPATH);
         setcookie(APPNAME . 'console[authentication]', md5(WEBKEY . md5($password)), $cookiesExpireTime, COOKIESPATH);
-        $account -> creatAutoLog('manage.log-login-1');
+        $account -> creatCurrentGenreLog('manage.log-login-1');
       }
       else $message = tpl::take('manage.msg-login-1', 'lng');
     }
@@ -172,7 +172,7 @@ class ui extends page {
         {
           $status = 1;
           $message = tpl::take('manage.text-modifypassword-done', 'lng');
-          $account -> creatAutoLog('manage.log-modifypassword-1');
+          $account -> creatCurrentGenreLog('manage.log-modifypassword-1');
         }
         else $message = tpl::take('manage.text-modifypassword-error-4', 'lng');
       }

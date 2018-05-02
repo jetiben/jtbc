@@ -7,7 +7,7 @@ class ui extends page {
   {
     $account = null;
     if (!is_null(self::$account)) $account = self::$account;
-    else $account = self::$account = new console\account();
+    else $account = self::$account = new console\account(self::getPara('genre'));
     return $account;
   }
 
@@ -16,7 +16,7 @@ class ui extends page {
     $status = 1;
     $tmpstr = '';
     $account = self::account();
-    if ($account -> checkPopedom(self::getPara('genre')))
+    if ($account -> checkCurrentGenrePopedom())
     {
       $tmpstr = tpl::take('manage.edit', 'tpl');
       $tmpstr = str_replace('{$-lang-text}', $account -> getLangText(), $tmpstr);
@@ -36,7 +36,7 @@ class ui extends page {
     $account = self::account();
     $id = base::getNum(request::get('id'), 0);
     $title = request::getPost('title');
-    if (!$account -> checkPopedom(self::getPara('genre')))
+    if (!$account -> checkCurrentGenrePopedom())
     {
       array_push($error, tpl::take('::console.text-tips-error-403', 'lng'));
     }
@@ -55,7 +55,7 @@ class ui extends page {
           self::statusReset(self::getPara('genre'), 0);
           self::statusUpdate(self::getPara('genre'), 0, request::getPost('att'));
           $message = tpl::take('manage.text-tips-edit-done', 'lng');
-          $account -> creatAutoLog('manage.log-edit-1');
+          $account -> creatCurrentGenreLog('manage.log-edit-1');
         }
       }
     }
@@ -70,7 +70,7 @@ class ui extends page {
     $message = '';
     $para = '';
     $account = self::account();
-    if (!$account -> checkPopedom(self::getPara('genre')))
+    if (!$account -> checkCurrentGenrePopedom())
     {
       $message = tpl::take('::console.text-tips-error-403', 'lng');
     }
@@ -88,7 +88,7 @@ class ui extends page {
           $paraArray = json_decode($para, 1);
           if (is_array($paraArray))
           {
-            $account -> creatAutoLog('manage.log-upload-1', array('filepath' => $paraArray['filepath']));
+            $account -> creatCurrentGenreLog('manage.log-upload-1', array('filepath' => $paraArray['filepath']));
           }
         }
       }
@@ -103,7 +103,7 @@ class ui extends page {
     $account = self::account();
     if ($account -> checkLogin())
     {
-      if ($account -> checkPopedom(self::getPara('genre')))
+      if ($account -> checkCurrentGenrePopedom())
       {
         $tmpstr = parent::getResult();
       }

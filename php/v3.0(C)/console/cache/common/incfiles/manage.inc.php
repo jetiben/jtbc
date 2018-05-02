@@ -7,7 +7,7 @@ class ui extends page {
   {
     $account = null;
     if (!is_null(self::$account)) $account = self::$account;
-    else $account = self::$account = new console\account();
+    else $account = self::$account = new console\account(self::getPara('genre'));
     return $account;
   }
 
@@ -42,7 +42,7 @@ class ui extends page {
       }
       $tmpstr = $tpl -> mergeTemplate();
       $batchAry = array();
-      if ($account -> checkPopedom(self::getPara('genre'), 'delete')) array_push($batchAry, 'delete');
+      if ($account -> checkCurrentGenrePopedom('delete')) array_push($batchAry, 'delete');
       $variable['-batch-list'] = implode(',', $batchAry);
       $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
       $tmpstr = tpl::replaceTagByAry($tmpstr, $variable);
@@ -61,7 +61,7 @@ class ui extends page {
     $account = self::account();
     $ids = base::getString(request::get('ids'));
     $batch = base::getString(request::get('batch'));
-    if ($batch == 'delete' && $account -> checkPopedom(self::getPara('genre'), 'delete'))
+    if ($batch == 'delete' && $account -> checkCurrentGenrePopedom('delete'))
     {
       $idAry = explode(',', $ids);
       foreach ($idAry as $key => $val)
@@ -74,7 +74,7 @@ class ui extends page {
     }
     if ($status == 1)
     {
-      $account -> creatAutoLog('manage.log-batch-1', array('batch' => $batch));
+      $account -> creatCurrentGenreLog('manage.log-batch-1', array('batch' => $batch));
     }
     $tmpstr = self::formatMsgResult($status, $message);
     return $tmpstr;
@@ -86,7 +86,7 @@ class ui extends page {
     $status = 0;
     $message = '';
     $account = self::account();
-    if (!$account -> checkPopedom(self::getPara('genre'), 'empty'))
+    if (!$account -> checkCurrentGenrePopedom('empty'))
     {
       $message = tpl::take('::console.text-tips-error-403', 'lng');
     }
@@ -95,7 +95,7 @@ class ui extends page {
       if (cache::remove())
       {
         $status = 1;
-        $account -> creatAutoLog('manage.log-empty-1');
+        $account -> creatCurrentGenreLog('manage.log-empty-1');
       }
     }
     $tmpstr = self::formatMsgResult($status, $message);
@@ -109,7 +109,7 @@ class ui extends page {
     $message = '';
     $id = base::getString(request::get('id'));
     $account = self::account();
-    if (!$account -> checkPopedom(self::getPara('genre'), 'delete'))
+    if (!$account -> checkCurrentGenrePopedom('delete'))
     {
       $message = tpl::take('::console.text-tips-error-403', 'lng');
     }
@@ -118,7 +118,7 @@ class ui extends page {
       if (cache::remove($id))
       {
         $status = 1;
-        $account -> creatAutoLog('manage.log-delete-1', array('id' => $id));
+        $account -> creatCurrentGenreLog('manage.log-delete-1', array('id' => $id));
       }
     }
     $tmpstr = self::formatMsgResult($status, $message);
@@ -131,7 +131,7 @@ class ui extends page {
     $account = self::account();
     if ($account -> checkLogin())
     {
-      if ($account -> checkPopedom(self::getPara('genre')))
+      if ($account -> checkCurrentGenrePopedom())
       {
         $tmpstr = parent::getResult();
       }
