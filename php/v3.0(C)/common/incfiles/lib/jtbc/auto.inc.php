@@ -23,7 +23,7 @@ namespace jtbc {
       $vars = $argVars;
       $source = $argSource;
       $mode = base::getNum($argMode, 0);
-      $db = page::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         $columns = $db -> showFullColumns($table);
@@ -153,7 +153,7 @@ namespace jtbc {
       $vars = $argVars;
       $source = $argSource;
       $mode = base::getNum($argMode, 0);
-      $db = page::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         $columns = $db -> showFullColumns($table);
@@ -258,8 +258,8 @@ namespace jtbc {
       $mode = $argMode;
       $vars = $argVars;
       $tplPath = $argTplPath;
-      $db = page::db();
-      $filename = page::getPara('filename');
+      $db = conn::db();
+      $filename = route::getCurrentFilename();
       $filePrefix = base::getLRStr($filename, '.', 'left');
       if (!is_null($db))
       {
@@ -362,8 +362,8 @@ namespace jtbc {
     {
       $table = $argTable;
       $tplPath = $argTplPath;
-      $db = page::db();
-      $filename = page::getPara('filename');
+      $db = conn::db();
+      $filename = route::getCurrentFilename();
       $filePrefix = base::getLRStr($filename, '.', 'left');
       if (!is_null($db))
       {

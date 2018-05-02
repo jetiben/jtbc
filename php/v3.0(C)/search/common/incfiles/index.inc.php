@@ -14,7 +14,7 @@ class ui extends page {
     $page = base::getNum(request::get('page'), 0);
     $keyword = base::getString(request::get('keyword'));
     $pagesize = base::getNum(tpl::take('config.pagesize', 'cfg'), 0);
-    $db = self::db();
+    $db = conn::db();
     if (!is_null($db))
     {
       $tmpstr = tpl::take('index.list', 'tpl');

@@ -17,7 +17,7 @@ class ui extends page {
     if (base::isEmpty($content)) array_push($error, tpl::take('api.text-tips-add-error-4', 'lng'));
     if (count($error) == 0)
     {
-      $db = self::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         $table = tpl::take('config.db_table', 'cfg');

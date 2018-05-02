@@ -16,7 +16,7 @@ class ui extends page {
     $status = 1;
     $tmpstr = '';
     $path = route::getActualRoute('cache/');
-    $db = self::db();
+    $db = conn::db();
     if (!is_null($db))
     {
       $account = self::account();

@@ -5,30 +5,9 @@
 namespace jtbc {
   class page
   {
-    public static $counter = 0;
-    public static $db = null;
     public static $init = false;
     public static $para = array();
     private static $title = array();
-
-    public static function db()
-    {
-      $db = null;
-      if (!is_null(self::$db)) $db = self::$db;
-      else
-      {
-        $db = new db();
-        $db -> dbHost = DB_HOST;
-        $db -> dbUsername = DB_USERNAME;
-        $db -> dbPassword = DB_PASSWORD;
-        $db -> dbDatabase = DB_DATABASE;
-        $db -> dbStructureCache = DB_STRUCTURE_CACHE;
-        $db -> init();
-        if ($db -> errStatus != 0) $db = null;
-        else self::$db = $db;
-      }
-      return $db;
-    }
 
     public static function breadcrumb($argAry = null)
     {
@@ -220,11 +199,11 @@ namespace jtbc {
       self::$para['http'] = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
       self::$para['http_host'] = $_SERVER['HTTP_HOST'];
       self::$para['route'] = route::getRoute();
-      self::$para['genre'] = route::getActualGenre(self::$para['route']);
+      self::$para['genre'] = route::getCurrentGenre();
       self::$para['assetspath'] = ASSETSPATH;
       self::$para['global.assetspath'] = route::getActualRoute(ASSETSPATH);
-      self::$para['folder'] = base::getLRStr($_SERVER['SCRIPT_NAME'], '/', 'leftr') . '/';
-      self::$para['filename'] = base::getLRStr($_SERVER['SCRIPT_NAME'], '/', 'right');
+      self::$para['folder'] = route::getCurrentFolder();
+      self::$para['filename'] = route::getCurrentFilename();
       self::$para['lang'] = request::getForeLang();
       self::$para['referer'] = @$_SERVER['HTTP_REFERER'];
       self::$para['uri'] = $_SERVER['SCRIPT_NAME'];

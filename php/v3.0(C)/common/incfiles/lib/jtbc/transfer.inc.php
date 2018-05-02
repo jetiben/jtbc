@@ -106,7 +106,7 @@ namespace jtbc {
     public static function transferSQL($argPara, $argSQL)
     {
       $tmpstr = '';
-      $db = page::db();
+      $db = conn::db();
       $para = $argPara;
       $sql = $argSQL;
       $paraTpl = base::getParameter($para, 'tpl');
@@ -188,9 +188,8 @@ namespace jtbc {
     public static function transferMultiGenre($argPara, $argOSQLAry = null)
     {
       $tmpstr = '';
-      $db = page::db();
-      $genre = page::getPara('genre');
-      $lang = page::getPara('lang');
+      $db = conn::db();
+      $lang = request::getForeLang();
       $para = $argPara;
       $osqlAry = $argOSQLAry;
       $paraTpl = base::getParameter($para, 'tpl');
@@ -298,7 +297,10 @@ namespace jtbc {
           if (strpos($paraTpl, '.')) $tmpstr = tpl::take($paraTpl, 'tpl');
           else $tmpstr = tpl::take('global.transfer.' . $paraTpl, 'tpl');
         }
-        else if (!base::isEmpty($paraJTBCTag)) $tmpstr = page::getPara($paraJTBCTag);
+        else if (!base::isEmpty($paraJTBCTag))
+        {
+          if (array_key_exists($paraJTBCTag, tpl::$para)) $tmpstr = tpl::$para[$paraJTBCTag];
+        }
         if (!base::isEmpty($paraVars))
         {
           $paraVarsAry = explode('|', $paraVars);
@@ -355,9 +357,9 @@ namespace jtbc {
     public static function transferStandard($argPara, $argOSQLAry = null)
     {
       $tmpstr = '';
-      $db = page::db();
-      $genre = page::getPara('genre');
-      $lang = page::getPara('lang');
+      $db = conn::db();
+      $genre = route::getCurrentGenre();
+      $lang = request::getForeLang();
       $para = $argPara;
       $osqlAry = $argOSQLAry;
       $paraTpl = base::getParameter($para, 'tpl');
@@ -484,7 +486,10 @@ namespace jtbc {
           if (strpos($paraTpl, '.')) $tmpstr = tpl::take($paraTpl, 'tpl');
           else $tmpstr = tpl::take('global.transfer.' . $paraTpl, 'tpl');
         }
-        else if (!base::isEmpty($paraJTBCTag)) $tmpstr = page::getPara($paraJTBCTag);
+        else if (!base::isEmpty($paraJTBCTag))
+        {
+          if (array_key_exists($paraJTBCTag, tpl::$para)) $tmpstr = tpl::$para[$paraJTBCTag];
+        }
         if (!base::isEmpty($paraVars))
         {
           $paraVarsAry = explode('|', $paraVars);

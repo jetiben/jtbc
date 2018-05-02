@@ -15,7 +15,7 @@ class ui extends page {
   {
     $genre = $argGenre;
     $fid = base::getNum($argFid, 0);
-    $db = self::db();
+    $db = conn::db();
     $pathnavHTML = tpl::take('::console.link', 'tpl', 0, array('text' => base::htmlEncode(tpl::take('global.' . $genre . ':category.title', 'cfg')) . ':/', 'link' => '?type=list&amp;genre=' . urlencode($genre)));
     if (!is_null($db))
     {
@@ -80,7 +80,7 @@ class ui extends page {
     $account = self::account();
     if ($account -> checkCurrentGenrePopedom('edit'))
     {
-      $db = self::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         $hasImage = 0;
@@ -119,7 +119,7 @@ class ui extends page {
     $tmpstr = '';
     $fid = base::getNum(request::get('fid'), 0);
     $genre = base::getString(request::get('genre'));
-    $db = self::db();
+    $db = conn::db();
     if (!is_null($db))
     {
       $account = self::account();
@@ -192,7 +192,7 @@ class ui extends page {
       auto::pushAutoRequestErrorByTable($error, $table);
       if (count($error) == 0)
       {
-        $db = self::db();
+        $db = conn::db();
         if (!is_null($db))
         {
           $preset = array();
@@ -236,7 +236,7 @@ class ui extends page {
       auto::pushAutoRequestErrorByTable($error, $table);
       if (count($error) == 0)
       {
-        $db = self::db();
+        $db = conn::db();
         if (!is_null($db))
         {
           $specialFiled = $prefix . 'fid,' . $prefix . 'order,' . $prefix . 'time,' . $prefix . 'genre,' . $prefix . 'lang';
@@ -272,7 +272,7 @@ class ui extends page {
     }
     else
     {
-      $db = self::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         if (base::checkIDAry($ids))
@@ -310,7 +310,7 @@ class ui extends page {
     {
       $table = tpl::take('config.db_table', 'cfg');
       $prefix = tpl::take('config.db_prefix', 'cfg');
-      $db = self::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         if ($batch == 'delete' && $account -> checkCurrentGenrePopedom('delete'))
@@ -343,7 +343,7 @@ class ui extends page {
     {
       $table = tpl::take('config.db_table', 'cfg');
       $prefix = tpl::take('config.db_prefix', 'cfg');
-      $db = self::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         if ($db -> fieldSwitch($table, $prefix, 'delete', $id, 1))

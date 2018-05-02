@@ -6,7 +6,7 @@ namespace jtbc\universal {
   use jtbc\auto;
   use jtbc\base;
   use jtbc\cache;
-  use jtbc\page;
+  use jtbc\conn;
   use jtbc\route;
   use jtbc\sql;
   use jtbc\tpl;
@@ -215,7 +215,7 @@ namespace jtbc\universal {
       $lang = base::getNum($argLang, 0);
       $fid = base::getNum($argFid, 0);
       $categoryAry = array();
-      $db = page::db();
+      $db = conn::db();
       $table = tpl::take('global.universal/category:config.db_table', 'cfg');
       $prefix = tpl::take('global.universal/category:config.db_prefix', 'cfg');
       if (!is_null($db) && !base::isEmpty($table))

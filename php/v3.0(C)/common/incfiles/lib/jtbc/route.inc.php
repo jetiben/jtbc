@@ -5,6 +5,11 @@
 namespace jtbc {
   class route
   {
+    private static $currentFilename = null;
+    private static $currentFolder = null;
+    private static $currentGenre = null;
+    private static $currentRoute = null;
+
     public static function createURL($argType, $argKey, $argVars = null, $argGenre = null)
     {
       $tmpstr = '';
@@ -12,7 +17,7 @@ namespace jtbc {
       $key = $argKey;
       $vars = $argVars;
       $genre = $argGenre;
-      if (is_null($genre)) $genre = page::getPara('genre');
+      if (is_null($genre)) $genre = self::getCurrentGenre();
       $urltype = base::getNum(tpl::take('global.' . $genre . ':config.urltype', 'cfg'), 0);
       switch($urltype)
       {
@@ -60,17 +65,6 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    public static function getRoute()
-    {
-      $route = '';
-      if (is_file('common/root.jtbc')) $route = 'root';
-      else if (is_file('../common/root.jtbc')) $route = 'node';
-      else if (is_file('../../common/root.jtbc')) $route = 'child';
-      else if (is_file('../../../common/root.jtbc')) $route = 'grandson';
-      else if (is_file('../../../../common/root.jtbc')) $route = 'greatgrandson';
-      return $route;
-    }
-
     public static function getActualRoute($argRoutestr = '', $argType = 0)
     {
       $route = '';
@@ -79,7 +73,7 @@ namespace jtbc {
       if ($type == 8 && !base::isEmpty(BASEDIR)) $route = BASEDIR . $routeStr;
       else
       {
-        switch (page::getPara('route'))
+        switch (self::getCurrentRoute())
         {
           case 'greatgrandson':
             $route = '../../../../' . $routeStr;
@@ -128,6 +122,46 @@ namespace jtbc {
           break;
       }
       return $tgenre;
+    }
+
+    public static function getCurrentFilename()
+    {
+      $currentFilename = self::$currentFilename;
+      if (is_null($currentFilename))
+      {
+        $currentFilename = self::$currentFilename = base::getLRStr($_SERVER['SCRIPT_NAME'], '/', 'right');
+      }
+      return $currentFilename;
+    }
+
+    public static function getCurrentFolder()
+    {
+      $currentFolder = self::$currentFolder;
+      if (is_null($currentFolder))
+      {
+        $currentFolder = self::$currentFolder = base::getLRStr($_SERVER['SCRIPT_NAME'], '/', 'leftr') . '/';
+      }
+      return $currentFolder;
+    }
+
+    public static function getCurrentGenre()
+    {
+      $currentGenre = self::$currentGenre;
+      if (is_null($currentGenre))
+      {
+        $currentGenre = self::$currentGenre = self::getActualGenre(self::getCurrentRoute());
+      }
+      return $currentGenre;
+    }
+
+    public static function getCurrentRoute()
+    {
+      $currentRoute = self::$currentRoute;
+      if (is_null($currentRoute))
+      {
+        $currentRoute = self::$currentRoute = self::getRoute();
+      }
+      return $currentRoute;
     }
 
     public static function getFolderByGuide($argFilePrefix = 'guide', $argPath = '', $argCacheName = '', $argPrefixVal = '')
@@ -216,7 +250,7 @@ namespace jtbc {
       $genre = null;
       $appellation = $argAppellation;
       $oriGenre = $argOriGenre;
-      if (base::isEmpty($oriGenre)) $oriGenre = page::getPara('genre');
+      if (base::isEmpty($oriGenre)) $oriGenre = self::getCurrentGenre();
       if (is_numeric(strpos($oriGenre, '/')))
       {
         $oriGenreAry = explode('/', $oriGenre);
@@ -238,6 +272,17 @@ namespace jtbc {
         }
       }
       return $genre;
+    }
+
+    public static function getRoute()
+    {
+      $route = '';
+      if (is_file('common/root.jtbc')) $route = 'root';
+      else if (is_file('../common/root.jtbc')) $route = 'node';
+      else if (is_file('../../common/root.jtbc')) $route = 'child';
+      else if (is_file('../../../common/root.jtbc')) $route = 'grandson';
+      else if (is_file('../../../../common/root.jtbc')) $route = 'greatgrandson';
+      return $route;
     }
   }
 }

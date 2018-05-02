@@ -19,7 +19,7 @@ class ui extends page {
     $account = self::account();
     if ($account -> checkCurrentGenrePopedom('edit'))
     {
-      $db = self::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         $table = tpl::take('config.db_table', 'cfg');
@@ -48,7 +48,7 @@ class ui extends page {
     $page = base::getNum(request::get('page'), 0);
     $filegroup = base::getNum(request::get('filegroup'), -1);
     $pagesize = base::getNum(tpl::take('config.pagesize', 'cfg'), 0);
-    $db = self::db();
+    $db = conn::db();
     if (!is_null($db))
     {
       $account = self::account();
@@ -102,7 +102,7 @@ class ui extends page {
     }
     else
     {
-      $db = self::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         $upResult = universal\upload::up2self(@$_FILES['file'], '', '', false);
@@ -155,7 +155,7 @@ class ui extends page {
     }
     else
     {
-      $db = self::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         $table = tpl::take('config.db_table', 'cfg');
@@ -216,7 +216,7 @@ class ui extends page {
       if (base::isEmpty($topic)) array_push($error, tpl::take('manage.text-tips-edit-error-1', 'lng'));
       if (count($error) == 0)
       {
-        $db = self::db();
+        $db = conn::db();
         if (!is_null($db))
         {
           $table = tpl::take('config.db_table', 'cfg');
@@ -252,7 +252,7 @@ class ui extends page {
     {
       $table = tpl::take('config.db_table', 'cfg');
       $prefix = tpl::take('config.db_prefix', 'cfg');
-      $db = self::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         if ($batch == 'delete' && $account -> checkCurrentGenrePopedom('delete'))
@@ -284,7 +284,7 @@ class ui extends page {
     {
       $table = tpl::take('config.db_table', 'cfg');
       $prefix = tpl::take('config.db_prefix', 'cfg');
-      $db = self::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         if ($db -> fieldSwitch($table, $prefix, 'delete', $id, 1))

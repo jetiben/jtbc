@@ -5,7 +5,7 @@
 namespace jtbc\console {
   use jtbc\auto;
   use jtbc\base;
-  use jtbc\page;
+  use jtbc\conn;
   use jtbc\request;
   use jtbc\route;
   use jtbc\sql;
@@ -39,7 +39,7 @@ namespace jtbc\console {
       $username = $argUsername;
       if (!base::isEmpty($username))
       {
-        $db = page::db();
+        $db = conn::db();
         if (!is_null($db))
         {
           $table = tpl::take(':/account:config.db_table', 'cfg');
@@ -79,7 +79,7 @@ namespace jtbc\console {
       $authentication = $argAuthentication;
       if (!base::isEmpty($username) && !base::isEmpty($password))
       {
-        $db = page::db();
+        $db = conn::db();
         if (!is_null($db))
         {
           $table = tpl::take(':/account:config.db_table', 'cfg');
@@ -236,7 +236,7 @@ namespace jtbc\console {
       $content = $argContent;
       $userip = $argUserIp;
       $accountId = $this -> getMyInfo('id');
-      $db = page::db();
+      $db = conn::db();
       $table = tpl::take(':/log:config.db_table', 'cfg');
       $prefix = tpl::take(':/log:config.db_prefix', 'cfg');
       if (!is_null($db) && !base::isEmpty($table) && !base::isEmpty($content))
@@ -359,7 +359,7 @@ namespace jtbc\console {
       if ($id == -1) $tmpstr = tpl::take(':/role:manage.text-super', 'lng');
       else
       {
-        $db = page::db();
+        $db = conn::db();
         if (!is_null($db))
         {
           $table = tpl::take(':/role:config.db_table', 'cfg');
@@ -412,7 +412,7 @@ namespace jtbc\console {
       $newpassword = $argNewPassword;
       if (md5($password) == $this -> getMyInfo('password'))
       {
-        $db = page::db();
+        $db = conn::db();
         $accountId = $this -> getMyInfo('id');
         $table = tpl::take(':/account:config.db_table', 'cfg');
         $prefix = tpl::take(':/account:config.db_prefix', 'cfg');

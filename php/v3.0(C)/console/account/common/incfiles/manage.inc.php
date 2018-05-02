@@ -15,7 +15,7 @@ class ui extends page {
   {
     $tmpstr = '';
     $role = base::getNum($argRole, -1);
-    $db = self::db();
+    $db = conn::db();
     if (!is_null($db))
     {
       $optionUnselected = tpl::take('global.config.xmlselect_unselect', 'tpl');
@@ -66,7 +66,7 @@ class ui extends page {
     $account = self::account();
     if ($account -> checkCurrentGenrePopedom('edit'))
     {
-      $db = self::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         $table = tpl::take('config.db_table', 'cfg');
@@ -97,7 +97,7 @@ class ui extends page {
     $page = base::getNum(request::get('page'), 0);
     $lock = base::getNum(request::get('lock'), 0);
     $pagesize = base::getNum(tpl::take('config.pagesize', 'cfg'), 0);
-    $db = self::db();
+    $db = conn::db();
     if (!is_null($db))
     {
       $account = self::account();
@@ -161,7 +161,7 @@ class ui extends page {
       if ($password != $cpassword) array_push($error, tpl::take('manage.text-tips-field-error-2', 'lng'));
       if (count($error) == 0)
       {
-        $db = self::db();
+        $db = conn::db();
         if (!is_null($db))
         {
           $sql = new sql($db, $table, $prefix);
@@ -213,7 +213,7 @@ class ui extends page {
       if (!base::isEmpty($password) && $password != $cpassword) array_push($error, tpl::take('manage.text-tips-field-error-2', 'lng'));
       if (count($error) == 0)
       {
-        $db = self::db();
+        $db = conn::db();
         if (!is_null($db))
         {
           $sql = new sql($db, $table, $prefix);
@@ -255,7 +255,7 @@ class ui extends page {
     {
       $table = tpl::take('config.db_table', 'cfg');
       $prefix = tpl::take('config.db_prefix', 'cfg');
-      $db = self::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         if ($batch == 'lock' && $account -> checkCurrentGenrePopedom('lock'))
@@ -291,7 +291,7 @@ class ui extends page {
     {
       $table = tpl::take('config.db_table', 'cfg');
       $prefix = tpl::take('config.db_prefix', 'cfg');
-      $db = self::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         if ($db -> fieldSwitch($table, $prefix, 'delete', $id, 1))

@@ -11,7 +11,7 @@ class ui extends page {
   {
     $tmpstr = '';
     $id = base::getNum(request::get('id'), 0);
-    $db = self::db();
+    $db = conn::db();
     if (!is_null($db))
     {
       $table = tpl::take('config.db_table', 'cfg');

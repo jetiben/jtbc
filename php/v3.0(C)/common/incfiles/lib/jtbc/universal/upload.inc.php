@@ -5,20 +5,21 @@
 namespace jtbc\universal {
   use jtbc\auto;
   use jtbc\base;
+  use jtbc\conn;
   use jtbc\image;
-  use jtbc\page;
   use jtbc\route;
   use jtbc\sql;
   use jtbc\tpl;
   class upload
   {
-    public static function getUploadId($argFileInfo)
+    public static function getUploadId($argFileInfo, $argGenre)
     {
       $fileInfo = $argFileInfo;
+      $genre = $argGenre;
       $uploadid = 0;
       if (is_array($fileInfo))
       {
-        $db = page::db();
+        $db = conn::db();
         if (!is_null($db))
         {
           $table = tpl::take('global.universal/upload:config.db_table', 'cfg');
@@ -32,7 +33,7 @@ namespace jtbc\universal {
             $preset[$prefix . 'filetype'] = $fileInfo['filetype'];
             $preset[$prefix . 'filesize'] = $fileInfo['filesize'];
             $preset[$prefix . 'filesizetext'] = $fileInfo['filesizetext'];
-            $preset[$prefix . 'genre'] = page::getPara('genre');
+            $preset[$prefix . 'genre'] = $genre;
             $preset[$prefix . 'time'] = base::getDateTime();
             $sqlstr = auto::getAutoInsertSQLByVars($table, $preset);
             $re = $db -> exec($sqlstr);
@@ -48,7 +49,7 @@ namespace jtbc\universal {
       $bool = false;
       $genre = $argGenre;
       $associatedId = base::getNum($argAssociatedId, 0);
-      $db = page::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         $table = tpl::take('global.universal/upload:config.db_table', 'cfg');
@@ -72,7 +73,7 @@ namespace jtbc\universal {
       $fileInfoArray = json_decode($fileInfo, true);
       if (is_array($fileInfoArray))
       {
-        $db = page::db();
+        $db = conn::db();
         if (!is_null($db))
         {
           $table = tpl::take('global.universal/upload:config.db_table', 'cfg');
@@ -117,7 +118,7 @@ namespace jtbc\universal {
       $associatedId = base::getNum($argAssociatedId, 0);
       $table = $argTable;
       $prefix = $argPrefix;
-      $db = page::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         $sql = new sql($db, $table, $prefix);
@@ -154,7 +155,7 @@ namespace jtbc\universal {
     {
       $bool = false;
       $ids = $argIds;
-      $db = page::db();
+      $db = conn::db();
       if (!is_null($db) && base::checkIDAry($ids))
       {
         $table = tpl::take('global.universal/upload:config.db_table', 'cfg');
@@ -179,12 +180,14 @@ namespace jtbc\universal {
       return $bool;
     }
 
-    public static function up2self($argFile, $argLimit = '', $argTargetPath = '', $argNeedUploadId = true)
+    public static function up2self($argFile, $argLimit = '', $argTargetPath = '', $argNeedUploadId = true, $argGenre = null)
     {
       $file = $argFile;
       $limit = $argLimit;
       $targetPath = $argTargetPath;
       $needUploadId = $argNeedUploadId;
+      $genre = $argGenre;
+      if (is_null($genre)) $genre = route::getCurrentGenre();
       $limitFileResizeAry = null;
       $upResultArray = array();
       $upResultArray['status'] = 0;
@@ -261,7 +264,7 @@ namespace jtbc\universal {
               $paraArray['fileurl'] = $uploadFullPath;
               $paraArray['filesizetext'] = base::formatFileSize($filesize);
               $uploadid = 0;
-              if ($needUploadId == true) $uploadid = self::getUploadId($paraArray);
+              if ($needUploadId == true) $uploadid = self::getUploadId($paraArray, $genre);
               $paraArray['uploadid'] = $uploadid;
               $upResultArray['status'] = 1;
               $upResultArray['message'] = 'done';

@@ -205,7 +205,7 @@ class ui extends page {
     $account = self::account();
     if ($account -> checkCurrentGenrePopedom('edit'))
     {
-      $db = self::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         $table = tpl::take('config.db_table', 'cfg');
@@ -236,7 +236,7 @@ class ui extends page {
     $page = base::getNum(request::get('page'), 0);
     $lock = base::getNum(request::get('lock'), 0);
     $pagesize = base::getNum(tpl::take('config.pagesize', 'cfg'), 0);
-    $db = self::db();
+    $db = conn::db();
     if (!is_null($db))
     {
       $account = self::account();
@@ -323,7 +323,7 @@ class ui extends page {
       auto::pushAutoRequestErrorByTable($error, $table);
       if (count($error) == 0)
       {
-        $db = self::db();
+        $db = conn::db();
         if (!is_null($db))
         {
           $preset = array();
@@ -365,7 +365,7 @@ class ui extends page {
       auto::pushAutoRequestErrorByTable($error, $table);
       if (count($error) == 0)
       {
-        $db = self::db();
+        $db = conn::db();
         if (!is_null($db))
         {
           $preset = array();
@@ -398,7 +398,7 @@ class ui extends page {
     {
       $table = tpl::take('config.db_table', 'cfg');
       $prefix = tpl::take('config.db_prefix', 'cfg');
-      $db = self::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         if ($batch == 'delete' && $account -> checkCurrentGenrePopedom('delete'))
@@ -430,7 +430,7 @@ class ui extends page {
     {
       $table = tpl::take('config.db_table', 'cfg');
       $prefix = tpl::take('config.db_prefix', 'cfg');
-      $db = self::db();
+      $db = conn::db();
       if (!is_null($db))
       {
         if ($db -> fieldSwitch($table, $prefix, 'delete', $id, 1))

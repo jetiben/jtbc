@@ -11,6 +11,8 @@ namespace jtbc {
     public $tplAString = '';
     public $tplRString = '';
     private $tplCString = '<!--JTBC_CINFO-->';
+    public static $counter = 0;
+    public static $para = array();
 
     public function changeTemplate(&$templatestr, $argDistinstr)
     {
@@ -169,8 +171,11 @@ namespace jtbc {
       {
         if (substr($string, 0, 1) == '$')
         {
-          $string = substr($string, 1, strlen($string) - 1);
-          $tstr = page::getPara($string);
+          if (class_exists($ns . '\\page'))
+          {
+            $string = substr($string, 1, strlen($string) - 1);
+            $tstr = page::getPara($string);
+          }
         }
         else if (substr($string, 0, 1) == '#')
         {
@@ -335,8 +340,8 @@ namespace jtbc {
       }
       else
       {
-        $genre = page::getPara('genre');
-        if (base::isEmpty($routeStr)) $routeStr = $dir . '/' . base::getLRStr(page::getPara('filename'), '.', 'left') . XMLSFX;
+        $genre = route::getCurrentGenre();
+        if (base::isEmpty($routeStr)) $routeStr = $dir . '/' . base::getLRStr(route::getCurrentFilename(), '.', 'left') . XMLSFX;
         else
         {
           if (is_numeric(strpos($routeStr, ':')))
@@ -371,9 +376,9 @@ namespace jtbc {
               $parameter = base::getLRStr(base::getLRStr($tagtext, '$parameter="', 'rightr'), '"', 'left');
               if ($function == 'transfer')
               {
-                page::$counter += 1;
-                page::$para['jtbctag' . page::$counter] = '{@}' . $regArys[1][$i] . '{@}';
-                $evalfunction = $function . '(\'' . $parameter . ';jtbctag=jtbctag' . page::$counter . '\')';
+                self::$counter += 1;
+                self::$para['jtbctag' . self::$counter] = '{@}' . $regArys[1][$i] . '{@}';
+                $evalfunction = $function . '(\'' . $parameter . ';jtbctag=jtbctag' . self::$counter . '\')';
                 $tmpstr = str_replace($tagtext, self::getEvalValue($evalfunction), $tmpstr);
               }
             }
@@ -540,7 +545,7 @@ namespace jtbc {
         }
         else if ($type == 'tpl')
         {
-          $genre = page::getPara('genre');
+          $genre = route::getCurrentGenre();
           $tthis = base::getLRStr($codename, '.', 'leftr');
           $tthisGenre = $genre;
           if (is_numeric(strpos($codename, ':'))) $tthisGenre = base::getLRStr(base::getLRStr($codename, ':', 'leftr'), 'global.', 'right');

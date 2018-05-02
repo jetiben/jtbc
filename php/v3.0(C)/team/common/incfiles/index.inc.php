@@ -13,7 +13,7 @@ class ui extends page {
     $tmpstr = '';
     $page = base::getNum(request::get('page'), 0);
     $pagesize = base::getNum(tpl::take('config.pagesize', 'cfg'), 0);
-    $db = self::db();
+    $db = conn::db();
     if (!is_null($db))
     {
       $tmpstr = tpl::take('index.list', 'tpl');

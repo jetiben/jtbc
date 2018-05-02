@@ -11,7 +11,7 @@ class ui extends page {
   {
     $tmpstr = '';
     $id = base::getNum(request::get('id'), 0);
-    $db = self::db();
+    $db = conn::db();
     if (!is_null($db))
     {
       $table = tpl::take('config.db_table', 'cfg');
@@ -40,7 +40,7 @@ class ui extends page {
     $page = base::getNum(request::get('page'), 0);
     $category = base::getNum(request::get('category'), 0);
     $pagesize = base::getNum(tpl::take('config.pagesize', 'cfg'), 0);
-    $db = self::db();
+    $db = conn::db();
     if (!is_null($db))
     {
       $tmpstr = tpl::take('index.list', 'tpl');
