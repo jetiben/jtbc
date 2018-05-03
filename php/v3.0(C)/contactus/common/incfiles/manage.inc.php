@@ -52,8 +52,8 @@ class ui extends page {
         if ($bool)
         {
           $status = 1;
-          self::statusReset(self::getPara('genre'), 0);
-          self::statusUpdate(self::getPara('genre'), 0, request::getPost('att'));
+          universal\upload::statusReset(self::getPara('genre'), 0);
+          universal\upload::statusUpdate(self::getPara('genre'), 0, request::getPost('att'));
           $message = tpl::take('manage.text-tips-edit-done', 'lng');
           $account -> creatCurrentGenreLog('manage.log-edit-1');
         }
