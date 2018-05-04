@@ -404,18 +404,20 @@ jtbc.console = {
       if (thisObj.attr('link')) tthis.loadMainURL(tthis.para['root'] + thisObj.attr('genre') + '/' + thisObj.attr('link'));
     });
     var defURL = tthis.obj.find('.container').find('.main').attr('def');
-    if (location.href.indexOf('#') != -1)
+    var getLocURL = function()
     {
-      var locURL = location.href.substr(location.href.indexOf('#') + 1);
-      if (locURL != '')
+      var locURL = '';
+      if (location.href.indexOf('#') != -1)
       {
-        defURL = locURL;
-        if (defURL.substr(0, 1) == '/') defURL = tthis.para['root'] + defURL.substr(1);
+        locURL = location.href.substr(location.href.indexOf('#') + 1);
+        if (locURL.substr(0, 1) == '/') locURL = tthis.para['root'] + locURL.substr(1);
       };
+      return locURL;
     };
-    tthis.loadMainURL(defURL);
+    tthis.loadMainURL(getLocURL() || defURL);
     tthis.rsetWidthAndHeight();
-    $(window).resize(function(){ tthis.rsetWidthAndHeight(); });
+    $(window).on('resize', function(){ tthis.rsetWidthAndHeight(); });
+    $(window).on('hashchange', function(){ if (getLocURL()) tthis.loadMainURL(getLocURL()); });
   },
   initLogin: function()
   {
