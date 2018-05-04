@@ -272,7 +272,10 @@ jtbc.console = {
           var dataObj = $(data);
           if (dataObj.find('result').attr('status') == '1')
           {
-            location.href = '#' + myURL;
+            var showURL = myURL;
+            var rootPath = tthis.para['root'];
+            if (showURL.substr(0, rootPath.length) == rootPath) showURL = '/' + showURL.substr(rootPath.length);
+            location.href = '#' + showURL;
             tthis.para['load-main-url'] = myURL;
             tthis.insertHTML(mainObj, dataObj.find('result').text());
             loadedCallBack();
@@ -404,7 +407,11 @@ jtbc.console = {
     if (location.href.indexOf('#') != -1)
     {
       var locURL = location.href.substr(location.href.indexOf('#') + 1);
-      if (locURL != '') defURL = locURL;
+      if (locURL != '')
+      {
+        defURL = locURL;
+        if (defURL.substr(0, 1) == '/') defURL = tthis.para['root'] + defURL.substr(1);
+      };
     };
     tthis.loadMainURL(defURL);
     tthis.rsetWidthAndHeight();
