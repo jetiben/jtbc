@@ -10,6 +10,48 @@ namespace jtbc {
     private static $currentGenre = null;
     private static $currentRoute = null;
 
+    public static function breadcrumb($argAry = null)
+    {
+      $ary = $argAry;
+      $genre = self::getCurrentGenre();
+      $lang = request::getForeLang();
+      $baseHTML = tpl::take('global.config.breadcrumb', 'tpl');
+      $baseArrowHTML = tpl::take('global.config.breadcrumb-arrow', 'tpl');
+      $breadcrumb = $baseHTML;
+      $breadcrumb = str_replace('{$text}', base::htmlEncode(tpl::take('global.public.homepage', 'lng')), $breadcrumb);
+      $breadcrumb = str_replace('{$link}', base::htmlEncode(route::getActualRoute('./')), $breadcrumb);
+      if (!base::isEmpty($genre))
+      {
+        $baseGenre = '';
+        $genreAry = explode('/', $genre);
+        foreach ($genreAry as $key => $val)
+        {
+          if (!base::isEmpty($val))
+          {
+            $myClass = '';
+            $currentGenre = $baseGenre . $val;
+            $breadcrumb .= $baseArrowHTML . $baseHTML;
+            $breadcrumb = str_replace('{$text}', base::htmlEncode(tpl::take('global.' . $currentGenre . ':index.title', 'lng')), $breadcrumb);
+            $breadcrumb = str_replace('{$link}', base::htmlEncode(route::getActualRoute($currentGenre)), $breadcrumb);
+            $baseGenre = $currentGenre . '/';
+          }
+        }
+      }
+      if (is_array($ary))
+      {
+        $ns = __NAMESPACE__;
+        if (array_key_exists('category', $ary))
+        {
+          $category = base::getNum($ary['category'], 0);
+          if (method_exists($ns . '\\universal\\category', 'getCategoryBreadcrumbByID'))
+          {
+            $breadcrumb .= universal\category::getCategoryBreadcrumbByID($genre, $lang, $category);
+          }
+        }
+      }
+      return $breadcrumb;
+    }
+
     public static function createURL($argType, $argKey, $argVars = null, $argGenre = null)
     {
       $tmpstr = '';
@@ -97,7 +139,7 @@ namespace jtbc {
 
     public static function getActualGenre($argRoute)
     {
-      $tgenre = '';
+      $genre = '';
       $route = $argRoute;
       $routeStr = $_SERVER['SCRIPT_NAME'];
       $routeStr = base::getLRStr($routeStr, '/', 'leftr');
@@ -106,22 +148,22 @@ namespace jtbc {
       switch ($route)
       {
         case 'greatgrandson':
-          if ($arycount >= 4) $tgenre = $ary[$arycount - 4] . '/' . $ary[$arycount - 3] . '/' . $ary[$arycount - 2] . '/' . $ary[$arycount - 1];
+          if ($arycount >= 4) $genre = $ary[$arycount - 4] . '/' . $ary[$arycount - 3] . '/' . $ary[$arycount - 2] . '/' . $ary[$arycount - 1];
           break;
         case 'grandson':
-          if ($arycount >= 3) $tgenre = $ary[$arycount - 3] . '/' . $ary[$arycount - 2] . '/' . $ary[$arycount - 1];
+          if ($arycount >= 3) $genre = $ary[$arycount - 3] . '/' . $ary[$arycount - 2] . '/' . $ary[$arycount - 1];
           break;
         case 'child':
-          if ($arycount >= 2) $tgenre = $ary[$arycount - 2] . '/' . $ary[$arycount - 1];
+          if ($arycount >= 2) $genre = $ary[$arycount - 2] . '/' . $ary[$arycount - 1];
           break;
         case 'node':
-          if ($arycount >= 1) $tgenre = $ary[$arycount - 1];
+          if ($arycount >= 1) $genre = $ary[$arycount - 1];
           break;
         default:
-          $tgenre = '';
+          $genre = '';
           break;
       }
-      return $tgenre;
+      return $genre;
     }
 
     public static function getCurrentFilename()

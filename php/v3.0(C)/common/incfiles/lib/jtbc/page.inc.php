@@ -9,48 +9,6 @@ namespace jtbc {
     public static $para = array();
     private static $title = array();
 
-    public static function breadcrumb($argAry = null)
-    {
-      $ary = $argAry;
-      $genre = self::getPara('genre');
-      $lang = self::getPara('lang');
-      $baseHTML = tpl::take('global.config.breadcrumb', 'tpl');
-      $baseArrowHTML = tpl::take('global.config.breadcrumb-arrow', 'tpl');
-      $breadcrumb = $baseHTML;
-      $breadcrumb = str_replace('{$text}', base::htmlEncode(tpl::take('global.public.homepage', 'lng')), $breadcrumb);
-      $breadcrumb = str_replace('{$link}', base::htmlEncode(route::getActualRoute('./')), $breadcrumb);
-      if (!base::isEmpty($genre))
-      {
-        $baseGenre = '';
-        $genreAry = explode('/', $genre);
-        foreach ($genreAry as $key => $val)
-        {
-          if (!base::isEmpty($val))
-          {
-            $myClass = '';
-            $currentGenre = $baseGenre . $val;
-            $breadcrumb .= $baseArrowHTML . $baseHTML;
-            $breadcrumb = str_replace('{$text}', base::htmlEncode(tpl::take('global.' . $currentGenre . ':index.title', 'lng')), $breadcrumb);
-            $breadcrumb = str_replace('{$link}', base::htmlEncode(route::getActualRoute($currentGenre)), $breadcrumb);
-            $baseGenre = $currentGenre . '/';
-          }
-        }
-      }
-      if (is_array($ary))
-      {
-        $ns = __NAMESPACE__;
-        if (array_key_exists('category', $ary))
-        {
-          $category = base::getNum($ary['category'], 0);
-          if (method_exists($ns . '\\universal\\category', 'getCategoryBreadcrumbByID'))
-          {
-            $breadcrumb .= universal\category::getCategoryBreadcrumbByID($genre, $lang, $category);
-          }
-        }
-      }
-      return $breadcrumb;
-    }
-
     public static function formatResult($argStatus, $argResult)
     {
       $status = $argStatus;
@@ -121,6 +79,29 @@ namespace jtbc {
       return $para;
     }
 
+    public static function getPagePara($argName)
+    {
+      $name = $argName;
+      $para = self::getPara($name);
+      if (base::isEmpty($para)) $para = tpl::take('global.public.' . $name, 'lng');
+      return $para;
+    }
+
+    public static function getPageTitle()
+    {
+      $tmpstr = '';
+      $title = self::$title;
+      if (!empty($title))
+      {
+        foreach ($title as $key => $val)
+        {
+          $tmpstr = $val . SEPARATOR . $tmpstr;
+        }
+      }
+      $tmpstr = $tmpstr . tpl::take('global.index.title', 'lng');
+      return $tmpstr;
+    }
+
     public static function getResult()
     {
       $tmpstr = '';
@@ -146,29 +127,6 @@ namespace jtbc {
           }
         }
       }
-      return $tmpstr;
-    }
-
-    public static function getPagePara($argName)
-    {
-      $name = $argName;
-      $para = self::getPara($name);
-      if (base::isEmpty($para)) $para = tpl::take('global.public.' . $name, 'lng');
-      return $para;
-    }
-
-    public static function getPageTitle()
-    {
-      $tmpstr = '';
-      $title = self::$title;
-      if (!empty($title))
-      {
-        foreach ($title as $key => $val)
-        {
-          $tmpstr = $val . SEPARATOR . $tmpstr;
-        }
-      }
-      $tmpstr = $tmpstr . tpl::take('global.index.title', 'lng');
       return $tmpstr;
     }
 
