@@ -391,6 +391,7 @@ icons icon a.link {
 .container div.leftmenu dl dd span.tit {
   line-height: 32px
 }
+.container div.leftmenu dl dd span.tit.on,
 .container div.leftmenu dl dd span.tit:hover {
   background-color: #3e4b5c
 }

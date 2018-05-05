@@ -4,7 +4,6 @@
  */
 
 CKEDITOR.editorConfig = function( config ) {
-  config.dialog_noConfirmCancel = true;
   config.toolbar = [
     { name: 'document', items: [ 'Source', 'Print' ] },
     { name: 'editing', items: [ 'Find' ] },
