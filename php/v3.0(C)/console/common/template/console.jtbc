@@ -54,7 +54,7 @@
       <name><![CDATA[fieldformat-editor]]></name>
       <default><![CDATA[<tr>
   <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
-  <td><textarea name="{$fieldname}" mode="editor" class="t1 {$fieldname} editor">{${$fieldname}}</textarea></td>
+  <td><textarea id="editor-{$fieldname}" name="{$fieldname}" mode="editor" class="t1 {$fieldname} editor">{${$fieldname}}</textarea></td>
 </tr>]]></default>
     </item>
     <item>

@@ -16,7 +16,7 @@
     </item>
     <item>
       <name><![CDATA[editor-src]]></name>
-      <default><![CDATA[<dfn url="{$=$assetspath}/editor/ckeditor/ckeditor.js"></dfn><dfn url="{$=$assetspath}/editor/jtbc.editor.js"></dfn>]]></default>
+      <default><![CDATA[<dfn once="true" onceid="editor" url="{$=$assetspath}/editor/tinymce/js/tinymce/tinymce.min.js"></dfn><dfn once="true" onceid="jtbc.editor" url="{$=$assetspath}/editor/jtbc.editor.js"></dfn>]]></default>
     </item>
     <item>
       <name><![CDATA[pagi-1]]></name>

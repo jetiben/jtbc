@@ -197,7 +197,18 @@ jtbc.console = {
     var html = argHTML;
     obj.html(html).find('dfn').each(function(){
       var myObj = $(this);
-      if (myObj.attr('url')) obj.append('<script type="text/javascript" src="' + tthis.para['root'] + myObj.attr('url') + '"></script>');
+      if (myObj.attr('url'))
+      {
+        if (myObj.attr('once') == 'true')
+        {
+          if (tthis.para['dfn-once-' + myObj.attr('onceid')] != 'done')
+          {
+            tthis.para['dfn-once-' + myObj.attr('onceid')] = 'done';
+            tthis.root.prepend('<script type="text/javascript" src="' + tthis.para['root'] + myObj.attr('url') + '"></script>');
+          };
+        }
+        else obj.append('<script type="text/javascript" src="' + tthis.para['root'] + myObj.attr('url') + '"></script>');
+      }
       else if (myObj.attr('cssurl')) obj.append('<link rel="stylesheet" href="' + tthis.para['root'] + myObj.attr('cssurl') + '" />');
       else if (myObj.attr('call')) eval(myObj.attr('call'));
     });
@@ -224,7 +235,7 @@ jtbc.console = {
     var mainObj = tthis.obj.find('.container').find('.main');
     var loadedCallBack = function()
     {
-      mainObj.find('nav').find('u').click(function(){
+      mainObj.find('nav').find('u').on('click', function(){
         var thisObj = $(this);
         var myLink = thisObj.attr('link');
         var myGenre = thisObj.attr('genre');
@@ -234,7 +245,7 @@ jtbc.console = {
           else tthis.loadMainURL(tthis.para['root'] + thisObj.attr('genre') + '/' + thisObj.attr('link'));
         };
       });
-      mainObj.find('a.link').click(function(){
+      mainObj.find('a.link').on('click', function(){
         var thisObj = $(this);
         var managerObj = mainObj.find('.manager');
         if (thisObj.attr('link')) tthis.loadMainURL(tthis.para['current-main-fileurl'] + thisObj.attr('link'));
@@ -275,8 +286,8 @@ jtbc.console = {
             var showURL = myURL;
             var rootPath = tthis.para['root'];
             if (showURL.substr(0, rootPath.length) == rootPath) showURL = '/' + showURL.substr(rootPath.length);
-            location.href = '#' + showURL;
             tthis.para['load-main-url'] = myURL;
+            location.href = '#' + showURL;
             tthis.insertHTML(mainObj, dataObj.find('result').text());
             loadedCallBack();
             tthis.para['load-main-url-lock'] = false;
@@ -384,7 +395,7 @@ jtbc.console = {
     });
     tthis.obj.find('.topbar').find('logout').click(function(){
       var thisObj = $(this);
-      tthis.lib.popupConfirm(thisObj.attr('confirm_text'), thisObj.attr('confirm_b2'), thisObj.attr('confirm_b3'), function(){ $.get(tthis.manageURL + '?type=action&action=logout', function(data){ location.href = '#'; tthis.loadHTML(); }); });
+      tthis.lib.popupConfirm(thisObj.attr('confirm_text'), thisObj.attr('confirm_b2'), thisObj.attr('confirm_b3'), function(){ $.get(tthis.manageURL + '?type=action&action=logout', function(data){ location.reload(); }); });
     });
     tthis.obj.find('.leftmenu').find('span.tit').click(function(){
       var thisObj = $(this);
@@ -417,7 +428,7 @@ jtbc.console = {
     tthis.loadMainURL(getLocURL() || defURL);
     tthis.rsetWidthAndHeight();
     $(window).on('resize', function(){ tthis.rsetWidthAndHeight(); });
-    $(window).on('hashchange', function(){ if (getLocURL()) tthis.loadMainURL(getLocURL()); });
+    $(window).on('hashchange', function(){ if (tthis.para['load-main-url'] != getLocURL()) tthis.loadMainURL(getLocURL()); });
   },
   initLogin: function()
   {

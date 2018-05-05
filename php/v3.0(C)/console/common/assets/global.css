@@ -1003,10 +1003,10 @@ icons icon a.link {
 .upload_status_2 {
   background-color: #ff0000
 }
-.fullscreen .container {
+.mce-fullscreen .console .container {
   z-index: 100000
 }
-.fullscreen .container div.maincontent {
+.mce-fullscreen .console .container div.maincontent {
   z-index: 100000
 }
 @keyframes waiting_bar {
