@@ -428,7 +428,10 @@ jtbc.console = {
     tthis.loadMainURL(getLocURL() || defURL);
     tthis.rsetWidthAndHeight();
     $(window).on('resize', function(){ tthis.rsetWidthAndHeight(); });
-    $(window).on('hashchange', function(){ if (tthis.para['load-main-url'] != getLocURL()) tthis.loadMainURL(getLocURL()); });
+    $(window).on('hashchange', function(){
+      var locURL = getLocURL();
+      if (locURL != '' && locURL != tthis.para['load-main-url']) tthis.loadMainURL(locURL);
+    });
   },
   initLogin: function()
   {
