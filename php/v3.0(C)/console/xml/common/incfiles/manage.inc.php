@@ -2,17 +2,7 @@
 namespace jtbc;
 use DOMXPath;
 use DOMDocument;
-class ui extends page {
-  public static $account = null;
-
-  public static function account()
-  {
-    $account = null;
-    if (!is_null(self::$account)) $account = self::$account;
-    else $account = self::$account = new console\account(self::getPara('genre'));
-    return $account;
-  }
-
+class ui extends console\page {
   protected static function ppGetPathAryBySymbol($argSymbol)
   {
     $pathAry = array();
@@ -369,20 +359,6 @@ class ui extends page {
     }
     if (count($error) != 0) $message = implode('|', $error);
     $tmpstr = self::formatMsgResult($status, $message);
-    return $tmpstr;
-  }
-
-  public static function getResult()
-  {
-    $tmpstr = '';
-    $account = self::account();
-    if ($account -> checkLogin())
-    {
-      if ($account -> checkCurrentGenrePopedom())
-      {
-        $tmpstr = parent::getResult();
-      }
-    }
     return $tmpstr;
   }
 }

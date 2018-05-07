@@ -1,16 +1,6 @@
 <?php
 namespace jtbc;
-class ui extends page {
-  public static $account = null;
-
-  public static function account()
-  {
-    $account = null;
-    if (!is_null(self::$account)) $account = self::$account;
-    else $account = self::$account = new console\account(self::getPara('genre'));
-    return $account;
-  }
-
+class ui extends console\page {
   public static function moduleEdit()
   {
     $status = 1;
@@ -94,20 +84,6 @@ class ui extends page {
       }
     }
     $tmpstr = self::formatMsgResult($status, $message, $para);
-    return $tmpstr;
-  }
-
-  public static function getResult()
-  {
-    $tmpstr = '';
-    $account = self::account();
-    if ($account -> checkLogin())
-    {
-      if ($account -> checkCurrentGenrePopedom())
-      {
-        $tmpstr = parent::getResult();
-      }
-    }
     return $tmpstr;
   }
 }

@@ -1,14 +1,9 @@
 <?php
 namespace jtbc;
-class ui extends page {
-  public static $account = null;
-
-  public static function account()
+class ui extends console\page {
+  public static function consolePageInit()
   {
-    $account = null;
-    if (!is_null(self::$account)) $account = self::$account;
-    else $account = self::$account = new console\account(self::getPara('genre'));
-    return $account;
+    parent::$checkCurrentGenre = false;
   }
 
   public static function ppGetFileJSON($argRs, $argPrefix = '')
@@ -93,17 +88,6 @@ class ui extends page {
       if ($db -> fieldNumberAdd($table, $prefix, 'hot', $id)) $status = 1;
     }
     $tmpstr = self::formatMsgResult($status, $message);
-    return $tmpstr;
-  }
-
-  public static function getResult()
-  {
-    $tmpstr = '';
-    $account = self::account();
-    if ($account -> checkLogin())
-    {
-      $tmpstr = parent::getResult();
-    }
     return $tmpstr;
   }
 }
