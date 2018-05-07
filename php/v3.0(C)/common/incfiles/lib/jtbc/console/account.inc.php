@@ -287,6 +287,20 @@ namespace jtbc\console {
       return $tmpstr;
     }
 
+    public function getCurrentGenreMySegmentAry($argOriAry)
+    {
+      $ary = array();
+      $oriAry = $argOriAry;
+      if (is_array($oriAry))
+      {
+        foreach ($oriAry as $key => $val)
+        {
+          if ($this -> checkCurrentGenrePopedom($val)) array_push($ary, $val);
+        }
+      }
+      return $ary;
+    }
+
     public function getMyConsoleMenu($argTPL1, $argTPL2, $argPre = '')
     {
       $tmpstr = '';

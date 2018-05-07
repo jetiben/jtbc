@@ -1,6 +1,8 @@
 <?php
 namespace jtbc;
 class ui extends console\page {
+  public static $batch = array('delete');
+
   public static function moduleList()
   {
     $status = 1;
@@ -31,8 +33,7 @@ class ui extends console\page {
         }
       }
       $tmpstr = $tpl -> mergeTemplate();
-      $batchAry = array();
-      if ($account -> checkCurrentGenrePopedom('delete')) array_push($batchAry, 'delete');
+      $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
       $variable['-batch-list'] = implode(',', $batchAry);
       $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
       $tmpstr = tpl::replaceTagByAry($tmpstr, $variable);

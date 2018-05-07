@@ -1,6 +1,10 @@
 <?php
 namespace jtbc;
 class ui extends console\page {
+  use console\snippet\batch;
+  use console\snippet\delete;
+  public static $batch = array('delete');
+
   public static function moduleList()
   {
     $status = 1;
@@ -32,8 +36,7 @@ class ui extends console\page {
         }
       }
       $tmpstr = $tpl -> mergeTemplate();
-      $batchAry = array();
-      if ($account -> checkCurrentGenrePopedom('delete')) array_push($batchAry, 'delete');
+      $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
       $variable['-batch-list'] = implode(',', $batchAry);
       $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
       $variable['-pagi-rscount'] = $pagi -> rscount;
@@ -47,67 +50,16 @@ class ui extends console\page {
     return $tmpstr;
   }
 
-  public static function moduleActionBatch()
+  public static function moduleActionBatchDeleteCallback($argIds)
   {
-    $tmpstr = '';
-    $status = 0;
-    $message = '';
-    $account = self::account();
-    $ids = base::getString(request::get('ids'));
-    $batch = base::getString(request::get('batch'));
-    if (base::checkIDAry($ids))
-    {
-      $table = tpl::take('config.db_table', 'cfg');
-      $prefix = tpl::take('config.db_prefix', 'cfg');
-      $db = conn::db();
-      if (!is_null($db))
-      {
-        if ($batch == 'delete' && $account -> checkCurrentGenrePopedom('delete'))
-        {
-          if ($db -> fieldSwitch($table, $prefix, 'delete', $ids))
-          {
-            $status = 1;
-            universal\upload::unlinkByIds($ids);
-          }
-        }
-      }
-      if ($status == 1)
-      {
-        $account -> creatCurrentGenreLog('manage.log-batch-1', array('id' => $ids, 'batch' => $batch));
-      }
-    }
-    $tmpstr = self::formatMsgResult($status, $message);
-    return $tmpstr;
+    $ids = $argIds;
+    universal\upload::unlinkByIds($ids);
   }
 
-  public static function moduleActionDelete()
+  public static function moduleActionDeleteCallback($argId)
   {
-    $tmpstr = '';
-    $status = 0;
-    $message = '';
-    $id = base::getNum(request::get('id'), 0);
-    $account = self::account();
-    if (!$account -> checkCurrentGenrePopedom('delete'))
-    {
-      $message = tpl::take('::console.text-tips-error-403', 'lng');
-    }
-    else
-    {
-      $table = tpl::take('config.db_table', 'cfg');
-      $prefix = tpl::take('config.db_prefix', 'cfg');
-      $db = conn::db();
-      if (!is_null($db))
-      {
-        if ($db -> fieldSwitch($table, $prefix, 'delete', $id, 1))
-        {
-          $status = 1;
-          universal\upload::unlinkByIds($id);
-          $account -> creatCurrentGenreLog('manage.log-delete-1', array('id' => $id));
-        }
-      }
-    }
-    $tmpstr = self::formatMsgResult($status, $message);
-    return $tmpstr;
+    $id = $argId;
+    universal\upload::unlinkByIds($id);
   }
 }
 ?>
