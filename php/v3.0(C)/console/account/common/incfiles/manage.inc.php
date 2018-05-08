@@ -1,8 +1,10 @@
 <?php
 namespace jtbc;
 class ui extends console\page {
-  use console\snippet\batch;
-  use console\snippet\delete;
+  use console\fragment\util {
+    doActionBatch as public moduleActionBatch;
+    doActionDelete as public moduleActionDelete;
+  }
   public static $batch = array('lock', 'delete');
 
   protected static function ppGetSelectRoleHTML($argRole = -1)

@@ -1,9 +1,11 @@
 <?php
 namespace jtbc;
 class ui extends console\page {
-  use console\snippet\batch;
-  use console\snippet\delete;
-  use universal\snippet\upload;
+  use console\fragment\util {
+    doActionBatch as public moduleActionBatch;
+    doActionDelete as public moduleActionDelete;
+  }
+  use universal\fragment\upload { doActionUpload as public moduleActionUpload; }
   public static $batch = array('delete');
 
   public static function ppGetPathNav($argGenre, $argFid)

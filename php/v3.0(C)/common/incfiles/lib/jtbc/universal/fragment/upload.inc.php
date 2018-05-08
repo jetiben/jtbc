@@ -2,14 +2,14 @@
 //******************************//
 // JTBC Powered by jtbc.cn      //
 //******************************//
-namespace jtbc\universal\snippet {
+namespace jtbc\universal\fragment {
   use jtbc\base;
   use jtbc\tpl;
   use jtbc\request;
   use jtbc\universal;
   trait upload
   {
-    public static function moduleActionUpload()
+    private static function doActionUpload()
     {
       $status = 0;
       $message = '';

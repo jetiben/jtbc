@@ -1,10 +1,12 @@
 <?php
 namespace jtbc;
 class ui extends console\page {
-  use console\snippet\batch;
-  use console\snippet\delete;
-  use universal\snippet\upload;
-  public static $batch = array('public', 'delete');
+  use console\fragment\util {
+    doActionBatch as public moduleActionBatch;
+    doActionDelete as public moduleActionDelete;
+  }
+  use universal\fragment\upload { doActionUpload as public moduleActionUpload; }
+  public static $batch = array('publish', 'delete');
 
   public static function moduleAdd()
   {

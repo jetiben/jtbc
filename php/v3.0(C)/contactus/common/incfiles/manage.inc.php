@@ -1,7 +1,7 @@
 <?php
 namespace jtbc;
 class ui extends console\page {
-  use universal\snippet\upload;
+  use universal\fragment\upload { doActionUpload as public moduleActionUpload; }
 
   public static function moduleEdit()
   {

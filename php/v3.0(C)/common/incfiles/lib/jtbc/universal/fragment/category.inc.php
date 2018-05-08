@@ -2,14 +2,14 @@
 //******************************//
 // JTBC Powered by jtbc.cn      //
 //******************************//
-namespace jtbc\universal\snippet {
+namespace jtbc\universal\fragment {
   use jtbc\base;
   use jtbc\tpl;
   use jtbc\request;
   use jtbc\universal;
   trait category
   {
-    public static function moduleCategory()
+    private static function doCategory()
     {
       $status = 1;
       $tmpstr = '';
