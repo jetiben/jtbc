@@ -111,8 +111,8 @@ namespace jtbc {
       $class = get_called_class();
       $module = 'module' . ucfirst($type);
       if ($type == 'action') $module = 'moduleAction' . ucfirst($action);
-      if (method_exists($class, 'start')) call_user_func(array($class, 'start'));
-      if (method_exists($class, $module)) $tmpstr = call_user_func(array($class, $module));
+      if (is_callable(array($class, 'start'))) call_user_func(array($class, 'start'));
+      if (is_callable(array($class, $module))) $tmpstr = call_user_func(array($class, $module));
       else
       {
         if ($type == 'default')
@@ -123,7 +123,7 @@ namespace jtbc {
           {
             $adjunctDefault = self::getPara('adjunct_default');
             $adjunctDefaultModule = 'module' . ucfirst($adjunctDefault);
-            if (method_exists($class, $adjunctDefaultModule)) $tmpstr = call_user_func(array($class, $adjunctDefaultModule));
+            if (is_callable(array($class, $adjunctDefaultModule))) $tmpstr = call_user_func(array($class, $adjunctDefaultModule));
           }
         }
       }

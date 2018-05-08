@@ -199,7 +199,7 @@ namespace jtbc {
                   {
                     foreach ($classArray as $key => $val)
                     {
-                      if (method_exists($ns . '\\' . $val, $funName))
+                      if (is_callable(array($ns . '\\' . $val, $funName)))
                       {
                         $string = str_replace('$' . $funName, $ns . '\\' . $val . '::' . $funName, $string);
                         break;
@@ -231,7 +231,7 @@ namespace jtbc {
             {
               foreach ($classArray as $key => $val)
               {
-                if (method_exists($ns . '\\' . $val, $fun))
+                if (is_callable(array($ns . '\\' . $val, $fun)))
                 {
                   eval('$tstr = ' . $ns . '\\' . $val . '::' . $string . ';');
                   break;
