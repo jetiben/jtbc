@@ -19,7 +19,7 @@ namespace jtbc {
       $baseArrowHTML = tpl::take('global.config.breadcrumb-arrow', 'tpl');
       $breadcrumb = $baseHTML;
       $breadcrumb = str_replace('{$text}', base::htmlEncode(tpl::take('global.public.homepage', 'lng')), $breadcrumb);
-      $breadcrumb = str_replace('{$link}', base::htmlEncode(route::getActualRoute('./')), $breadcrumb);
+      $breadcrumb = str_replace('{$link}', base::htmlEncode(self::getActualRoute('./')), $breadcrumb);
       if (!base::isEmpty($genre))
       {
         $baseGenre = '';
@@ -32,7 +32,7 @@ namespace jtbc {
             $currentGenre = $baseGenre . $val;
             $breadcrumb .= $baseArrowHTML . $baseHTML;
             $breadcrumb = str_replace('{$text}', base::htmlEncode(tpl::take('global.' . $currentGenre . ':index.title', 'lng')), $breadcrumb);
-            $breadcrumb = str_replace('{$link}', base::htmlEncode(route::getActualRoute($currentGenre)), $breadcrumb);
+            $breadcrumb = str_replace('{$link}', base::htmlEncode(self::getActualRoute($currentGenre)), $breadcrumb);
             $baseGenre = $currentGenre . '/';
           }
         }

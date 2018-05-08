@@ -261,8 +261,9 @@ namespace jtbc {
       return $rests;
     }
 
-    public static function getXMLInfo($argSourcefile, $argKeyword)
+    public static function getXMLInfo($argSourcefile, $argKeyword, $argType = null)
     {
+      $type = $argType;
       $keyword = $argKeyword;
       $sourceFile = $argSourcefile;
       $info = array();
@@ -288,7 +289,13 @@ namespace jtbc {
           {
             $nodeDom = $rest -> getElementsByTagName($keyword);
             if ($nodeDom -> length == 0) $nodeDom = $rest -> getElementsByTagName($fieldArys[1]);
-            $info[$rest -> getElementsByTagName(current($fieldArys)) -> item(0) -> nodeValue] = $nodeDom -> item(0) -> nodeValue;
+            $nodeDomObj = $nodeDom -> item(0);
+            $nodeDomValue = $nodeDomObj -> nodeValue;
+            if (!is_null($type) && base::isEmpty($nodeDomValue))
+            {
+              if ($nodeDomObj -> hasAttribute('pointer')) $nodeDomValue = self::take($nodeDomObj -> getAttribute('pointer'), $type);
+            }
+            $info[$rest -> getElementsByTagName(current($fieldArys)) -> item(0) -> nodeValue] = $nodeDomValue;
           }
         }
       }
@@ -535,7 +542,7 @@ namespace jtbc {
       $globalStr = str_replace(XMLSFX, '', $globalStr);
       $globalStr = str_replace('/', '_', $globalStr);
       $globalStr = APPNAME . $globalStr . '_' . $activeValue;
-      if (!is_array(@$GLOBALS[$globalStr])) $GLOBALS[$globalStr] = self::getXMLInfo($routeStr, $activeValue);
+      if (!is_array(@$GLOBALS[$globalStr])) $GLOBALS[$globalStr] = self::getXMLInfo($routeStr, $activeValue, $type);
       if (isset($GLOBALS[$globalStr][$keywords]))
       {
         $result = $GLOBALS[$globalStr][$keywords];
