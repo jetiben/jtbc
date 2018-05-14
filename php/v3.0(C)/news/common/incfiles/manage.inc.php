@@ -152,7 +152,7 @@ class ui extends console\page {
           $preset[$prefix . 'lang'] = $account -> getLang();
           $preset[$prefix . 'time'] = base::getDateTime();
           if ($account -> checkCurrentGenrePopedom('publish')) $preset[$prefix . 'publish'] = base::getNum(request::getPost('publish'), 0);
-          $sqlstr = auto::getAutoRequestInsertSQL($table, $preset);
+          $sqlstr = auto::getAutoInsertSQLByRequest($table, $preset);
           $re = $db -> exec($sqlstr);
           if (is_numeric($re))
           {
@@ -196,7 +196,7 @@ class ui extends console\page {
           $preset[$prefix . 'publish'] = 0;
           $preset[$prefix . 'lang'] = $account -> getLang();
           if ($account -> checkCurrentGenrePopedom('publish')) $preset[$prefix . 'publish'] = base::getNum(request::getPost('publish'), 0);
-          $sqlstr = auto::getAutoRequestUpdateSQL($table, $prefix . 'id', $id, $preset);
+          $sqlstr = auto::getAutoUpdateSQLByRequest($table, $prefix . 'id', $id, $preset);
           $re = $db -> exec($sqlstr);
           if (is_numeric($re))
           {

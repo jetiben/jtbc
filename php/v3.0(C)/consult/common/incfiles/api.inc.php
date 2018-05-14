@@ -27,7 +27,7 @@ class ui extends page {
         $preset[$prefix . 'userip'] = request::getRemortIP();
         $preset[$prefix . 'lang'] = self::getPara('lang');
         $preset[$prefix . 'time'] = base::getDateTime();
-        $sqlstr = auto::getAutoRequestInsertSQL($table, $preset);
+        $sqlstr = auto::getAutoInsertSQLByRequest($table, $preset);
         $re = $db -> exec($sqlstr);
         if (is_numeric($re))
         {

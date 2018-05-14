@@ -168,7 +168,7 @@ class ui extends console\page {
             $preset = array();
             $preset[$prefix . 'password'] = md5($password);
             $preset[$prefix . 'time'] = base::getDateTime();
-            $sqlstr = auto::getAutoRequestInsertSQL($table, $preset);
+            $sqlstr = auto::getAutoInsertSQLByRequest($table, $preset);
             $re = $db -> exec($sqlstr);
             if (is_numeric($re))
             {
@@ -219,7 +219,7 @@ class ui extends console\page {
           else
           {
             $specialFiled = $prefix . 'password';
-            $sqlstr = auto::getAutoRequestUpdateSQL($table, $prefix . 'id', $id, null, $specialFiled);
+            $sqlstr = auto::getAutoUpdateSQLByRequest($table, $prefix . 'id', $id, null, $specialFiled);
             $re = $db -> exec($sqlstr);
             if (is_numeric($re))
             {

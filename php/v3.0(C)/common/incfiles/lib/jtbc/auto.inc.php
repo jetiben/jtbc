@@ -5,15 +5,7 @@
 namespace jtbc {
   class auto
   {
-    public static function getAutoInsertSQLByVars($argTable, $argVars)
-    {
-      $table = $argTable;
-      $vars = $argVars;
-      $tmpstr = self::getAutoRequestInsertSQL($table, $vars, null, null, '', '', 1);
-      return $tmpstr;
-    }
-
-    public static function getAutoRequestInsertSQL($argTable, $argVars = null, $argSpecialField = null, $argSource = null, $argNamePre = '', $argNameSuffix = '', $argMode = 0)
+    public static function getAutoInsertSQL($argTable, $argVars = null, $argSpecialField = null, $argSource = null, $argNamePre = '', $argNameSuffix = '', $argMode = 0)
     {
       $tmpstr = '';
       $table = $argTable;
@@ -68,12 +60,14 @@ namespace jtbc {
                   $fieldValid = true;
                   if (base::isEmpty($requestValue))
                   {
-                    if (is_array($source)) $requestValue = base::getString($source[$requestName]);
-                    else
+                    if (is_array($source))
                     {
-                      $requestValue = request::getPost($requestName);
-                      if (!is_array($requestValue)) $requestValue = base::getString($requestValue);
-                      else $requestValue = base::getString(implode(',', $requestValue));
+                      if (array_key_exists($requestName, $source))
+                      {
+                        $requestValue = $source[$requestName];
+                        if (!is_array($requestValue)) $requestValue = base::getString($requestValue);
+                        else $requestValue = base::getString(implode(',', $requestValue));
+                      }
                     }
                   }
                 }
@@ -131,17 +125,24 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    public static function getAutoUpdateSQLByVars($argTable, $argIdField, $argId, $argVars)
+    public static function getAutoInsertSQLByVars($argTable, $argVars)
     {
       $table = $argTable;
       $vars = $argVars;
-      $idField = $argIdField;
-      $id = base::getNum($argId, 0);
-      $tmpstr = self::getAutoRequestUpdateSQL($table, $idField, $id, $vars, null, null, '', '', 1);
+      $tmpstr = self::getAutoInsertSQL($table, $vars, null, null, '', '', 1);
       return $tmpstr;
     }
 
-    public static function getAutoRequestUpdateSQL($argTable, $argIdField, $argId, $argVars = null, $argSpecialField = null, $argSource = null, $argNamePre = '', $argNameSuffix = '', $argMode = 0)
+    public static function getAutoInsertSQLByRequest($argTable, $argVars, $argSpecialField = null)
+    {
+      $table = $argTable;
+      $vars = $argVars;
+      $specialField = $argSpecialField;
+      $tmpstr = self::getAutoInsertSQL($table, $vars, $specialField, request::post(), '', '', 0);
+      return $tmpstr;
+    }
+
+    public static function getAutoUpdateSQL($argTable, $argIdField, $argId, $argVars = null, $argSpecialField = null, $argSource = null, $argNamePre = '', $argNameSuffix = '', $argMode = 0)
     {
       $tmpstr = '';
       $table = $argTable;
@@ -197,12 +198,14 @@ namespace jtbc {
                   $fieldValid = true;
                   if (base::isEmpty($requestValue))
                   {
-                    if (is_array($source)) $requestValue = base::getString($source[$requestName]);
-                    else
+                    if (is_array($source))
                     {
-                      $requestValue = request::getPost($requestName);
-                      if (!is_array($requestValue)) $requestValue = base::getString($requestValue);
-                      else $requestValue = base::getString(implode(',', $requestValue));
+                      if (array_key_exists($requestName, $source))
+                      {
+                        $requestValue = $source[$requestName];
+                        if (!is_array($requestValue)) $requestValue = base::getString($requestValue);
+                        else $requestValue = base::getString(implode(',', $requestValue));
+                      }
                     }
                   }
                 }
@@ -248,6 +251,27 @@ namespace jtbc {
           $tmpstr .= ' where ' . $idField . '=' . $id;
         }
       }
+      return $tmpstr;
+    }
+
+    public static function getAutoUpdateSQLByVars($argTable, $argIdField, $argId, $argVars)
+    {
+      $table = $argTable;
+      $vars = $argVars;
+      $idField = $argIdField;
+      $id = base::getNum($argId, 0);
+      $tmpstr = self::getAutoUpdateSQL($table, $idField, $id, $vars, null, null, '', '', 1);
+      return $tmpstr;
+    }
+
+    public static function getAutoUpdateSQLByRequest($argTable, $argIdField, $argId, $argVars = null, $argSpecialField = null)
+    {
+      $table = $argTable;
+      $vars = $argVars;
+      $idField = $argIdField;
+      $id = base::getNum($argId, 0);
+      $specialField = $argSpecialField;
+      $tmpstr = self::getAutoUpdateSQL($table, $idField, $id, $vars, $specialField, request::post(), '', '', 0);
       return $tmpstr;
     }
 

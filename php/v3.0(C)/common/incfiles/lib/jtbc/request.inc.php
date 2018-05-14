@@ -5,17 +5,18 @@
 namespace jtbc {
   class request
   {
-    public static function get($argName)
+    public static function get($argName = null)
     {
       $name = $argName;
-      $tmpstr = self::getHTTPPara($name, 'get');
-      return $tmpstr;
+      if (is_null($name)) $result = $_GET;
+      else $result = self::getHTTPPara($name, 'get');
+      return $result;
     }
 
     public static function getPost($argName)
     {
       $name = $argName;
-      $tmpstr = self::getHTTPPara($name, 'post');
+      $tmpstr = self::post($name);
       return $tmpstr;
     }
 
@@ -60,6 +61,14 @@ namespace jtbc {
       else if (isset($_SERVER['HTTP_CLIENT_IP'])) $IPaddress = $_SERVER['HTTP_CLIENT_IP'];
       else $IPaddress = $_SERVER['REMOTE_ADDR'];
       return $IPaddress;
+    }
+
+    public static function post($argName = null)
+    {
+      $name = $argName;
+      if (is_null($name)) $result = $_POST;
+      else $result = self::getHTTPPara($name, 'post');
+      return $result;
     }
 
     public static function replaceQuerystring($argStrers, $argValue = '', $argUrs = '')

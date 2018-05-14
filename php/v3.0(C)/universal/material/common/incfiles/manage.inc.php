@@ -219,7 +219,7 @@ class ui extends console\page {
           $specialFiled = $prefix . 'filepath,' . $prefix . 'fileurl,' . $prefix . 'filetype,' . $prefix . 'filesize,' . $prefix . 'filegroup,' . $prefix . 'hot';
           $preset = array();
           $preset[$prefix . 'lang'] = $account -> getLang();
-          $sqlstr = auto::getAutoRequestUpdateSQL($table, $prefix . 'id', $id, $preset, $specialFiled);
+          $sqlstr = auto::getAutoUpdateSQLByRequest($table, $prefix . 'id', $id, $preset, $specialFiled);
           $re = $db -> exec($sqlstr);
           if (is_numeric($re))
           {

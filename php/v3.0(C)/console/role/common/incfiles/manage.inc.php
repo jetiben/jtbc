@@ -324,7 +324,7 @@ class ui extends console\page {
           $preset = array();
           $preset[$prefix . 'popedom'] = $popedomJson;
           $preset[$prefix . 'time'] = base::getDateTime();
-          $sqlstr = auto::getAutoRequestInsertSQL($table, $preset);
+          $sqlstr = auto::getAutoInsertSQLByRequest($table, $preset);
           $re = $db -> exec($sqlstr);
           if (is_numeric($re))
           {
@@ -365,7 +365,7 @@ class ui extends console\page {
         {
           $preset = array();
           $preset[$prefix . 'popedom'] = $popedomJson;
-          $sqlstr = auto::getAutoRequestUpdateSQL($table, $prefix . 'id', $id, $preset);
+          $sqlstr = auto::getAutoUpdateSQLByRequest($table, $prefix . 'id', $id, $preset);
           $re = $db -> exec($sqlstr);
           if (is_numeric($re))
           {

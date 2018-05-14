@@ -195,7 +195,7 @@ class ui extends console\page {
           $preset[$prefix . 'order'] = 888888;
           $preset[$prefix . 'lang'] = $account -> getLang();
           $preset[$prefix . 'time'] = base::getDateTime();
-          $sqlstr = auto::getAutoRequestInsertSQL($table, $preset);
+          $sqlstr = auto::getAutoInsertSQLByRequest($table, $preset);
           $re = $db -> exec($sqlstr);
           if (is_numeric($re))
           {
@@ -236,7 +236,7 @@ class ui extends console\page {
         if (!is_null($db))
         {
           $specialFiled = $prefix . 'fid,' . $prefix . 'order,' . $prefix . 'time,' . $prefix . 'genre,' . $prefix . 'lang';
-          $sqlstr = auto::getAutoRequestUpdateSQL($table, $prefix . 'id', $id, null, $specialFiled);
+          $sqlstr = auto::getAutoUpdateSQLByRequest($table, $prefix . 'id', $id, null, $specialFiled);
           $re = $db -> exec($sqlstr);
           if (is_numeric($re))
           {
