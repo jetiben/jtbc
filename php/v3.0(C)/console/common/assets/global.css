@@ -1,8 +1,8 @@
 html {
-  width: 100%; min-width: 1200px; overflow-y: scroll
+  width: 100%; min-width: 1200px; overflow-y: scroll; font-size: 10px
 }
 body {
-  width: 100%; min-width: 1200px; margin: 0px; padding: 0px; background: #eee; font-size: 12px; color: #000; font-family: Arial, Verdana, "NSimSun"
+  width: 100%; min-width: 1200px; margin: 0px; padding: 0px; background: #eee; color: #000; font-size: 1.2rem; font-family: Arial, Verdana, "NSimSun"
 }
 div,p,span,em {
   backface-visibility: hidden
@@ -14,7 +14,7 @@ form,dl,dt,dd,ul,ol,input,select,textarea,h1,h2,h3,h4,h5,h6 {
   margin: 0px; padding: 0px
 }
 input,button,select,textarea {
-  font-size: 12px; color: #000; resize: none; outline: none
+  box-sizing: border-box; font-size: 1.2rem; color: #000; resize: none; outline: none
 }
 img {
   border: 0px
@@ -57,7 +57,7 @@ label.checkbox span.text {
   padding-right: 15px
 }
 button {
-  display: inline-block; height: 28px; padding: 0px 16px; border: 0px; line-height: 100%; font-size: 14px; color: #fff; border: #666 1px solid; cursor: pointer; transition: all .1s ease
+  display: inline-block; padding: 6px 16px; border: 0px; line-height: 100%; font-size: 1.4rem; color: #fff; border: #666 1px solid; cursor: pointer; transition: all .1s ease
 }
 button.b1 {
   background-color: #555; border-color: #555
@@ -101,13 +101,13 @@ button.lock:focus {
   background-color: #bbb !important; border-color: #bbb !important
 }
 input.i1 {
-  width: 358px; height: 28px; line-height: 28px; padding: 0px 10px; border: #d1d1d1 1px solid; box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.08); transition: all .3s ease
+  width: 400px; height: 30px; line-height: 30px; padding: 0px 10px; border: #d1d1d1 1px solid; box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.08); transition: all .3s ease
 }
 input.i1:focus {
   border-color: #5b9dd9; box-shadow: 0px 0px 2px rgba(30, 140, 190, 0.8)
 }
 select.s1 {
-  padding: 5px; height: 30px; border: #d1d1d1 1px solid; box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.08); transition: all .3s ease
+  padding: 6px; height: 30px; border: #d1d1d1 1px solid; box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.08); transition: all .3s ease
 }
 select.s1:focus {
   border-color: #5b9dd9; box-shadow: 0px 0px 2px rgba(30, 140, 190, 0.8)
@@ -116,13 +116,13 @@ select.full {
   width: 100%
 }
 textarea.t1 {
-  width: 358px; height: 178px; line-height: 150%; padding: 10px; border: #d1d1d1 1px solid; box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.08); transition: all .3s ease
+  width: 400px; height: 200px; line-height: 150%; padding: 10px; border: #d1d1d1 1px solid; box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.08); transition: all .3s ease
 }
 textarea.t1:focus {
   border-color: #5b9dd9; box-shadow: 0px 0px 2px rgba(30, 140, 190, 0.8)
 }
 textarea.t1.editor {
-  height: 305px; visibility: hidden
+  height: 380px; visibility: hidden
 }
 icons {
   display: inline-block; vertical-align: middle
@@ -215,7 +215,7 @@ icons icon a.link {
   width: 100%; height: 50px; background: #2b3643; position: relative; z-index: 1000
 }
 .topbar h1 {
-  padding-left: 20px; line-height: 50px; font-size: 20px; font-family: arial; font-weight: normal; color: #fff
+  padding-left: 20px; line-height: 50px; font-size: 2rem; font-family: arial; font-weight: normal; color: #fff
 }
 .topbar span.menu {
   display: block; width: 40px; height: 40px; text-align: center; position: absolute; top: 5px; left: 185px; z-index: 100
@@ -233,7 +233,7 @@ icons icon a.link {
   display: block; height: 50px; text-align: right; position: absolute; top: 0px; right: 20px; z-index: 100
 }
 .topbar right .section {
-  display: inline-block; height: 50px; line-height: 50px; padding: 0px 10px; font-size: 14px; color: #fff; vertical-align: top; position: relative; z-index: 100; transition: background-color .3s ease
+  display: inline-block; height: 50px; line-height: 50px; padding: 0px 10px; font-size: 1.4rem; color: #fff; vertical-align: top; position: relative; z-index: 100; transition: background-color .3s ease
 }
 .topbar right .section em {
   display: inline-block; width: 14px; height: 14px; margin-left: 5px; background: url(icon/arrow.1.svg) center center no-repeat; vertical-align: middle
@@ -242,7 +242,7 @@ icons icon a.link {
   min-width: 100%; position: absolute; top: 50px; right: -1px; background: #fff; border: #364150 1px solid; border-top: 0px; padding: 5px 0px; box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3); display: none; z-index: 100
 }
 .topbar right .section ul li {
-  padding: 0px 20px; line-height: 30px; text-align: center; font-size: 14px; color: #333; white-space: nowrap; cursor: pointer
+  padding: 0px 20px; line-height: 30px; text-align: center; font-size: 1.4rem; color: #333; white-space: nowrap; cursor: pointer
 }
 .topbar right .section ul li:hover {
   background: #ececec
@@ -445,7 +445,7 @@ icons icon a.link {
   width: 100%; height: 40px; border-top: #e7ecf1 1px solid; border-bottom: #e1e1e1 1px solid
 }
 .container div.main nav span {
-  padding-left: 20px; font-size: 14px; line-height: 40px; color: #000; cursor: default
+  padding-left: 20px; font-size: 1.4rem; line-height: 40px; color: #000; cursor: default
 }
 .container div.main nav span u {
   text-decoration: none; cursor: pointer
@@ -463,7 +463,7 @@ icons icon a.link {
   display: block; margin-bottom: 10px; background: #ececec; border-left: #2b3643 5px solid
 }
 .container div.main div.manager toplink a {
-  display: inline-block; padding: 10px 15px; font-size: 14px; line-height: 100%; cursor: pointer
+  display: inline-block; padding: 10px 15px; font-size: 1.4rem; line-height: 100%; cursor: pointer
 }
 .container div.main div.manager toplink a.on {
   background: #364150; color: #fff
@@ -478,7 +478,7 @@ icons icon a.link {
   margin-bottom: 20px; padding: 20px; border: #e1e1e1 1px solid; position: relative; z-index: 100
 }
 .container div.main div.manager div.table h3 {
-  line-height: 100%; margin-bottom: 10px; padding-bottom: 15px; font-size: 16px; color: #000; border-bottom: #e1e1e1 1px solid
+  line-height: 100%; margin-bottom: 10px; padding-bottom: 15px; font-size: 1.6rem; color: #000; border-bottom: #e1e1e1 1px solid
 }
 .container div.main div.manager div.table div.tab {
   margin-top: -4px; margin-bottom: 10px
@@ -529,13 +529,13 @@ icons icon a.link {
   padding-left: 150px
 }
 .container div.main div.manager div.form_tips ul {
-  display: inline-block; border-left: #e7505a 5px solid; background: #ececec; margin-bottom: 20px; padding: 5px 20px 5px 10px; font-size: 14px
+  display: inline-block; border-left: #e7505a 5px solid; background: #ececec; margin-bottom: 20px; padding: 5px 20px 5px 10px; font-size: 1.4rem
 }
 .container div.main div.manager div.form_tips ul li {
   display: block; line-height: 26px
 }
 .container div.main div.manager div.form_tips em {
-  display: inline-block; border-left: #336633 5px solid; background: #ececec; margin-bottom: 20px; padding: 5px 20px 5px 10px; font-size: 14px; font-style: normal; line-height: 26px
+  display: inline-block; border-left: #336633 5px solid; background: #ececec; margin-bottom: 20px; padding: 5px 20px 5px 10px; font-size: 1.4rem; font-style: normal; line-height: 26px
 }
 .container div.main div.manager div.form_button {
   padding-left: 150px; padding-bottom: 10px
@@ -562,7 +562,7 @@ icons icon a.link {
   opacity: 1
 }
 .att h6 {
-  line-height: 28px; background: #f8f8f8; border: #d1d1d1 1px solid; font-size: 12px; padding-left: 10px
+  line-height: 28px; background: #f8f8f8; border: #d1d1d1 1px solid; font-size: 1.2rem; padding-left: 10px
 }
 .att ul {
   border: #d1d1d1 1px solid; border-top: 0px; padding: 5px 0px
@@ -574,7 +574,7 @@ icons icon a.link {
   display: inline-block; padding-right: 120px; word-break: break-all; cursor: pointer
 }
 .att ul li span.size {
-  position: absolute; top: 0px; right: 80px; font-size: 10px; color: #999
+  position: absolute; top: 0px; right: 80px; font-size: 1rem; color: #999
 }
 .att ul li icons {
   position: absolute; top: 0px; right: 10px
@@ -598,7 +598,7 @@ icons icon a.link {
   max-width: 520px; max-height: 520px; border: #d1d1d1 1px solid; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1)
 }
 .attPreview a.item {
-  display: inline-block; font-size: 14px; color: #276899; line-height: 20px; padding-bottom: 1px; border-bottom: #276899 1px solid
+  display: inline-block; font-size: 1.4rem; color: #276899; line-height: 20px; padding-bottom: 1px; border-bottom: #276899 1px solid
 }
 .fileup {
   width: 100%
@@ -607,7 +607,7 @@ icons icon a.link {
   margin-top: 10px; line-height: 30px; background: #ececec; border-radius: 5px; position: relative; z-index: 100
 }
 .fileup div.item span.filename {
-  display: block; padding: 0px 100px 0px 10px; font-size: 14px; word-break: break-all; position: relative; z-index: 200
+  display: block; padding: 0px 100px 0px 10px; font-size: 1.4rem; word-break: break-all; position: relative; z-index: 200
 }
 .fileup div.item span.filesize {
   padding: 0px 10px; color: #666; position: absolute; top: 0px; right: 0px; z-index: 200
@@ -619,7 +619,7 @@ icons icon a.link {
   background-color: #ff9893
 }
 .filetype {
-  display: inline-block; vertical-align: middle; margin-right: 10px; padding: 0px 5px; background: #000; opacity: 0.8; font-size: 14px; color: #fff; line-height: 22px; border-radius: 6px; font-style: normal; text-transform: uppercase
+  display: inline-block; vertical-align: middle; margin-right: 10px; padding: 0px 5px; background: #000; opacity: 0.8; font-size: 1.4rem; color: #fff; line-height: 22px; border-radius: 6px; font-style: normal; text-transform: uppercase
 }
 .filetype.mp4 {
   background: #cb8119
@@ -637,13 +637,13 @@ icons icon a.link {
   width: 450px; height: 450px; background: #fff; border: #e2e2e2 1px solid; border-top: #000 5px solid; border-bottom: #e2e2e2 5px solid; margin-left: -225px; margin-top: -225px; position: fixed; top: 50%; left: 50%; z-index: 100
 }
 .login h1 {
-  padding: 60px; font-size: 48px; font-family: arial; font-weight: normal; color: #000; line-height: 100%; text-align: center
+  padding: 60px; font-size: 4.8rem; font-family: arial; font-weight: normal; color: #000; line-height: 100%; text-align: center
 }
 .login div.field {
   width: 360px; height: 44px; border: #d9d9d9 1px solid; margin: auto; margin-bottom: 10px; position: relative; z-index: 100
 }
 .login div.field input {
-  width: 295px; margin-left: 45px; height: 44px; line-height: 44px; padding-left: 20px; border: 0px; font-size: 14px; color: #999; transition: all .3s ease
+  width: 295px; margin-left: 45px; height: 44px; line-height: 44px; padding-left: 20px; border: 0px; font-size: 1.4rem; color: #999; transition: all .3s ease
 }
 .login div.field input:focus {
   color: #000
@@ -661,7 +661,7 @@ icons icon a.link {
   float: left
 }
 .login div.message {
-  padding-top: 50px; text-align: center; font-size: 14px; color: #e47a26
+  padding-top: 50px; text-align: center; font-size: 1.4rem; color: #e47a26
 }
 .login div.error {
   width: 408px; padding: 10px; background: #f2dede; border: #ebccd1 1px solid; border-radius: 5px; color: #a94442; text-align: center; margin-left: -215px; position: absolute; bottom: 10px; left: 50%; z-index: 100
@@ -682,7 +682,7 @@ icons icon a.link {
   display: inline-block; padding-right: 70px; word-break: break-all; vertical-align: middle
 }
 .material_list div.item span.size {
-  font-size: 10px; color: #999; position: absolute; right: 5px; top: 5px; z-index: 100
+  font-size: 1rem; color: #999; position: absolute; right: 5px; top: 5px; z-index: 100
 }
 .material_list div.tips {
   margin-top: 24px; padding: 5px; min-height: 22px; line-height: 22px; color: #999; text-align: center
@@ -724,10 +724,10 @@ icons icon a.link {
   padding-left: 72px
 }
 .popedom ul li label {
-  font-size: 14px; color: #000
+  font-size: 1.4rem; color: #000
 }
 .popedom ul li label.option {
-  margin-left: 10px; font-size: 12px; color: #666
+  margin-left: 10px; font-size: 1.2rem; color: #666
 }
 .popedom_category {
   padding-top: 20px
@@ -754,10 +754,10 @@ icons icon a.link {
   width: 100%; height: 140px; margin-top: 20px; background: url(icon/exclamation.1.svg) center center no-repeat; background-size: 90px 90px
 }
 .popup_alert div.word {
-  font-size: 24px; text-align: center; line-height: 30px; max-height: 60px; overflow: hidden
+  font-size: 2.4rem; text-align: center; line-height: 30px; max-height: 60px; overflow: hidden
 }
 .popup_alert div.word em {
-  display: block; font-size: 14px; font-style: normal
+  display: block; font-size: 1.4rem; font-style: normal
 }
 .popup_alert div.word em a {
   display: inline-block; line-height: 16px; border-bottom: #999 1px solid; color: #999
@@ -778,7 +778,7 @@ icons icon a.link {
   opacity: 1; transform: translate(-50%, -50%) scale(1); z-index: 1100000000
 }
 .popup_minialert div.word {
-  padding: 10px 20px; line-height: 24px; font-size: 14px; color: #fff
+  padding: 10px 20px; line-height: 24px; font-size: 1.4rem; color: #fff
 }
 .popup_confirm {
   width: 500px; height: 300px; background: #fff; position: fixed; top: 50%; left: 50%; opacity: 0; transform: translate(-50%, -50%) scale(0.2); box-shadow: 0 5px 15px rgba(0, 0, 0, .5); z-index: 50; transition: all .3s ease
@@ -790,7 +790,7 @@ icons icon a.link {
   width: 100%; height: 140px; margin-top: 20px; background: url(icon/exclamation.1.svg) center center no-repeat; background-size: 90px 90px
 }
 .popup_confirm div.word {
-  font-size: 24px; text-align: center; line-height: 30px; max-height: 60px; overflow: hidden
+  font-size: 2.4rem; text-align: center; line-height: 30px; max-height: 60px; overflow: hidden
 }
 .popup_confirm div.button {
   padding-top: 30px; text-align: center
@@ -805,10 +805,10 @@ icons icon a.link {
   display: block; width: 40px; height: 40px; background: url(icon/close.1.svg) center center no-repeat; background-size: 20px 20px; cursor: pointer; position: absolute; top: 0px; right: 0px; z-index: 1000
 }
 .popup_page div.title {
-  min-width: 200px; line-height: 30px; background: #ececec; padding: 5px 40px 5px 10px; font-size: 14px; font-weight: bold; color: #333; word-break: break-all
+  min-width: 200px; line-height: 30px; background: #ececec; padding: 5px 40px 5px 10px; font-size: 1.4rem; font-weight: bold; color: #333; word-break: break-all
 }
 .popup_page div.title input.title {
-  width: 100%; height: 26px; line-height: 26px; background: none; border: 0px; font-size: 14px; font-weight: bold; color: #333
+  width: 100%; height: 26px; line-height: 26px; background: none; border: 0px; font-size: 1.4rem; font-weight: bold; color: #333
 }
 .popup_page div.title input.title::-ms-clear {
   display: none
@@ -829,7 +829,7 @@ icons icon a.link {
   padding: 10px 20px; text-align: center; position: relative; z-index: 100
 }
 .popup_page div.tinyform ol li h6 {
-  font-size: 12px; font-weight: normal; color: #999; line-height: 30px; margin-top: -15px; position: absolute; right: 50px; top: 50%; z-index: 110
+  font-size: 1.2rem; font-weight: normal; color: #999; line-height: 30px; margin-top: -15px; position: absolute; right: 50px; top: 50%; z-index: 110
 }
 .popup_page div.tinyform div.submit {
   padding: 10px 20px; position: relative; z-index: 100
@@ -925,7 +925,7 @@ icons icon a.link {
   width: 100%; height: 45px; border-bottom: #ddd 1px solid; position: relative; z-index: 200
 }
 .tab div.option label {
-  display: inline-block; line-height: 44px; font-size: 14px; margin-bottom: -1px; padding: 0px 10px; border: transparent 1px solid; border-top-left-radius: 4px; border-top-right-radius: 4px; cursor: pointer
+  display: inline-block; line-height: 44px; font-size: 1.4rem; margin-bottom: -1px; padding: 0px 10px; border: transparent 1px solid; border-top-left-radius: 4px; border-top-right-radius: 4px; cursor: pointer
 }
 .tab div.option label.on {
   background: #fff; border-color: #ddd; border-bottom-color: #fff; font-weight: bold; cursor: default
@@ -989,10 +989,10 @@ icons icon a.link {
   display: inline-block; position: relative; z-index: 100
 }
 .upfile input.i1 {
-  width: 298px; padding-right: 70px
+  padding-right: 70px
 }
 .upfile button.upbtn {
-  height: 28px; position: absolute; top: 1px; right: 1px; z-index: 100
+  height: calc(100% - 2px); position: absolute; top: 1px; right: 1px; z-index: 100
 }
 .upload_status {
   display: inline-block; width: 4px; height: 12px; margin-right: 4px; background: #999; vertical-align: middle

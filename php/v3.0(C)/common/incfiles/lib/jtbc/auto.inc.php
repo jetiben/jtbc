@@ -275,20 +275,18 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    public static function getAutoFieldFormatByTable($argTable, $argMode = 0, $argVars = null, $argTplPath = '::console')
+    public static function getAutoFieldFormat($argFieldArray, $argMode = 0, $argVars = null, $argTplPath = '::console')
     {
       $tmpstr = '';
-      $table = $argTable;
+      $fieldArray = $argFieldArray;
       $mode = $argMode;
       $vars = $argVars;
       $tplPath = $argTplPath;
-      $db = conn::db();
       $filename = route::getCurrentFilename();
       $filePrefix = base::getLRStr($filename, '.', 'left');
-      if (!is_null($db))
+      if (is_array($fieldArray))
       {
-        $columns = $db -> showFullColumns($table);
-        foreach ($columns as $i => $item)
+        foreach ($fieldArray as $i => $item)
         {
           $fieldName = $item['Field'];
           $fieldDefault = $item['Default'];
@@ -378,6 +376,79 @@ namespace jtbc {
             $tmpstr = str_replace('{$' . $key . '}', $val, $tmpstr) . $key;
           }
         }
+      }
+      return $tmpstr;
+
+    }
+
+    public static function getAutoFieldFormatByTable($argTable, $argMode = 0, $argVars = null, $argTplPath = null)
+    {
+      $tmpstr = '';
+      $table = $argTable;
+      $mode = $argMode;
+      $vars = $argVars;
+      $tplPath = $argTplPath;
+      $db = conn::db();
+      if (!is_null($db))
+      {
+        $fieldArray = array();
+        $columns = $db -> showFullColumns($table);
+        foreach ($columns as $i => $item)
+        {
+          $comment = base::getString($item['Comment']);
+          if (!base::isEmpty($comment))
+          {
+            $commentAry = json_decode($comment, true);
+            if (!empty($commentAry) && array_key_exists('fieldType', $commentAry))
+            {
+              array_push($fieldArray, $item);
+            }
+          }
+        }
+      }
+      if (is_null($tplPath)) $tmpstr = self::getAutoFieldFormat($fieldArray, $mode, $vars);
+      else $tmpstr = self::getAutoFieldFormat($fieldArray, $mode, $vars, $tplPath);
+      return $tmpstr;
+    }
+
+    public static function getAutoFieldFormatByList($argTable, $argList, $argMode = 0, $argVars = null, $argTplPath = null)
+    {
+      $tmpstr = '';
+      $table = $argTable;
+      $list = $argList;
+      $mode = $argMode;
+      $vars = $argVars;
+      $tplPath = $argTplPath;
+      if (is_array($list))
+      {
+        $db = conn::db();
+        if (!is_null($db))
+        {
+          $fieldArray = array();
+          $columns = $db -> showFullColumns($table);
+          foreach ($list as $key => $val)
+          {
+            foreach ($columns as $i => $item)
+            {
+              $fieldName = $item['Field'];
+              $simplifiedFieldName = base::getLRStr($fieldName, '_', 'rightr');
+              if ($val == $fieldName || $val == $simplifiedFieldName)
+              {
+                $comment = base::getString($item['Comment']);
+                if (!base::isEmpty($comment))
+                {
+                  $commentAry = json_decode($comment, true);
+                  if (!empty($commentAry) && array_key_exists('fieldType', $commentAry))
+                  {
+                    array_push($fieldArray, $item);
+                  }
+                }
+              }
+            }
+          }
+        }
+        if (is_null($tplPath)) $tmpstr = self::getAutoFieldFormat($fieldArray, $mode, $vars);
+        else $tmpstr = self::getAutoFieldFormat($fieldArray, $mode, $vars, $tplPath);
       }
       return $tmpstr;
     }
