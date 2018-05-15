@@ -697,6 +697,10 @@ jtbc.console.lib = {
       {
         insertFun('<img src="' + tthis.parent.parent.htmlEncode(paraArray['fileurl']) + '" alt="" />');
       }
+      else if (filetype == 'mp4')
+      {
+        insertFun('<video controls="controls" width="480" height="270"><source src="' + tthis.parent.parent.htmlEncode(paraArray['fileurl']) + '" type="video/mp4" /></video>');
+      }
       else
       {
         insertFun('<a href="' + tthis.parent.parent.htmlEncode(paraArray['fileurl']) + '" target="_blank">' + tthis.parent.parent.htmlEncode(paraArray['filename']) + '</a>');
