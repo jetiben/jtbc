@@ -31,7 +31,7 @@ namespace jtbc\console\fragment {
             if ($db -> fieldSwitch($table, $prefix, 'delete', $ids))
             {
               $status = 1;
-              $callback = 'moduleActionBatchDeleteCallback';
+              $callback = 'doActionBatchDeleteCallback';
               if (method_exists($class, $callback)) call_user_func(array($class, $callback), $ids);
             }
           }
@@ -40,7 +40,7 @@ namespace jtbc\console\fragment {
             if ($db -> fieldSwitch($table, $prefix, 'dispose', $ids))
             {
               $status = 1;
-              $callback = 'moduleActionBatchDisposeCallback';
+              $callback = 'doActionBatchDisposeCallback';
               if (method_exists($class, $callback)) call_user_func(array($class, $callback), $ids);
             }
           }
@@ -49,7 +49,7 @@ namespace jtbc\console\fragment {
             if ($db -> fieldSwitch($table, $prefix, 'lock', $ids))
             {
               $status = 1;
-              $callback = 'moduleActionBatchLockCallback';
+              $callback = 'doActionBatchLockCallback';
               if (method_exists($class, $callback)) call_user_func(array($class, $callback), $ids);
             }
           }
@@ -58,7 +58,7 @@ namespace jtbc\console\fragment {
             if ($db -> fieldSwitch($table, $prefix, 'publish', $ids))
             {
               $status = 1;
-              $callback = 'moduleActionBatchPublishCallback';
+              $callback = 'doActionBatchPublishCallback';
               if (method_exists($class, $callback)) call_user_func(array($class, $callback), $ids);
             }
           }
@@ -94,7 +94,7 @@ namespace jtbc\console\fragment {
           if ($db -> fieldSwitch($table, $prefix, 'delete', $id, 1))
           {
             $status = 1;
-            $callback = 'moduleActionDeleteCallback';
+            $callback = 'doActionDeleteCallback';
             if (method_exists($class, $callback)) call_user_func(array($class, $callback), $id);
             $account -> creatCurrentGenreLog('manage.log-delete-1', array('id' => $id));
           }

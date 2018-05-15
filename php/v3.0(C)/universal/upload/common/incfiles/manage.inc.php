@@ -7,6 +7,18 @@ class ui extends console\page {
   }
   public static $batch = array('delete');
 
+  public static function doActionBatchDeleteCallback($argIds)
+  {
+    $ids = $argIds;
+    universal\upload::unlinkByIds($ids);
+  }
+
+  public static function doActionDeleteCallback($argId)
+  {
+    $id = $argId;
+    universal\upload::unlinkByIds($id);
+  }
+
   public static function moduleList()
   {
     $status = 1;
@@ -50,18 +62,6 @@ class ui extends console\page {
     }
     $tmpstr = self::formatResult($status, $tmpstr);
     return $tmpstr;
-  }
-
-  public static function moduleActionBatchDeleteCallback($argIds)
-  {
-    $ids = $argIds;
-    universal\upload::unlinkByIds($ids);
-  }
-
-  public static function moduleActionDeleteCallback($argId)
-  {
-    $id = $argId;
-    universal\upload::unlinkByIds($id);
   }
 }
 ?>
