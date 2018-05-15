@@ -63,6 +63,10 @@
       <zh-cn><![CDATA[电子邮件]]></zh-cn>
     </item>
     <item>
+      <name><![CDATA[field]]></name>
+      <zh-cn><![CDATA[字段]]></zh-cn>
+    </item>
+    <item>
       <name><![CDATA[file]]></name>
       <zh-cn><![CDATA[文件]]></zh-cn>
     </item>
@@ -101,6 +105,10 @@
     <item>
       <name><![CDATA[leader]]></name>
       <zh-cn><![CDATA[领导]]></zh-cn>
+    </item>
+    <item>
+      <name><![CDATA[length]]></name>
+      <zh-cn><![CDATA[长度]]></zh-cn>
     </item>
     <item>
       <name><![CDATA[linkurl]]></name>
@@ -169,6 +177,10 @@
     <item>
       <name><![CDATA[time]]></name>
       <zh-cn><![CDATA[时间]]></zh-cn>
+    </item>
+    <item>
+      <name><![CDATA[type]]></name>
+      <zh-cn><![CDATA[类型]]></zh-cn>
     </item>
     <item>
       <name><![CDATA[url]]></name>

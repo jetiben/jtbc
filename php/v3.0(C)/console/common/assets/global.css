@@ -166,6 +166,9 @@ icons icon a.link {
 .block {
   display: block !important
 }
+.breakall {
+  word-break: break-all
+}
 .clear_float {
   zoom: 1
 }
@@ -974,6 +977,9 @@ icons icon a.link {
 }
 .tableL td.sort {
   background-image: url(icon/sort.1.svg); background-size: 24px; background-position: center center; background-repeat: no-repeat
+}
+.tableL tr.lock-1 td {
+  color: #999 !important
 }
 .tableL tr:hover td,
 .tableL tr.selected td {

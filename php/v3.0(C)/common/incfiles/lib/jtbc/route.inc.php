@@ -287,6 +287,22 @@ namespace jtbc {
       return $list;
     }
 
+    public static function getFolderArrayByGuide($argFilePrefix = 'guide')
+    {
+      $result = array();
+      $fileprefix = $argFilePrefix;
+      $folder = self::getFolderByGuide($fileprefix);
+      $folderAry = explode('|+|', $folder);
+      foreach($folderAry as $key => $val)
+      {
+        if (!base::isEmpty($val))
+        {
+          array_push($result, $val);
+        }
+      }
+      return $result;
+    }
+
     public static function getGenreByAppellation($argAppellation, $argOriGenre = '')
     {
       $genre = null;

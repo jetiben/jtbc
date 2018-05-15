@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xml mode="jtbcf" author="jetiben" order="cache,log,xml,file,account,role">
+<xml mode="jtbcf" author="jetiben" order="cache,log,account,role,xml,file">
   <configure>
     <node>item</node>
     <field>name,zh-cn</field>

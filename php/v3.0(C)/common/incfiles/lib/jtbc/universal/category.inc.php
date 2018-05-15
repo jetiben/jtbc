@@ -14,17 +14,7 @@ namespace jtbc\universal {
   {
     public static function getAllGenre()
     {
-      $allGenre = array();
-      $folder = route::getFolderByGuide('category');
-      $folderAry = explode('|+|', $folder);
-      foreach($folderAry as $key => $val)
-      {
-        if (!base::isEmpty($val))
-        {
-          array_push($allGenre, $val);
-        }
-      }
-      return $allGenre;
+      return route::getFolderArrayByGuide('category');
     }
 
     public static function getAllGenreSelect($argAllGenre = null, $argGenre = '')

@@ -443,6 +443,7 @@ namespace jtbc {
                     array_push($fieldArray, $item);
                   }
                 }
+                break;
               }
             }
           }

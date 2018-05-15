@@ -1,5 +1,11 @@
 <?php
 require_once('const.inc.php');
+
+function require_once_this_file_inc($argFile)
+{
+  require_once('common/incfiles/' . basename($argFile, '.php') . '.inc.php');
+}
+
 spl_autoload_register(function($argClass){
   $class = $argClass;
   if (substr($class, 0, 4) == 'jtbc')
