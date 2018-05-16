@@ -26,7 +26,7 @@
     wrap.style.height = "auto";
     wrap.className += " CodeMirror-fullscreen";
     document.documentElement.style.overflow = "hidden";
-    if (typeof(jQuery) == 'function') jQuery('body').addClass('fullscreen');
+    if (typeof(jQuery) == 'function') jQuery('body').addClass('mce-fullscreen');
     cm.refresh();
   }
 
@@ -34,7 +34,7 @@
     var wrap = cm.getWrapperElement();
     wrap.className = wrap.className.replace(/\s*CodeMirror-fullscreen\b/, "");
     document.documentElement.style.overflow = "";
-    if (typeof(jQuery) == 'function') jQuery('body').removeClass('fullscreen');
+    if (typeof(jQuery) == 'function') jQuery('body').removeClass('mce-fullscreen');
     var info = cm.state.fullScreenRestore;
     wrap.style.width = info.width; wrap.style.height = info.height;
     window.scrollTo(info.scrollLeft, info.scrollTop);
