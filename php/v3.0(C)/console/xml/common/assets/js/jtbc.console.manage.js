@@ -8,8 +8,52 @@ jtbc.console.manage = {
     tthis.parent.lib.initSearchBoxEvents(tthis.obj);
     if (tthis.obj.find('.CodeMirrorContent').length == 1)
     {
+      var currentSymbol = tthis.obj.find('btn.fileselect').attr('symbol');
       tthis.para['codemirror-timeout'] = setTimeout(function(){
-        tthis.para['codemirror'] = CodeMirror.fromTextArea(document.getElementById('codemirror'), {mode: 'htmlmixed', lineNumbers: true, lineWrapping: true, styleActiveLine: true, theme: 'monokai', extraKeys: { 'F11': function(cm) { cm.setOption('fullScreen', !cm.getOption('fullScreen')); }, 'Esc': function(cm) { if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false); }}});
+        var codemirrorOption = {
+          mode: 'htmlmixed',
+          lineNumbers: true,
+          lineWrapping: true,
+          styleActiveLine: true,
+          theme: 'monokai',
+          extraKeys: { 'F11': function(cm) { cm.setOption('fullScreen', !cm.getOption('fullScreen')); }, 'Esc': function(cm) { if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false); }}
+        };
+        if (typeof Promise !== 'undefined')
+        {
+          var currentHintBase = ["breadcrumb", "createURL", "encodeText", "encodeTextArea", "formatDate", "formatFileSize", "formatLine", "get", "getActualRoute", "getDateTime", "getJsonPara", "getLeft", "getLeftB", "getLRStr", "getNum", "getPagePara", "getPageTitle", "getPara", "getParameter", "getRandomString", "getRemortIP", "getRepeatedString", "getRight", "getSwapString", "htmlEncode", "pagi", "replaceQuerystring", "take", "takeAndFormat", "takeByNode", "transfer", "xmlSelect"];
+          var currentHintFunction = function(cm, option) {
+            return new Promise(function(accept)
+            {
+              setTimeout(function() {
+                var cursor = cm.getCursor(), line = cm.getLine(cursor.line);
+                var start = cursor.ch, end = cursor.ch;
+                while (start && /\w/.test(line.charAt(start - 1))) --start;
+                while (end < line.length && /\w/.test(line.charAt(end))) ++end;
+                var word = line.slice(start, end);
+                if (word)
+                {
+                  var showlist = [];
+                  showlist.push(word);
+                  for (var i = 0; i < currentHintBase.length; i++)
+                  {
+                    if (currentHintBase[i].indexOf(word) == 0 && currentHintBase[i] != word) showlist.push(currentHintBase[i]);
+                  };
+                  if (showlist.length != 0)
+                  {
+                    return accept({list: showlist, from: CodeMirror.Pos(cursor.line, start), to: CodeMirror.Pos(cursor.line, end)});
+                  };
+                };
+                return accept(null);
+              }, 100);
+            });
+          };
+          if (currentSymbol.indexOf('.tpl.') != -1) codemirrorOption.hintOptions = {hint: currentHintFunction};
+        };
+        tthis.para['codemirror'] = CodeMirror.fromTextArea(document.getElementById('codemirror'), codemirrorOption);
+        if (typeof codemirrorOption.hintOptions == 'object')
+        {
+          tthis.para['codemirror'].on('change', function() { tthis.para['codemirror'].showHint(); });
+        };
       }, 50);
     };
     tthis.obj.find('rightarea').find('select[name=\'node\']').on('change', function(){

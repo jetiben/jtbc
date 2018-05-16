@@ -23,7 +23,7 @@ define('SEPARATOR', ' - ');
 define('SITESTATUS', 0);
 define('THEME', 'default');
 define('TEMPLATE', 'default');
-define('VERSION', '3.0.1.3');
+define('VERSION', '3.0.1.4');
 define('WEBKEY', 'J1T2B3C4');
 define('XMLSFX', '.jtbc');
 ?>

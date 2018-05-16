@@ -51,9 +51,11 @@
 <dfn cssurl="{$=$assetspath}/editor/codemirror/lib/codemirror.css"></dfn>
 <dfn cssurl="{$=$assetspath}/editor/codemirror/theme/monokai.css"></dfn>
 <dfn cssurl="{$=$assetspath}/editor/codemirror/addon/display/fullscreen.css"></dfn>
+<dfn cssurl="{$=$assetspath}/editor/codemirror/addon/hint/show-hint.css"></dfn>
 <dfn url="{$=$assetspath}/editor/codemirror/lib/codemirror.js"></dfn>
 <dfn url="{$=$assetspath}/editor/codemirror/addon/selection/active-line.js"></dfn>
 <dfn url="{$=$assetspath}/editor/codemirror/addon/display/fullscreen.js"></dfn>
+<dfn url="{$=$assetspath}/editor/codemirror/addon/hint/show-hint.js"></dfn>
 <dfn url="{$=$assetspath}/editor/codemirror/mode/htmlmixed/htmlmixed.js"></dfn>
 <dfn url="{$=$assetspath}/editor/codemirror/mode/xml/xml.js"></dfn>
 <dfn url="{$=$assetspath}/editor/codemirror/mode/css/css.js"></dfn>
