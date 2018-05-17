@@ -13,8 +13,7 @@ class ui extends console\page {
     {
       $account = self::account();
       $tmpstr = tpl::take('manage.list', 'tpl');
-      $tpl = new tpl();
-      $tpl -> tplString = $tmpstr;
+      $tpl = new tpl($tmpstr);
       $loopString = $tpl -> getLoopString('{@}');
       if (is_dir($path))
       {

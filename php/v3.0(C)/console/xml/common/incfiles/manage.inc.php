@@ -61,8 +61,7 @@ class ui extends console\page {
       if (!empty($xmlAry))
       {
         $tmpstr = tpl::take('manage.list', 'tpl');
-        $tpl = new tpl();
-        $tpl -> tplString = $tmpstr;
+        $tpl = new tpl($tmpstr);
         $loopString = $tpl -> getLoopString('{@}');
         foreach ($xmlAry as $key => $val)
         {

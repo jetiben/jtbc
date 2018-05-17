@@ -48,8 +48,7 @@ class ui extends console\page {
     $folderAry = explode('|+|', $folder);
     $categoryAry = universal\category::getAllGenre();
     $tmpstr = tpl::take('manage.part-select-popedom', 'tpl');
-    $tpl = new tpl();
-    $tpl -> tplString = $tmpstr;
+    $tpl = new tpl($tmpstr);
     $loopString = $tpl -> getLoopString('{@}');
     if (!base::isEmpty($popedom)) $popedomArray = json_decode($popedom, true);
     foreach($folderAry as $key => $val)
@@ -124,8 +123,7 @@ class ui extends console\page {
     {
       $afid = base::getNum($argFid, 0);
       $tmpstr = tpl::take('manage.part-select-category-dd', 'tpl');
-      $tpl = new tpl();
-      $tpl -> tplString = $tmpstr;
+      $tpl = new tpl($tmpstr);
       $loopString = $tpl -> getLoopString('{@}');
       foreach ($categoryAry as $myKey => $myVal)
       {
@@ -150,8 +148,7 @@ class ui extends console\page {
       $tmpstr = tpl::parse($tmpstr);
       return $tmpstr;
     };
-    $tpl = new tpl();
-    $tpl -> tplString = $tmpstr;
+    $tpl = new tpl($tmpstr);
     $loopString = $tpl -> getLoopString('{@}');
     foreach ($categoryAry as $myKey => $myVal)
     {
@@ -237,8 +234,7 @@ class ui extends console\page {
     {
       $account = self::account();
       $tmpstr = tpl::take('manage.list', 'tpl');
-      $tpl = new tpl();
-      $tpl -> tplString = $tmpstr;
+      $tpl = new tpl($tmpstr);
       $loopString = $tpl -> getLoopString('{@}');
       $table = tpl::take('config.db_table', 'cfg');
       $prefix = tpl::take('config.db_prefix', 'cfg');
@@ -280,8 +276,7 @@ class ui extends console\page {
     {
       $langAry = tpl::take('::sel_lang.*', 'lng');
       $tmpstr = tpl::take('manage.category', 'tpl');
-      $tpl = new tpl();
-      $tpl -> tplString = $tmpstr;
+      $tpl = new tpl($tmpstr);
       $loopString = $tpl -> getLoopString('{@}');
       foreach ($langAry as $key => $val)
       {

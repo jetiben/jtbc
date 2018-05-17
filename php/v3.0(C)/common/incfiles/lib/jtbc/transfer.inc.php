@@ -77,8 +77,7 @@ namespace jtbc {
       if (is_array($myAry) && !empty($myAry))
       {
         $rsindex = 1;
-        $tpl = new tpl();
-        $tpl -> tplString = $tmpstr;
+        $tpl = new tpl($tmpstr);
         $loopString = $tpl -> getLoopString('{@}');
         foreach ($myAry as $myKey => $myVal)
         {
@@ -164,8 +163,7 @@ namespace jtbc {
       if (is_array($myAry) && !empty($myAry))
       {
         $rsindex = 1;
-        $tpl = new tpl();
-        $tpl -> tplString = $tmpstr;
+        $tpl = new tpl($tmpstr);
         $loopString = $tpl -> getLoopString('{@}');
         foreach ($myAry as $myKey => $myVal)
         {
@@ -331,8 +329,7 @@ namespace jtbc {
         if (is_array($myAry) && !empty($myAry))
         {
           $rsindex = 1;
-          $tpl = new tpl();
-          $tpl -> tplString = $tmpstr;
+          $tpl = new tpl($tmpstr);
           $loopString = $tpl -> getLoopString('{@}');
           foreach ($myAry as $myKey => $myVal)
           {
@@ -520,8 +517,7 @@ namespace jtbc {
         if (is_array($myAry) && !empty($myAry))
         {
           $rsindex = 1;
-          $tpl = new tpl();
-          $tpl -> tplString = $tmpstr;
+          $tpl = new tpl($tmpstr);
           $loopString = $tpl -> getLoopString('{@}');
           foreach ($myAry as $myKey => $myVal)
           {

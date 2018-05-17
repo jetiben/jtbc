@@ -17,8 +17,7 @@ class ui extends page {
     if (!is_null($db))
     {
       $tmpstr = tpl::take('index.list', 'tpl');
-      $tpl = new tpl();
-      $tpl -> tplString = $tmpstr;
+      $tpl = new tpl($tmpstr);
       $loopString = $tpl -> getLoopString('{@}');
       $table = tpl::take('config.db_table', 'cfg');
       $prefix = tpl::take('config.db_prefix', 'cfg');

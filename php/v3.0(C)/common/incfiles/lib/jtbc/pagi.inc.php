@@ -69,8 +69,7 @@ namespace jtbc {
       {
         if (strpos($tplId, '.')) $tmpstr = tpl::take($tplId, 'tpl');
         else $tmpstr = tpl::take('global.config.' . $tplId, 'tpl');
-        $tpl = new tpl();
-        $tpl -> tplString = $tmpstr;
+        $tpl = new tpl($tmpstr);
         $loopString = $tpl -> getLoopString('{@}');
         if ($num1 < 1) $num1 = 1;
         if ($num1 > $num2) $num1 = $num2;

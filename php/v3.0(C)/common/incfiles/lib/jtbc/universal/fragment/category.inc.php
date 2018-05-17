@@ -21,8 +21,7 @@ namespace jtbc\universal\fragment {
         $myCategory = $account -> getCurrentGenrePopedom('category');
         $categoryAry = universal\category::getCategoryAryByGenre(self::getPara('genre'), $account -> getLang());
         $tmpstr = tpl::take('manage.category', 'tpl');
-        $tpl = new tpl();
-        $tpl -> tplString = $tmpstr;
+        $tpl = new tpl($tmpstr);
         $loopString = $tpl -> getLoopString('{@}');
         foreach ($categoryAry as $myKey => $myVal)
         {

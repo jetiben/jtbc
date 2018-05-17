@@ -312,8 +312,7 @@ namespace jtbc\console {
       $folderAry = explode('|+|', $folder);
       $tmpstr = $tpl1;
       if (!base::isEmpty($pre)) $tmpstr = $tpl2;
-      $tpl = new tpl();
-      $tpl -> tplString = $tmpstr;
+      $tpl = new tpl($tmpstr);
       $loopString = $tpl -> getLoopString('{@}');
       foreach($folderAry as $key => $val)
       {

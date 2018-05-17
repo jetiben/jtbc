@@ -65,8 +65,7 @@ class ui extends page {
       $allLangAry = tpl::take('::sel_lang.*', 'lng');
       $currentLang = tpl::take('::sel_lang.' . $lang, 'lng');
       $tmpstr = tpl::take('manage.getlang', 'tpl');
-      $tpl = new tpl();
-      $tpl -> tplString = $tmpstr;
+      $tpl = new tpl($tmpstr);
       $loopString = $tpl -> getLoopString('{@}');
       foreach ($allLangAry as $key => $val)
       {

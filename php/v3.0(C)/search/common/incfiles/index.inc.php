@@ -18,8 +18,7 @@ class ui extends page {
     if (!is_null($db))
     {
       $tmpstr = tpl::take('index.list', 'tpl');
-      $tpl = new tpl();
-      $tpl -> tplString = $tmpstr;
+      $tpl = new tpl($tmpstr);
       $loopString = $tpl -> getLoopString('{@}');
       $sqlstr = "select * from (";
       $folder = route::getFolderByGuide('search');

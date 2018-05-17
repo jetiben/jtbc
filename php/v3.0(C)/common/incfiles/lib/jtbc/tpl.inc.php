@@ -622,8 +622,7 @@ namespace jtbc {
       if (is_array($xmlAry))
       {
         $tmpstr = self::take($tpl, 'tpl');
-        $tpl = new tpl();
-        $tpl -> tplString = $tmpstr;
+        $tpl = new tpl($tmpstr);
         $loopString = $tpl -> getLoopString('{@}');
         foreach ($xmlAry as $key => $val)
         {
@@ -673,6 +672,11 @@ namespace jtbc {
       return $tmpstr;
     }
 
+    function __construct($argTplString = null)
+    {
+      $tplString = $argTplString;
+      if (!is_null($tplString)) $this -> tplString = $tplString;
+    }
   }
 }
 //******************************//

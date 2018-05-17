@@ -134,8 +134,7 @@ class ui extends console\page {
       else
       {
         $tmpstr = tpl::take('manage.list', 'tpl');
-        $tpl = new tpl();
-        $tpl -> tplString = $tmpstr;
+        $tpl = new tpl($tmpstr);
         $loopString = $tpl -> getLoopString('{@}');
         $table = tpl::take('config.db_table', 'cfg');
         $prefix = tpl::take('config.db_prefix', 'cfg');
