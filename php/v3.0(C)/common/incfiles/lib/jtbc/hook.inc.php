@@ -7,11 +7,39 @@ namespace jtbc {
   {
     private static $hooks = array();
 
-    public static function add($argName, $argCallback)
+    public static function add($argName, $argFunction)
     {
       $name = $argName;
-      $callback = $argCallback;
-      self::$hooks[$name] = $callback;
+      $function = $argFunction;
+      $hooks = self::$hooks;
+      if (!array_key_exists($name, $hooks))
+      {
+        self::appoint($name, $function);
+      }
+      else
+      {
+        $hook = $hooks[$name];
+        if (is_object($hook))
+        {
+          $group = array();
+          array_unshift($group, $hook);
+          array_unshift($group, $function);
+          self::appoint($name, $group);
+        }
+        else if (is_array($hook))
+        {
+          array_unshift($hook, $function);
+          self::appoint($name, $hook);
+        }
+        else self::appoint($name, $function);
+      }
+    }
+
+    public static function appoint($argName, $argFunction)
+    {
+      $name = $argName;
+      $function = $argFunction;
+      self::$hooks[$name] = $function;
     }
 
     public static function remove($argName)
@@ -36,11 +64,12 @@ namespace jtbc {
         $name = $args[0];
         if (array_key_exists($name, $hooks))
         {
-          $function = $hooks[$name];
-          if (is_object($function))
+          $hook = $hooks[$name];
+          $trigger = function($argHook) use ($args, &$result)
           {
+            $myHook = $argHook;
             $length = count($args);
-            if ($length == 1) $result = $function();
+            if ($length == 1) $result = $myHook();
             else
             {
               $myArgs = array();
@@ -48,7 +77,15 @@ namespace jtbc {
               {
                 array_push($myArgs, $args[$i]);
               }
-              $result = call_user_func_array($function, $myArgs);
+              $result = call_user_func_array($myHook, $myArgs);
+            }
+          };
+          if (is_object($hook)) $trigger($hook);
+          else if (is_array($hook))
+          {
+            foreach ($hook as $key => $val)
+            {
+              if (is_object($val)) $trigger($val);
             }
           }
         }
