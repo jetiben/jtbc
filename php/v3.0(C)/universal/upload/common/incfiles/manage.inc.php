@@ -7,16 +7,10 @@ class ui extends console\page {
   }
   public static $batch = array('delete');
 
-  public static function doActionBatchDeleteCallback($argIds)
+  public static function start()
   {
-    $ids = $argIds;
-    universal\upload::unlinkByIds($ids);
-  }
-
-  public static function doActionDeleteCallback($argId)
-  {
-    $id = $argId;
-    universal\upload::unlinkByIds($id);
+    hook::add('doActionDeleteCallback', function($argId){ universal\upload::unlinkByIds($argId); });
+    hook::add('doActionBatchDeleteCallback', function($argIds){ universal\upload::unlinkByIds($argIds); });
   }
 
   public static function moduleList()

@@ -5,6 +5,7 @@
 namespace jtbc\console\fragment {
   use jtbc\base;
   use jtbc\conn;
+  use jtbc\hook;
   use jtbc\tpl;
   use jtbc\request;
   trait util
@@ -31,8 +32,7 @@ namespace jtbc\console\fragment {
             if ($db -> fieldSwitch($table, $prefix, 'delete', $ids))
             {
               $status = 1;
-              $callback = 'doActionBatchDeleteCallback';
-              if (method_exists($class, $callback)) call_user_func(array($class, $callback), $ids);
+              hook::trigger('doActionBatchDeleteCallback', $ids);
             }
           }
           else if ($batch == 'dispose' && in_array('dispose', $batchAry) && $account -> checkCurrentGenrePopedom('dispose'))
@@ -40,8 +40,7 @@ namespace jtbc\console\fragment {
             if ($db -> fieldSwitch($table, $prefix, 'dispose', $ids))
             {
               $status = 1;
-              $callback = 'doActionBatchDisposeCallback';
-              if (method_exists($class, $callback)) call_user_func(array($class, $callback), $ids);
+              hook::trigger('doActionBatchDisposeCallback', $ids);
             }
           }
           else if ($batch == 'lock' && in_array('lock', $batchAry) && $account -> checkCurrentGenrePopedom('lock'))
@@ -49,8 +48,7 @@ namespace jtbc\console\fragment {
             if ($db -> fieldSwitch($table, $prefix, 'lock', $ids))
             {
               $status = 1;
-              $callback = 'doActionBatchLockCallback';
-              if (method_exists($class, $callback)) call_user_func(array($class, $callback), $ids);
+              hook::trigger('doActionBatchLockCallback', $ids);
             }
           }
           else if ($batch == 'publish' && in_array('publish', $batchAry) && $account -> checkCurrentGenrePopedom('publish'))
@@ -58,8 +56,7 @@ namespace jtbc\console\fragment {
             if ($db -> fieldSwitch($table, $prefix, 'publish', $ids))
             {
               $status = 1;
-              $callback = 'doActionBatchPublishCallback';
-              if (method_exists($class, $callback)) call_user_func(array($class, $callback), $ids);
+              hook::trigger('doActionBatchPublishCallback', $ids);
             }
           }
         }
@@ -94,8 +91,7 @@ namespace jtbc\console\fragment {
           if ($db -> fieldSwitch($table, $prefix, 'delete', $id, 1))
           {
             $status = 1;
-            $callback = 'doActionDeleteCallback';
-            if (method_exists($class, $callback)) call_user_func(array($class, $callback), $id);
+            hook::trigger('doActionDeleteCallback', $id);
             $account -> creatCurrentGenreLog('manage.log-delete-1', array('id' => $id));
           }
         }
