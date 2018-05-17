@@ -9,8 +9,8 @@ class ui extends console\page {
 
   public static function start()
   {
-    hook::add('doActionDeleteCallback', function($argId){ universal\upload::unlinkByIds($argId); });
-    hook::add('doActionBatchDeleteCallback', function($argIds){ universal\upload::unlinkByIds($argIds); });
+    hook::add('doActionDeleteDone', function($argId){ universal\upload::unlinkByIds($argId); });
+    hook::add('doActionBatchDeleteDone', function($argIds){ universal\upload::unlinkByIds($argIds); });
   }
 
   public static function moduleList()

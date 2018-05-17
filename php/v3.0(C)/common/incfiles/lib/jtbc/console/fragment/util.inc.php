@@ -32,7 +32,7 @@ namespace jtbc\console\fragment {
             if ($db -> fieldSwitch($table, $prefix, 'delete', $ids))
             {
               $status = 1;
-              hook::trigger('doActionBatchDeleteCallback', $ids);
+              hook::trigger('doActionBatchDeleteDone', $ids);
             }
           }
           else if ($batch == 'dispose' && in_array('dispose', $batchAry) && $account -> checkCurrentGenrePopedom('dispose'))
@@ -40,7 +40,7 @@ namespace jtbc\console\fragment {
             if ($db -> fieldSwitch($table, $prefix, 'dispose', $ids))
             {
               $status = 1;
-              hook::trigger('doActionBatchDisposeCallback', $ids);
+              hook::trigger('doActionBatchDisposeDone', $ids);
             }
           }
           else if ($batch == 'lock' && in_array('lock', $batchAry) && $account -> checkCurrentGenrePopedom('lock'))
@@ -48,7 +48,7 @@ namespace jtbc\console\fragment {
             if ($db -> fieldSwitch($table, $prefix, 'lock', $ids))
             {
               $status = 1;
-              hook::trigger('doActionBatchLockCallback', $ids);
+              hook::trigger('doActionBatchLockDone', $ids);
             }
           }
           else if ($batch == 'publish' && in_array('publish', $batchAry) && $account -> checkCurrentGenrePopedom('publish'))
@@ -56,7 +56,7 @@ namespace jtbc\console\fragment {
             if ($db -> fieldSwitch($table, $prefix, 'publish', $ids))
             {
               $status = 1;
-              hook::trigger('doActionBatchPublishCallback', $ids);
+              hook::trigger('doActionBatchPublishDone', $ids);
             }
           }
         }
@@ -91,7 +91,7 @@ namespace jtbc\console\fragment {
           if ($db -> fieldSwitch($table, $prefix, 'delete', $id, 1))
           {
             $status = 1;
-            hook::trigger('doActionDeleteCallback', $id);
+            hook::trigger('doActionDeleteDone', $id);
             $account -> creatCurrentGenreLog('manage.log-delete-1', array('id' => $id));
           }
         }
