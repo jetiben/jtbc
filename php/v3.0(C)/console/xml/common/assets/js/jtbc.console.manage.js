@@ -20,14 +20,15 @@ jtbc.console.manage = {
         };
         if (typeof Promise !== 'undefined')
         {
-          var currentHintBase = ["breadcrumb", "createURL", "encodeText", "encodeTextArea", "formatDate", "formatFileSize", "formatLine", "get", "getActualRoute", "getDateTime", "getJsonPara", "getLeft", "getLeftB", "getLRStr", "getNum", "getPagePara", "getPageTitle", "getPara", "getParameter", "getRandomString", "getRemortIP", "getRepeatedString", "getRight", "getSwapString", "htmlEncode", "pagi", "replaceQuerystring", "take", "takeAndFormat", "takeByNode", "transfer", "xmlSelect"];
+          var currentHintBase = ['breadcrumb', 'createURL', 'encodeText', 'encodeTextArea', 'formatDate', 'formatFileSize', 'formatLine', 'get', 'getActualRoute', 'getDateTime', 'getJsonPara', 'getLeft', 'getLeftB', 'getLRStr', 'getNum', 'getPagePara', 'getPageTitle', 'getPara', 'getParameter', 'getRandomString', 'getRemortIP', 'getRepeatedString', 'getRight', 'getSwapString', 'htmlEncode', 'pagi', 'replaceQuerystring', 'take', 'takeAndFormat', 'takeByNode', 'transfer', 'xmlSelect'];
+          currentHintBase.push('$address', '$author', '$att', '$category', '$color', '$content', '$date', '$description', '$email', '$file', '$group', '$height', '$keyword', '$keywords', '$intro', '$id', '$image', '$language', '$leader', '$length', '$linkurl', '$mobile', '$name', '$phone', '$photo', '$position', '$rank', '$size', '$source', '$subtitle', '$status', '$template', '$title', '$topic', '$time', '$type', '$url', '$upload', '$userip', '$width');
           var currentHintFunction = function(cm, option) {
             return new Promise(function(accept)
             {
               setTimeout(function() {
                 var cursor = cm.getCursor(), line = cm.getLine(cursor.line);
                 var start = cursor.ch, end = cursor.ch;
-                while (start && /\w/.test(line.charAt(start - 1))) --start;
+                while (start && /\$|\w/.test(line.charAt(start - 1))) --start;
                 while (end < line.length && /\w/.test(line.charAt(end))) ++end;
                 var word = line.slice(start, end);
                 if (word)
@@ -38,10 +39,11 @@ jtbc.console.manage = {
                   {
                     if (currentHintBase[i].indexOf(word) == 0 && currentHintBase[i] != word) showlist.push(currentHintBase[i]);
                   };
-                  if (showlist.length != 0)
+                  if (showlist.length >= 2)
                   {
                     return accept({list: showlist, from: CodeMirror.Pos(cursor.line, start), to: CodeMirror.Pos(cursor.line, end)});
-                  };
+                  }
+                  else return accept(null);
                 };
                 return accept(null);
               }, 100);
@@ -52,7 +54,7 @@ jtbc.console.manage = {
         tthis.para['codemirror'] = CodeMirror.fromTextArea(document.getElementById('codemirror'), codemirrorOption);
         if (typeof codemirrorOption.hintOptions == 'object')
         {
-          tthis.para['codemirror'].on('change', function() { tthis.para['codemirror'].showHint(); });
+          tthis.para['codemirror'].on('keypress', function() { tthis.para['codemirror'].showHint(); });
         };
       }, 50);
     };
