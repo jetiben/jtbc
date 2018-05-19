@@ -151,13 +151,12 @@ class ui extends console\page {
           $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
           $tpl -> insertLoopLine(tpl::parse($loopLineString));
         }
-        $tmpstr = $tpl -> mergeTemplate() -> getTpl();
         $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
         $variable['-batch-list'] = implode(',', $batchAry);
         $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
         $variable['-current-genre'] = $genre;
         $variable['-current-fid'] = $fid;
-        $tmpstr = tpl::replaceTagByAry($tmpstr, $variable);
+        $tmpstr = $tpl -> assign($variable) -> getTpl();
         $tmpstr = str_replace('{$-allgenre-select}', universal\category::getAllGenreSelect($allGenre, $genre), $tmpstr);
         $tmpstr = str_replace('{$-path-nav}', self::ppGetPathNav($genre, $fid), $tmpstr);
         $tmpstr = tpl::parse($tmpstr);

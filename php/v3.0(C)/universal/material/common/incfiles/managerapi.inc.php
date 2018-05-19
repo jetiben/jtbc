@@ -61,12 +61,11 @@ class ui extends console\page {
         $loopLineString = str_replace('{$-topic-keyword-highlight}', base::replaceKeyWordHighlight(base::htmlEncode(base::replaceKeyWordHighlight($rsTopic, $keyword))), $loopLineString);
         $tpl -> insertLoopLine(tpl::parse($loopLineString));
       }
-      $tmpstr = $tpl -> mergeTemplate() -> getTpl();
       $variable['-selectmode'] = $selectmode;
       $variable['-filegroup'] = $filegroup;
       $variable['-sort'] = $sort;
       $variable['-keyword'] = $keyword;
-      $tmpstr = tpl::replaceTagByAry($tmpstr, $variable);
+      $tmpstr = $tpl -> assign($variable) -> getTpl();
       $tmpstr = tpl::parse($tmpstr);
     }
     $tmpstr = self::formatResult($status, $tmpstr);

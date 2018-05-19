@@ -658,7 +658,7 @@ namespace jtbc {
           $loopLineString = str_replace('{$val}', base::htmlEncode($val), $loopLineString);
           $tpl -> insertLoopLine($loopLineString);
         }
-        $tmpstr = $tpl -> mergeTemplate() -> getTpl();
+        $tmpstr = $tpl -> getTpl();
         $tmpstr = self::parse($tmpstr);
       }
       return $tmpstr;

@@ -80,7 +80,7 @@ class ui extends console\page {
           $tpl -> insertLoopLine($loopLineString);
           $nodeIndex += 1;
         }
-        $tmpstr = $tpl -> mergeTemplate() -> getTpl();
+        $tmpstr = $tpl -> getTpl();
         $tmpstr = str_replace('{$-current-key}', base::htmlEncode($currentNode), $tmpstr);
         $tmpstr = str_replace('{$-current-val}', base::htmlEncode($currentValue), $tmpstr);
       }

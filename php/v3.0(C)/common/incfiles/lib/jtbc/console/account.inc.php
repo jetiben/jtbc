@@ -348,7 +348,7 @@ namespace jtbc\console {
           }
         }
       }
-      $tmpstr = $tpl -> mergeTemplate() -> getTpl();
+      $tmpstr = $tpl -> getTpl();
       if ($has == false) $tmpstr = '';
       return $tmpstr;
     }

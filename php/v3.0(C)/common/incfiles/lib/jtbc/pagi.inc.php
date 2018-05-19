@@ -105,7 +105,7 @@ namespace jtbc {
             $tpl -> insertLoopLine($loopLineString);
           }
         }
-        $tmpstr = $tpl -> mergeTemplate() -> getTpl();
+        $tmpstr = $tpl -> getTpl();
         $tmpstr = str_replace('{$-page1}', $num1, $tmpstr);
         $tmpstr = str_replace('{$-page2}', $num2, $tmpstr);
         $tmpstr = str_replace('{$-firstpagelink}', base::htmlEncode(str_replace('[~page]', '1', $baseLink)), $tmpstr);

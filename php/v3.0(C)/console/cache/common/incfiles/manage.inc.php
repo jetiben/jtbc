@@ -31,11 +31,10 @@ class ui extends console\page {
           }
         }
       }
-      $tmpstr = $tpl -> mergeTemplate() -> getTpl();
       $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
       $variable['-batch-list'] = implode(',', $batchAry);
       $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
-      $tmpstr = tpl::replaceTagByAry($tmpstr, $variable);
+      $tmpstr = $tpl -> assign($variable) -> getTpl();
       $tmpstr = tpl::parse($tmpstr);
       $tmpstr = $account -> replaceAccountTag($tmpstr);
     }

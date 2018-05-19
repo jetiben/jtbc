@@ -77,7 +77,7 @@ class ui extends page {
           $tpl -> insertLoopLine($loopLineString);
         }
       }
-      $tmpstr = $tpl -> mergeTemplate() -> getTpl();
+      $tmpstr = $tpl -> getTpl();
       $tmpstr = str_replace('{$-current-lang-val}', base::htmlEncode($lang), $tmpstr);
       $tmpstr = str_replace('{$-current-lang-text}', base::htmlEncode($currentLang), $tmpstr);
       $tmpstr = tpl::parse($tmpstr);

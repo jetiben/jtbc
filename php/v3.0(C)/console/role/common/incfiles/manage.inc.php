@@ -107,7 +107,7 @@ class ui extends console\page {
         }
       }
     }
-    $tmpstr = $tpl -> mergeTemplate() -> getTpl();
+    $tmpstr = $tpl -> getTpl();
     if ($has == false) $tmpstr = '';
     return $tmpstr;
   }
@@ -144,7 +144,7 @@ class ui extends console\page {
           }
         }
       }
-      $tmpstr = $tpl -> mergeTemplate() -> getTpl();
+      $tmpstr = $tpl -> getTpl();
       $tmpstr = tpl::parse($tmpstr);
       return $tmpstr;
     };
@@ -169,7 +169,7 @@ class ui extends console\page {
         }
       }
     }
-    $tmpstr = $tpl -> mergeTemplate() -> getTpl();
+    $tmpstr = $tpl -> getTpl();
     $tmpstr = tpl::parse($tmpstr);
     return $tmpstr;
   }
@@ -282,7 +282,7 @@ class ui extends console\page {
         $loopLineString = str_replace('{$-select-category-html}', self::ppGetSelectCategoryHTML($genre, $key), $loopLineString);
         $tpl -> insertLoopLine($loopLineString);
       }
-      $tmpstr = $tpl -> mergeTemplate() -> getTpl();
+      $tmpstr = $tpl -> getTpl();
       $tmpstr = tpl::parse($tmpstr);
     }
     $tmpstr = self::formatResult($status, $tmpstr);
