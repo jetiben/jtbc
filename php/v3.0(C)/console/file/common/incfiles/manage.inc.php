@@ -86,7 +86,7 @@ class ui extends console\page {
         $tpl -> insertLoopLine($loopLineString);
       }
     }
-    $tmpstr = $tpl -> mergeTemplate();
+    $tmpstr = $tpl -> mergeTemplate() -> getTpl();
     $tmpstr = str_replace('{$-path}', base::htmlEncode($path), $tmpstr);
     $tmpstr = str_replace('{$-path-nav}', $pathnavHTML, $tmpstr);
     $tmpstr = tpl::parse($tmpstr);

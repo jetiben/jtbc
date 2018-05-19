@@ -106,16 +106,12 @@ class ui extends console\page {
           $tpl -> insertLoopLine(tpl::parse($loopLineString));
         }
       }
-      $tmpstr = $tpl -> mergeTemplate();
       $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
       $variable['-batch-list'] = implode(',', $batchAry);
       $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
-      $variable['-pagi-rscount'] = $pagi -> rscount;
-      $variable['-pagi-pagenum'] = $pagi -> pagenum;
-      $variable['-pagi-pagetotal'] = $pagi -> pagetotal;
       $variable['-keyword'] = $keyword;
       $variable['-category'] = $category;
-      $tmpstr = tpl::replaceTagByAry($tmpstr, $variable);
+      $tmpstr = $tpl -> assign($variable) -> assign($pagi -> getVars()) -> getTpl();
       $tmpstr = str_replace('{$-category-nav}', universal\category::getCategoryNavByID(self::getPara('genre'), $account -> getLang(), $category), $tmpstr);
       $tmpstr = tpl::parse($tmpstr);
       $tmpstr = $account -> replaceAccountTag($tmpstr);

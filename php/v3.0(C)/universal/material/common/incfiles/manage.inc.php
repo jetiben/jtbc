@@ -69,14 +69,10 @@ class ui extends console\page {
           $tpl -> insertLoopLine(tpl::parse($loopLineString));
         }
       }
-      $tmpstr = $tpl -> mergeTemplate();
       $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
       $variable['-batch-list'] = implode(',', $batchAry);
       $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
-      $variable['-pagi-rscount'] = $pagi -> rscount;
-      $variable['-pagi-pagenum'] = $pagi -> pagenum;
-      $variable['-pagi-pagetotal'] = $pagi -> pagetotal;
-      $tmpstr = tpl::replaceTagByAry($tmpstr, $variable);
+      $tmpstr = $tpl -> assign($variable) -> assign($pagi -> getVars()) -> getTpl();
       $tmpstr = tpl::parse($tmpstr);
       $tmpstr = $account -> replaceAccountTag($tmpstr);
     }

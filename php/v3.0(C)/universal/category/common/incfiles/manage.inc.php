@@ -151,7 +151,7 @@ class ui extends console\page {
           $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
           $tpl -> insertLoopLine(tpl::parse($loopLineString));
         }
-        $tmpstr = $tpl -> mergeTemplate();
+        $tmpstr = $tpl -> mergeTemplate() -> getTpl();
         $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
         $variable['-batch-list'] = implode(',', $batchAry);
         $variable['-batch-show'] = empty($batchAry) ? 0 : 1;

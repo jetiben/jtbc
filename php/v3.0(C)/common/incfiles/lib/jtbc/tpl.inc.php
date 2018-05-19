@@ -14,6 +14,24 @@ namespace jtbc {
     public static $counter = 0;
     public static $para = array();
 
+    public function assign()
+    {
+      $args = func_get_args();
+      if (!empty($args))
+      {
+        if (count($args) == 1)
+        {
+          $ary = $args[0];
+          if (is_array($ary))
+          {
+            foreach ($ary as $key => $val) $this -> strReplace('{$' . $key . '}', base::htmlEncode($val));
+          }
+        }
+        else if (count($args) == 2) $this -> strReplace('{$' . $args[0] . '}', base::htmlEncode($args[1]));
+      }
+      return $this;
+    }
+
     public function changeTemplate(&$templatestr, $argDistinstr)
     {
       $tmpstr = '';
@@ -38,17 +56,25 @@ namespace jtbc {
       return $tmpstr;
     }
 
+    public function getTpl($argAutoMerge = true)
+    {
+      $autoMerge = $argAutoMerge;
+      if ($autoMerge == true) $this -> mergeTemplate();
+      return $this -> tplString;
+    }
+
     public function insertLoopLine($argString)
     {
       $string = $argString;
       $this -> tplRString .= $string;
+      return $this;
     }
 
     public function mergeTemplate()
     {
       $this -> tplString = str_replace($this -> tplCString, $this -> tplRString, $this -> tplString);
       $tmpstr = $this -> tplString;
-      return $tmpstr;
+      return $this;
     }
 
     public function strReplace($argString1, $argString2)
@@ -58,6 +84,7 @@ namespace jtbc {
       $tmpstr = $this -> tplString;
       $tmpstr = str_replace($string1, $string2, $tmpstr);
       $this -> tplString = $tmpstr;
+      return $this;
     }
 
     public static function bring($argCodeName, $argType = 'tpl', $argValue = '', $argNodeName = null)
@@ -631,7 +658,7 @@ namespace jtbc {
           $loopLineString = str_replace('{$val}', base::htmlEncode($val), $loopLineString);
           $tpl -> insertLoopLine($loopLineString);
         }
-        $tmpstr = $tpl -> mergeTemplate();
+        $tmpstr = $tpl -> mergeTemplate() -> getTpl();
         $tmpstr = self::parse($tmpstr);
       }
       return $tmpstr;

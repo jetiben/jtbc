@@ -95,7 +95,7 @@ namespace jtbc {
           }
           $rsindex += 1;
         }
-        $tmpstr = $tpl -> mergeTemplate();
+        $tmpstr = $tpl -> mergeTemplate() -> getTpl();
         $tmpstr = tpl::parse($tmpstr);
       }
       else $tmpstr = '';
@@ -176,7 +176,7 @@ namespace jtbc {
           }
           $rsindex += 1;
         }
-        $tmpstr = $tpl -> mergeTemplate();
+        $tmpstr = $tpl -> mergeTemplate() -> getTpl();
         $tmpstr = tpl::parse($tmpstr);
       }
       else $tmpstr = '';
@@ -342,7 +342,7 @@ namespace jtbc {
             }
             $rsindex += 1;
           }
-          $tmpstr = $tpl -> mergeTemplate();
+          $tmpstr = $tpl -> mergeTemplate() -> getTpl();
           $tmpstr = tpl::replaceTagByAry($tmpstr, array('-lang' => $paraLang, '-baseurl' => $paraBaseURL));
           $tmpstr = tpl::parse($tmpstr);
         }
@@ -530,7 +530,7 @@ namespace jtbc {
             }
             $rsindex += 1;
           }
-          $tmpstr = $tpl -> mergeTemplate();
+          $tmpstr = $tpl -> mergeTemplate() -> getTpl();
           $tmpstr = tpl::replaceTagByAry($tmpstr, array('-genre' => $paraGenre, '-lang' => $paraLang, '-baseurl' => $paraBaseURL));
           $tmpstr = tpl::parse($tmpstr);
         }

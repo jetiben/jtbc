@@ -35,11 +35,7 @@ class ui extends page {
           $tpl -> insertLoopLine(tpl::parse($loopLineString));
         }
       }
-      $tmpstr = $tpl -> mergeTemplate();
-      $variable['-pagi-rscount'] = $pagi -> rscount;
-      $variable['-pagi-pagenum'] = $pagi -> pagenum;
-      $variable['-pagi-pagetotal'] = $pagi -> pagetotal;
-      $tmpstr = tpl::replaceTagByAry($tmpstr, $variable);
+      $tmpstr = $tpl -> assign($pagi -> getVars()) -> getTpl();
       $tmpstr = tpl::parse($tmpstr);
     }
     return $tmpstr;

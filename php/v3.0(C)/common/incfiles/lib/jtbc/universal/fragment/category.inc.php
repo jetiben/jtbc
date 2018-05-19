@@ -36,7 +36,7 @@ namespace jtbc\universal\fragment {
             }
           }
         }
-        $tmpstr = $tpl -> mergeTemplate();
+        $tmpstr = $tpl -> mergeTemplate() -> getTpl();
         $tmpstr = tpl::parse($tmpstr);
       }
       $tmpstr = self::formatResult($status, $tmpstr);

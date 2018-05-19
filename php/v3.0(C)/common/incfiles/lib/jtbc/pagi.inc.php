@@ -54,6 +54,17 @@ namespace jtbc {
       return $dataAry;
     }
 
+    public function getVars()
+    {
+      $var = array();
+      $var['-pagi-rslimit'] = $this -> rslimit;
+      $var['-pagi-pagesize'] = $this -> pagesize;
+      $var['-pagi-rscount'] = $this -> rscount;
+      $var['-pagi-pagenum'] = $this -> pagenum;
+      $var['-pagi-pagetotal'] = $this -> pagetotal;
+      return $var;
+    }
+
     public static function pagi($argNum1, $argNum2, $argBaseLink, $argTplId = 'pagi-1', $argPagiId = 'pagi', $argPagiLen = 5)
     {
       $tmpstr = '';
@@ -94,7 +105,7 @@ namespace jtbc {
             $tpl -> insertLoopLine($loopLineString);
           }
         }
-        $tmpstr = $tpl -> mergeTemplate();
+        $tmpstr = $tpl -> mergeTemplate() -> getTpl();
         $tmpstr = str_replace('{$-page1}', $num1, $tmpstr);
         $tmpstr = str_replace('{$-page2}', $num2, $tmpstr);
         $tmpstr = str_replace('{$-firstpagelink}', base::htmlEncode(str_replace('[~page]', '1', $baseLink)), $tmpstr);
