@@ -1,5 +1,5 @@
 <?php
-require_once('const.inc.php');
+require_once('const.php');
 
 function require_once_this_file_inc($argFile)
 {

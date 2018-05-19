@@ -74,7 +74,7 @@ class ui extends page {
                 $re = $db -> exec($sqlstr);
                 if (is_numeric($re))
                 {
-                  $constPath = route::getActualRoute('common/incfiles/const.inc.php');
+                  $constPath = route::getActualRoute('common/incfiles/const.php');
                   $constContent = file_get_contents($constPath);
                   $constContent = str_replace('{$db_host}', $db_host, $constContent);
                   $constContent = str_replace('{$db_username}', $db_username, $constContent);
@@ -90,7 +90,7 @@ class ui extends page {
                     $fileBool1 = file_put_contents($indexPath, $indexContent);
                     $completePath = route::getActualRoute('complete.php');
                     $completeContent = '<?php' . chr(10);
-                    $completeContent .= 'require_once(\'common/incfiles/page.inc.php\');' . chr(10);
+                    $completeContent .= 'require_once(\'common/incfiles/jtbc.php\');' . chr(10);
                     $completeContent .= 'jtbc\\base::removeDir(\'_install\');' . chr(10);
                     $completeContent .= 'unlink(\'complete.php\');' . chr(10);
                     $completeContent .= 'header(\'location: ' . CONSOLEDIR . '\');' . chr(10);
