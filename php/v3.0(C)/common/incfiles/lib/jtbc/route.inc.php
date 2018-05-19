@@ -141,9 +141,9 @@ namespace jtbc {
     {
       $genre = '';
       $route = $argRoute;
-      $routeStr = $_SERVER['SCRIPT_NAME'];
-      $routeStr = base::getLRStr($routeStr, '/', 'leftr');
-      $ary = explode('/', $routeStr);
+      $routeStr = $_SERVER['SCRIPT_FILENAME'];
+      $routeStr = base::getLRStr($routeStr, DIRECTORY_SEPARATOR, 'leftr');
+      $ary = explode(DIRECTORY_SEPARATOR, $routeStr);
       $arycount = count($ary);
       switch ($route)
       {
