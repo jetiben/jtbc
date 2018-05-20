@@ -1,9 +1,15 @@
 <?php
 require_once('const.php');
 
-function require_once_this_file_inc($argFile)
+function require_inc($argFile)
 {
   require_once('common/incfiles/' . basename($argFile, '.php') . '.inc.php');
+}
+
+function require_inc_and_get_result($argFile)
+{
+  require_inc($argFile);
+  return jtbc\ui::getResult();
 }
 
 spl_autoload_register(function($argClass){
