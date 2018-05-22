@@ -86,6 +86,7 @@ class ui extends console\page {
       }
       $tmpstr = str_replace('{$-symbol}', base::htmlEncode($symbol), $tmpstr);
       $tmpstr = str_replace('{$-filepath}', base::htmlEncode($filepath), $tmpstr);
+      $tmpstr = str_replace('{$-realpath}', base::htmlEncode(route::formatPath($filepath)), $tmpstr);
     }
     $tmpstr = tpl::parse($tmpstr);
     $tmpstr = $account -> replaceAccountTag($tmpstr);

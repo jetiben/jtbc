@@ -123,6 +123,10 @@
       <zh-cn><![CDATA[姓名]]></zh-cn>
     </item>
     <item>
+      <name><![CDATA[path]]></name>
+      <zh-cn><![CDATA[路径]]></zh-cn>
+    </item>
+    <item>
       <name><![CDATA[phone]]></name>
       <zh-cn><![CDATA[电话]]></zh-cn>
     </item>

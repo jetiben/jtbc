@@ -34,6 +34,12 @@
       <table cellpadding="0" cellspacing="0" class="tableF">
         <tbody>
           <tr>
+            <td colspan="2"><span class="info-1">{$=take('global.config.path', 'lng')}: {$-realpath}</span></td>
+          </tr>
+          <tr>
+            <td colspan="2" height="20"></td>
+          </tr>
+          <tr>
             <td colspan="2"><div class="CodeMirrorContent"><textarea id="codemirror" name="content" class="hide">{$-current-val}</textarea></div></td>
           </tr>
           <tr>

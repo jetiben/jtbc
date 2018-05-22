@@ -107,6 +107,17 @@ namespace jtbc {
       return $tmpstr;
     }
 
+    public static function formatPath($argFilePath)
+    {
+      $formatPath = '';
+      $filePath = $argFilePath;
+      $realFilePath = realpath($filePath);
+      $basePath = realpath(self::getActualRoute('./'));
+      $formatPath = base::getLRStr($realFilePath, $basePath, 'rightr');
+      $formatPath = str_replace(DIRECTORY_SEPARATOR, '/', $formatPath);
+      return $formatPath;
+    }
+
     public static function getActualRoute($argRoutestr = '', $argType = 0)
     {
       $route = '';
