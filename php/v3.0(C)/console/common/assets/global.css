@@ -1006,6 +1006,9 @@ icons icon a.link {
 .upload_status_2 {
   background-color: #ff0000
 }
+.mce-fullscreen.mce-container {
+  z-index: 100000
+}
 .mce-fullscreen .console .container {
   z-index: 100000
 }
