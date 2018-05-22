@@ -309,20 +309,43 @@ namespace jtbc {
         $fieldLength = count($fieldArys);
         if ($fieldLength >= 2)
         {
+          $alias = array();
           if (!in_array($keyword, $fieldArys)) $keyword = $fieldArys[1];
           $query = '//xml/' . $base . '/' . $node;
           $rests = $xpath -> query($query);
           foreach ($rests as $rest)
           {
+            $nodeName = $rest -> getElementsByTagName(current($fieldArys)) -> item(0) -> nodeValue;
             $nodeDom = $rest -> getElementsByTagName($keyword);
             if ($nodeDom -> length == 0) $nodeDom = $rest -> getElementsByTagName($fieldArys[1]);
             $nodeDomObj = $nodeDom -> item(0);
             $nodeDomValue = $nodeDomObj -> nodeValue;
             if (!is_null($type) && base::isEmpty($nodeDomValue))
             {
-              if ($nodeDomObj -> hasAttribute('pointer')) $nodeDomValue = self::take($nodeDomObj -> getAttribute('pointer'), $type);
+              if ($nodeDomObj -> hasAttribute('pointer'))
+              {
+                $pointer = $nodeDomObj -> getAttribute('pointer');
+                if (!is_numeric(strpos($pointer, '.'))) $alias[$nodeName] = $pointer;
+                else $nodeDomValue = self::take($pointer, $type);
+              }
             }
-            $info[$rest -> getElementsByTagName(current($fieldArys)) -> item(0) -> nodeValue] = $nodeDomValue;
+            if ($type == 'tpl' && base::isMobileAgent())
+            {
+              if ($nodeDomObj -> hasAttribute('pointer-mobile'))
+              {
+                $pointerMobile = $nodeDomObj -> getAttribute('pointer-mobile');
+                if (!is_numeric(strpos($pointerMobile, '.'))) $alias[$nodeName] = $pointerMobile;
+                else $nodeDomValue = self::take($pointerMobile, $type);
+              }
+            }
+            $info[$nodeName] = $nodeDomValue;
+          }
+          if (!empty($alias))
+          {
+            foreach ($alias as $key => $val)
+            {
+              if (array_key_exists($val, $info)) $info[$key] = $info[$val];
+            }
           }
         }
       }
@@ -551,77 +574,78 @@ namespace jtbc {
       }
       if (is_array($codename))
       {
-        $codenameLength = count($codename);
-        if ($codenameLength == 2)
+        $result = array();
+        foreach ($codename as $key => $val)
         {
-          $newcodename = $codename[0];
-          if (base::isMobileAgent()) $newcodename = $codename[1];
-          $codename = $newcodename;
+          $result[$val] = self::take($val, $type, $parse, $vars, $nodeName);
         }
       }
-      $codename = self::getAbbrTransKey($codename);
-      $routeStr = self::getXMLRoute($codename, $type);
-      $keywords = base::getLRStr($codename, '.', 'right');
-      $activeValue = self::getActiveValue($type);
-      if (!base::isEmpty($nodeName)) $activeValue = $nodeName;
-      $globalStr = $routeStr;
-      $globalStr = str_replace('../', '', $globalStr);
-      $globalStr = str_replace(XMLSFX, '', $globalStr);
-      $globalStr = str_replace('/', '_', $globalStr);
-      $globalStr = APPNAME . $globalStr . '_' . $activeValue;
-      if (!is_array(@$GLOBALS[$globalStr])) $GLOBALS[$globalStr] = self::getXMLInfo($routeStr, $activeValue, $type);
-      if (isset($GLOBALS[$globalStr][$keywords]))
+      if (!is_array($result))
       {
-        $result = $GLOBALS[$globalStr][$keywords];
-        if ($type == 'cfg')
+        $codename = self::getAbbrTransKey($codename);
+        $routeStr = self::getXMLRoute($codename, $type);
+        $keywords = base::getLRStr($codename, '.', 'right');
+        $activeValue = self::getActiveValue($type);
+        if (!base::isEmpty($nodeName)) $activeValue = $nodeName;
+        $globalStr = $routeStr;
+        $globalStr = str_replace('../', '', $globalStr);
+        $globalStr = str_replace(XMLSFX, '', $globalStr);
+        $globalStr = str_replace('/', '_', $globalStr);
+        $globalStr = APPNAME . $globalStr . '_' . $activeValue;
+        if (!is_array(@$GLOBALS[$globalStr])) $GLOBALS[$globalStr] = self::getXMLInfo($routeStr, $activeValue, $type);
+        if (isset($GLOBALS[$globalStr][$keywords]))
         {
-          $result = str_replace('{$>db.table.prefix}', DB_TABLE_PREFIX, $result);
-        }
-        else if ($type == 'tpl')
-        {
-          $genre = route::getCurrentGenre();
-          $tthis = base::getLRStr($codename, '.', 'leftr');
-          $tthisGenre = $genre;
-          if (is_numeric(strpos($codename, ':'))) $tthisGenre = base::getLRStr(base::getLRStr($codename, ':', 'leftr'), 'global.', 'right');
-          $result = str_replace('{$>genre}', $genre, $result);
-          $result = str_replace('{$>now}', base::getDateTime(), $result);
-          $result = str_replace('{$>ns}', $ns . '\\', $result);
-          $result = str_replace('{$>this}', $tthis, $result);
-          $result = str_replace('{$>this.genre}', $tthisGenre, $result);
-          $result = str_replace('{$>genre.parent}', route::getGenreByAppellation('parent', $genre), $result);
-          $result = str_replace('{$>genre.grandparent}', route::getGenreByAppellation('grandparent', $genre), $result);
-          $result = str_replace('{$>genre.greatgrandparent}', route::getGenreByAppellation('greatgrandparent', $genre), $result);
-          $result = str_replace('{$>this.genre.parent}', route::getGenreByAppellation('parent', $tthisGenre), $result);
-          $result = str_replace('{$>this.genre.grandparent}', route::getGenreByAppellation('grandparent', $tthisGenre), $result);
-          $result = str_replace('{$>this.genre.greatgrandparent}', route::getGenreByAppellation('greatgrandparent', $tthisGenre), $result);
-        }
-        if (is_array($vars))
-        {
-          foreach ($vars as $key => $val) $result = str_replace('{$' . $key . '}', $val, $result);
-        }
-        else if (!empty($vars))
-        {
-          $jsonvars = json_decode($vars, 1);
-          if (is_array($jsonvars))
+          $result = $GLOBALS[$globalStr][$keywords];
+          if ($type == 'cfg')
           {
-            foreach ($jsonvars as $key => $val) $result = str_replace('{$' . $key . '}', $val, $result);
+            $result = str_replace('{$>db.table.prefix}', DB_TABLE_PREFIX, $result);
           }
-        }
-        if ($parse == 1) $result = self::parse($result);
-      }
-      if (base::isEmpty($result))
-      {
-        if ($keywords == '*') $result = $GLOBALS[$globalStr];
-        else if (is_numeric(strpos($keywords, ',')))
-        {
-          $result = array();
-          $tempResult = $GLOBALS[$globalStr];
-          $keywordsAry = explode(',', $keywords);
-          foreach($keywordsAry as $key => $val)
+          else if ($type == 'tpl')
           {
-            $value = '';
-            if (isset($tempResult[$val])) $value = $tempResult[$val];
-            $result[$val] = $value;
+            $genre = route::getCurrentGenre();
+            $tthis = base::getLRStr($codename, '.', 'leftr');
+            $tthisGenre = $genre;
+            if (is_numeric(strpos($codename, ':'))) $tthisGenre = base::getLRStr(base::getLRStr($codename, ':', 'leftr'), 'global.', 'right');
+            $result = str_replace('{$>genre}', $genre, $result);
+            $result = str_replace('{$>now}', base::getDateTime(), $result);
+            $result = str_replace('{$>ns}', $ns . '\\', $result);
+            $result = str_replace('{$>this}', $tthis, $result);
+            $result = str_replace('{$>this.genre}', $tthisGenre, $result);
+            $result = str_replace('{$>genre.parent}', route::getGenreByAppellation('parent', $genre), $result);
+            $result = str_replace('{$>genre.grandparent}', route::getGenreByAppellation('grandparent', $genre), $result);
+            $result = str_replace('{$>genre.greatgrandparent}', route::getGenreByAppellation('greatgrandparent', $genre), $result);
+            $result = str_replace('{$>this.genre.parent}', route::getGenreByAppellation('parent', $tthisGenre), $result);
+            $result = str_replace('{$>this.genre.grandparent}', route::getGenreByAppellation('grandparent', $tthisGenre), $result);
+            $result = str_replace('{$>this.genre.greatgrandparent}', route::getGenreByAppellation('greatgrandparent', $tthisGenre), $result);
+          }
+          if (is_array($vars))
+          {
+            foreach ($vars as $key => $val) $result = str_replace('{$' . $key . '}', $val, $result);
+          }
+          else if (!empty($vars))
+          {
+            $jsonvars = json_decode($vars, 1);
+            if (is_array($jsonvars))
+            {
+              foreach ($jsonvars as $key => $val) $result = str_replace('{$' . $key . '}', $val, $result);
+            }
+          }
+          if ($parse == 1) $result = self::parse($result);
+        }
+        if (base::isEmpty($result))
+        {
+          if ($keywords == '*') $result = $GLOBALS[$globalStr];
+          else if (is_numeric(strpos($keywords, ',')))
+          {
+            $result = array();
+            $tempResult = $GLOBALS[$globalStr];
+            $keywordsAry = explode(',', $keywords);
+            foreach($keywordsAry as $key => $val)
+            {
+              $value = '';
+              if (isset($tempResult[$val])) $value = $tempResult[$val];
+              $result[$val] = $value;
+            }
           }
         }
       }
