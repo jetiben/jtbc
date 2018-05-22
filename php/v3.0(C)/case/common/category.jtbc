@@ -8,7 +8,7 @@
   <item_list>
     <item>
       <name><![CDATA[title]]></name>
-      <zh-cn><![CDATA[产品案例]]></zh-cn>
+      <zh-cn pointer="global.{$&gt;this.genre}:guide.guide-&gt;text"><![CDATA[]]></zh-cn>
     </item>
   </item_list>
 </xml>
