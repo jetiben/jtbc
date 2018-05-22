@@ -282,8 +282,6 @@ namespace jtbc {
       $mode = $argMode;
       $vars = $argVars;
       $tplPath = $argTplPath;
-      $filename = route::getCurrentFilename();
-      $filePrefix = base::getLRStr($filename, '.', 'left');
       if (is_array($fieldArray))
       {
         foreach ($fieldArray as $i => $item)
@@ -321,7 +319,7 @@ namespace jtbc {
                 $fieldHasTips = base::getString($commentAry['fieldHasTips']);
                 $fieldFormatLineTips = tpl::take($tplPath . '.field-tips', 'tpl');
                 if ($fieldHasTips != 'auto') $fieldTipsKey = $simplifiedFieldName;
-                $currentFieldTips = @tpl::take($filePrefix . '.text-tips-field-' . $fieldTipsKey, 'lng');
+                $currentFieldTips = tpl::take('.text-tips-field-' . $fieldTipsKey, 'lng');
                 if (base::isEmpty($currentFieldTips)) $currentFieldTips = tpl::take($tplPath . '.text-tips-field-' . $fieldTipsKey, 'lng');
                 $fieldFormatLineTips = str_replace('{$tips}', base::htmlEncode($currentFieldTips), $fieldFormatLineTips);
                 $fieldFormatLine .= $fieldFormatLineTips;
@@ -459,8 +457,6 @@ namespace jtbc {
       $table = $argTable;
       $tplPath = $argTplPath;
       $db = conn::db();
-      $filename = route::getCurrentFilename();
-      $filePrefix = base::getLRStr($filename, '.', 'left');
       if (!is_null($db))
       {
         $columns = $db -> showFullColumns($table);
@@ -474,26 +470,48 @@ namespace jtbc {
             $commentAry = json_decode($comment, true);
             if (!empty($commentAry) && array_key_exists('autoRequestFormat', $commentAry))
             {
-              $errorBool = false;
+              $errorPush = function($argName, $argFormat) use ($tplPath, &$error)
+              {
+                $name = $argName;
+                $format = $argFormat;
+                $errorMsg = tpl::take('.text-auto-request-error-' . $name . '-' . $format, 'lng');
+                if (base::isEmpty($errorMsg))
+                {
+                  $errorMsg = tpl::take('.text-auto-request-error-' . $name, 'lng');
+                  if (base::isEmpty($errorMsg))
+                  {
+                    $errorMsg = tpl::take($tplPath . '.text-auto-request-error-' . $name, 'lng');
+                  }
+                }
+                array_push($error, $errorMsg);
+              };
               $requestValue = request::getPost($requestName);
               $format = base::getString($commentAry['autoRequestFormat']);
-              if ($format == 'notEmpty')
+              $formatAry = explode('|', $format);
+              foreach ($formatAry as $key => $val)
               {
-                if (base::isEmpty($requestValue)) $errorBool = true;
-              }
-              else if ($format == 'email')
-              {
-                if (!verify::isEmail($requestValue)) $errorBool = true;
-              }
-              else if ($format == 'mobile')
-              {
-                if (!verify::isMobile($requestValue)) $errorBool = true;
-              }
-              if ($errorBool == true)
-              {
-                $errorMsg = @tpl::take($filePrefix . '.text-auto-request-error-' . $requestName, 'lng');
-                if (base::isEmpty($errorMsg)) $errorMsg = tpl::take($tplPath . '.text-auto-request-error-' . $requestName, 'lng');
-                array_push($error, $errorMsg);
+                $willPush = false;
+                if ($val == 'email')
+                {
+                  if (!verify::isEmail($requestValue)) $willPush = true;
+                }
+                else if ($val == 'idcard')
+                {
+                  if (!verify::isIDCard($requestValue)) $willPush = true;
+                }
+                else if ($val == 'mobile')
+                {
+                  if (!verify::isMobile($requestValue)) $willPush = true;
+                }
+                else if ($val == 'number')
+                {
+                  if (!verify::isNumber($requestValue)) $willPush = true;
+                }
+                else if ($val == 'notEmpty')
+                {
+                  if (base::isEmpty($requestValue)) $willPush = true;
+                }
+                if ($willPush == true) $errorPush($requestName, $val);
               }
             }
           }

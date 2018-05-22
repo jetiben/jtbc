@@ -5,35 +5,57 @@
 namespace jtbc {
   class verify
   {
-    public static function isMobile($argStrers)
+    public static function isEmail($argStr)
     {
       $bool = false;
-      $strers = $argStrers;
-      if (!base::isEmpty($strers))
+      $str = $argStr;
+      if (!base::isEmpty($str))
       {
-        if (preg_match('/^1\d{10}$/', $strers)) $bool = true;
+        if (preg_match('/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/', $str)) $bool = true;
       }
       return $bool;
     }
 
-    public static function isEmail($argStrers)
+    public static function isIDCard($argStr)
     {
       $bool = false;
-      $strers = $argStrers;
-      if (!base::isEmpty($strers))
+      $str = $argStr;
+      if (!base::isEmpty($str))
       {
-        if (preg_match('/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/', $strers)) $bool = true;
+        if (preg_match('/(^\d{18}$)|(^\d{17}(\d|X|x)$)/', $str)) $bool = true;
       }
       return $bool;
     }
 
-    public static function isNatural($argStrers)
+    public static function isMobile($argStr)
     {
       $bool = false;
-      $strers = $argStrers;
-      if (!base::isEmpty($strers))
+      $str = $argStr;
+      if (!base::isEmpty($str))
       {
-        if (preg_match('/^[a-zA-Z0-9_-]+$/', $strers)) $bool = true;
+        if (preg_match('/^1\d{10}$/', $str)) $bool = true;
+      }
+      return $bool;
+    }
+
+    public static function isNumber($argStr)
+    {
+      $bool = false;
+      $str = $argStr;
+      if (!base::isEmpty($str))
+      {
+        if (preg_match('/^[0-9]*$/', $str)) $bool = true;
+      }
+      return $bool;
+    }
+
+    public static function isNatural($argStr)
+    {
+      $bool = false;
+      $str = $argStr;
+      if (!base::isEmpty($str))
+      {
+        if (preg_match('/^[a-zA-Z0-9_-]+$/', $str)) $bool = true;
       }
       return $bool;
     }
