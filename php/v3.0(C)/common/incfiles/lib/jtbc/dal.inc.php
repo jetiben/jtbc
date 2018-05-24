@@ -3,6 +3,7 @@
 // JTBC Powered by jtbc.cn      //
 //******************************//
 namespace jtbc {
+  use Exception;
   class dal
   {
     public $db = null;
@@ -148,11 +149,25 @@ namespace jtbc {
       return $bool;
     }
 
-    function __construct($argTable = null, $argPrefix = null, $argDbLink = 'any')
+    function __construct()
     {
-      $dbLink = $argDbLink;
-      $table = $argTable;
-      $prefix = $argPrefix;
+      $dbLink = 'any';
+      $table = null;
+      $prefix = null;
+      $args = func_get_args();
+      $argsCount = count($args);
+      if ($argsCount == 1) $dbLink = $args[0];
+      else if ($argsCount == 2)
+      {
+        $table = $args[0];
+        $prefix = $args[1];
+      }
+      else if ($argsCount == 3)
+      {
+        $table = $args[0];
+        $prefix = $args[1];
+        $dbLink = $args[2];
+      }
       $db = conn::db($dbLink);
       if (!is_null($db))
       {
@@ -162,6 +177,7 @@ namespace jtbc {
         $this -> table = $table;
         $this -> prefix = $prefix;
         $this -> sql = new sql($this -> db, $this -> table, $this -> prefix);
+        if (base::isEmpty($table)) throw new Exception('"table" cannot be empty.');
       }
       else $this -> err = 444;
     }
