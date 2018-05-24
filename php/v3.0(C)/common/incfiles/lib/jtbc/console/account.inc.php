@@ -120,19 +120,19 @@ namespace jtbc\console {
             $_SESSION[APPNAME . 'console_role'] = $this -> sessionRole;
             $_SESSION[APPNAME . 'console_popedom'] = $this -> sessionPopedom;
             $bool = true;
-            if (base::isEmpty($authentication))
-            {
-              $loginStatus = 0;
-              if ($bool == true) $loginStatus = 1;
-              $todayDate = base::getNum(base::formatDate(base::getDateTime(), '10'), 0);
-              $tableLogin = tpl::take(':/account:config.db_table_login', 'cfg');
-              $prefixLogin = tpl::take(':/account:config.db_prefix_login', 'cfg');
-              $preset = array();
-              $preset['account_id'] = $rsId;
-              $preset['date'] = $todayDate;
-              $preset['status'] = $loginStatus;
-              $re = auto::autoInsertByVars($preset, $tableLogin, $prefixLogin);
-            }
+          }
+          if (base::isEmpty($authentication))
+          {
+            $loginStatus = 0;
+            if ($bool == true) $loginStatus = 1;
+            $todayDate = base::getNum(base::formatDate(base::getDateTime(), '10'), 0);
+            $tableLogin = tpl::take(':/account:config.db_table_login', 'cfg');
+            $prefixLogin = tpl::take(':/account:config.db_prefix_login', 'cfg');
+            $preset = array();
+            $preset['account_id'] = $rsId;
+            $preset['date'] = $todayDate;
+            $preset['status'] = $loginStatus;
+            $re = auto::autoInsertByVars($preset, $tableLogin, $prefixLogin);
           }
         }
       }

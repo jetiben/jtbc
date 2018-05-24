@@ -66,7 +66,7 @@ namespace jtbc {
       $db = $this -> db;
       if (!is_null($db))
       {
-        $sql = $this -> sql -> getSelectSQL($field);
+        $sql = $this -> sql -> getSelectSQL(true, $field);
         if (!base::isEmpty($sql)) $result = $db -> fetch($sql);
       }
       return $result;
@@ -79,7 +79,7 @@ namespace jtbc {
       $db = $this -> db;
       if (!is_null($db))
       {
-        $sql = $this -> sql -> getSelectSQL($field);
+        $sql = $this -> sql -> getSelectSQL(true, $field);
         if (!base::isEmpty($sql)) $result = $db -> fetchAll($sql);
       }
       return $result;

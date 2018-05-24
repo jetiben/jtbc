@@ -51,7 +51,7 @@ class ui extends console\page {
     {
       $rsTopic = base::getString($dal -> val($rs, 'topic'));
       $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
-      $loopLineString = str_replace('{$-filejson}', base::htmlEncode(self::ppGetFileJSON($rs, $prefix)), $loopLineString);
+      $loopLineString = str_replace('{$-filejson}', base::htmlEncode(self::ppGetFileJSON($rs, $dal -> prefix)), $loopLineString);
       $loopLineString = str_replace('{$-topic-keyword-highlight}', base::replaceKeyWordHighlight(base::htmlEncode(base::replaceKeyWordHighlight($rsTopic, $keyword))), $loopLineString);
       $tpl -> insertLoopLine(tpl::parse($loopLineString));
     }

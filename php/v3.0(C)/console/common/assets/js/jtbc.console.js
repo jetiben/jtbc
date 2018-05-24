@@ -395,7 +395,7 @@ jtbc.console = {
     });
     tthis.obj.find('.topbar').find('logout').click(function(){
       var thisObj = $(this);
-      tthis.lib.popupConfirm(thisObj.attr('confirm_text'), thisObj.attr('confirm_b2'), thisObj.attr('confirm_b3'), function(){ $.get(tthis.manageURL + '?type=action&action=logout', function(data){ location.reload(); }); });
+      tthis.lib.popupConfirm(thisObj.attr('confirm_text'), thisObj.attr('confirm_b2'), thisObj.attr('confirm_b3'), function(){ $.get(tthis.manageURL + '?type=action&action=logout', function(data){ location.href = './'; }); });
     });
     tthis.obj.find('.leftmenu').find('span.tit').click(function(){
       var thisObj = $(this);
