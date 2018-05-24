@@ -523,7 +523,7 @@ namespace jtbc {
       $string = $argString;
       $keyword = $argKeyword;
       $spkey = 'jtbc~$~key~$~jtbc';
-      if (!base::isEmpty($string))
+      if (!self::isEmpty($string))
       {
         if (!is_null($keyword))
         {
@@ -531,7 +531,7 @@ namespace jtbc {
           $string = str_replace('*', $spkey, $string);
           foreach ($keywordAry as $key => $val)
           {
-            if (!base::isEmpty($val))
+            if (!self::isEmpty($val))
             {
               $string = str_replace($val, '*key*' . $val . '*yek*', $string);
             }

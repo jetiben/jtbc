@@ -6,7 +6,7 @@ namespace jtbc\universal {
   use jtbc\auto;
   use jtbc\base;
   use jtbc\cache;
-  use jtbc\conn;
+  use jtbc\dal;
   use jtbc\route;
   use jtbc\sql;
   use jtbc\tpl;
@@ -205,22 +205,20 @@ namespace jtbc\universal {
       $lang = base::getNum($argLang, 0);
       $fid = base::getNum($argFid, 0);
       $categoryAry = array();
-      $db = conn::db();
       $table = tpl::take('global.universal/category:config.db_table', 'cfg');
       $prefix = tpl::take('global.universal/category:config.db_prefix', 'cfg');
-      if (!is_null($db) && !base::isEmpty($table))
+      if (!base::isEmpty($table) && !base::isEmpty($prefix))
       {
-        $sql = new sql($db, $table, $prefix);
-        $sql -> lang = $lang;
-        $sql -> fid = $fid;
-        $sql -> genre = $genre;
-        $sql -> orderBy('order', 'asc');
-        $sql -> orderBy('id', 'asc');
-        $sqlstr = $sql -> sql;
-        $rsa = $db -> fetchAll($sqlstr);
+        $dal = new dal($table, $prefix);
+        $dal -> lang = $lang;
+        $dal -> fid = $fid;
+        $dal -> genre = $genre;
+        $dal -> orderBy('order', 'asc');
+        $dal -> orderBy('id', 'asc');
+        $rsa = $dal -> selectAll();
         foreach ($rsa as $i => $rs)
         {
-          $rsId = base::getNum($rs[$prefix . 'id'], 0);
+          $rsId = base::getNum($dal -> val($rs, 'id'), 0);
           $categoryAry['id' . $rsId] = $rs;
           $categoryAry = array_merge($categoryAry, self::getDBCategoryAryByGenre($genre, $lang, $rsId));
         }

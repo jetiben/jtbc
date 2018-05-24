@@ -8,36 +8,32 @@ class ui extends console\page {
     $status = 1;
     $tmpstr = '';
     $path = route::getActualRoute('cache/');
-    $db = conn::db();
-    if (!is_null($db))
+    $account = self::account();
+    $tmpstr = tpl::take('manage.list', 'tpl');
+    $tpl = new tpl($tmpstr);
+    $loopString = $tpl -> getLoopString('{@}');
+    if (is_dir($path))
     {
-      $account = self::account();
-      $tmpstr = tpl::take('manage.list', 'tpl');
-      $tpl = new tpl($tmpstr);
-      $loopString = $tpl -> getLoopString('{@}');
-      if (is_dir($path))
+      $dir = @dir($path);
+      while($entry = $dir -> read())
       {
-        $dir = @dir($path);
-        while($entry = $dir -> read())
+        if (is_file($path . $entry) && is_numeric(strpos($entry, '.inc.php')))
         {
-          if (is_file($path . $entry) && is_numeric(strpos($entry, '.inc.php')))
-          {
-            $loopLineString = $loopString;
-            $loopLineString = str_replace('{$topic}', base::htmlEncode(base::getLRStr($entry, '.inc.php', 'leftr')), $loopLineString);
-            $loopLineString = str_replace('{$-urlencode-topic}', urlencode(base::getLRStr($entry, '.inc.php', 'leftr')), $loopLineString);
-            $loopLineString = str_replace('{$lasttime}', base::htmlEncode(date('Y-m-d H:i:s', filemtime($path . $entry))), $loopLineString);
-            $loopLineString = str_replace('{$size}', base::htmlEncode(base::formatFileSize(filesize($path . $entry))), $loopLineString);
-            $tpl -> insertLoopLine($loopLineString);
-          }
+          $loopLineString = $loopString;
+          $loopLineString = str_replace('{$topic}', base::htmlEncode(base::getLRStr($entry, '.inc.php', 'leftr')), $loopLineString);
+          $loopLineString = str_replace('{$-urlencode-topic}', urlencode(base::getLRStr($entry, '.inc.php', 'leftr')), $loopLineString);
+          $loopLineString = str_replace('{$lasttime}', base::htmlEncode(date('Y-m-d H:i:s', filemtime($path . $entry))), $loopLineString);
+          $loopLineString = str_replace('{$size}', base::htmlEncode(base::formatFileSize(filesize($path . $entry))), $loopLineString);
+          $tpl -> insertLoopLine($loopLineString);
         }
       }
-      $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
-      $variable['-batch-list'] = implode(',', $batchAry);
-      $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
-      $tmpstr = $tpl -> assign($variable) -> getTpl();
-      $tmpstr = tpl::parse($tmpstr);
-      $tmpstr = $account -> replaceAccountTag($tmpstr);
     }
+    $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
+    $variable['-batch-list'] = implode(',', $batchAry);
+    $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
+    $tmpstr = $tpl -> assign($variable) -> getTpl();
+    $tmpstr = tpl::parse($tmpstr);
+    $tmpstr = $account -> replaceAccountTag($tmpstr);
     $tmpstr = self::formatResult($status, $tmpstr);
     return $tmpstr;
   }

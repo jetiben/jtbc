@@ -5,31 +5,34 @@
 namespace jtbc {
   class pagi
   {
+    protected $dal;
     protected $db;
+    protected $mode;
     public $rslimit = 0;
     public $pagesize = 0;
-    public $sqlstr = '';
     public $rscount = 0;
     public $pagenum = 0;
     public $pagetotal = 0;
+    public $sqlstr = null;
 
     protected function getRsCount()
     {
       $rscount = 0;
-      $sqlstr = "select count(*) from " . base::getLRStr(base::getLRStr($this -> sqlstr, 'from', 'rightr'), 'order by', 'leftr');
+      $sqlstr = "select count(*) as count from " . base::getLRStr(base::getLRStr($this -> sqlstr, 'from', 'rightr'), 'order by', 'leftr');
       $rs = $this -> db -> fetch($sqlstr);
-      if (is_array($rs)) $rscount = base::getNum($rs[0], 0);
+      if (is_array($rs)) $rscount = base::getNum($rs['count'], 0);
       return $rscount;
     }
 
-    public function getDataAry($argSqlstr, $argPageNum, $argPageSize, $argRsLimit = 0)
+    public function getDataAry($argPageNum, $argPageSize, $argRsLimit = 0, $argSqlstr = null)
     {
       $dataAry = array();
-      $this -> sqlstr = $argSqlstr;
       $this -> pagenum = base::getNum($argPageNum, 0);
       $this -> pagesize = base::getNum($argPageSize, 0);
       $this -> rslimit = base::getNum($argRsLimit, 0);
-      $this -> rscount = $this -> getRsCount();
+      $this -> sqlstr = $argSqlstr;
+      if ($this -> mode == 'db') $this -> rscount = $this -> getRsCount();
+      else if ($this -> mode == 'dal') $this -> rscount = $this -> dal -> getRsCount();
       if ($this -> pagesize == 0) $this -> pagesize = 20;
       if ($this -> rslimit == 0) $this -> rslimit = $this -> rscount;
       else
@@ -48,8 +51,20 @@ namespace jtbc {
       }
       if ($rslimit > 0 && $pagesize > 0)
       {
-        $sqlstr = $this -> sqlstr . ' limit ' . ($rslimit - $pagesize) . ',' . $pagesize;
-        $dataAry = $this -> db -> fetchAll($sqlstr);
+        if ($this -> mode == 'dal')
+        {
+          $this -> dal -> limit(($rslimit - $pagesize), $pagesize);
+          $dataAry = $this -> dal -> selectAll();
+        }
+        else if ($this -> mode == 'db')
+        {
+          $sqlstr = $this -> sqlstr;
+          if (!is_null($sqlstr))
+          {
+            $sqlstr .= ' limit ' . ($rslimit - $pagesize) . ',' . $pagesize;
+            $dataAry = $this -> db -> fetchAll($sqlstr);
+          }
+        }
       }
       return $dataAry;
     }
@@ -118,9 +133,19 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    function __construct($argDb)
+    function __construct($argDalOrDb)
     {
-      $this -> db = $argDb;
+      $dalordb = $argDalOrDb;
+      if ($dalordb instanceof dal)
+      {
+        $this -> mode = 'dal';
+        $this -> dal = $dalordb;
+      }
+      else if ($dalordb instanceof db)
+      {
+        $this -> mode = 'db';
+        $this -> db = $dalordb;
+      }
     }
   }
 }

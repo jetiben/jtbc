@@ -5,7 +5,7 @@
 namespace jtbc\console {
   use jtbc\auto;
   use jtbc\base;
-  use jtbc\conn;
+  use jtbc\dal;
   use jtbc\request;
   use jtbc\route;
   use jtbc\sql;
@@ -39,32 +39,25 @@ namespace jtbc\console {
       $username = $argUsername;
       if (!base::isEmpty($username))
       {
-        $db = conn::db();
-        if (!is_null($db))
+        $table = tpl::take(':/account:config.db_table', 'cfg');
+        $prefix = tpl::take(':/account:config.db_prefix', 'cfg');
+        $dal = new dal($table, $prefix);
+        $dal -> username = $username;
+        $rs = $dal -> select();
+        if (is_array($rs))
         {
-          $table = tpl::take(':/account:config.db_table', 'cfg');
-          $prefix = tpl::take(':/account:config.db_prefix', 'cfg');
-          $sql = new sql($db, $table, $prefix);
-          $sql -> username = $username;
-          $sqlstr = $sql -> sql;
-          $rs = $db -> fetch($sqlstr);
-          if (is_array($rs))
-          {
-            $num = 0;
-            $rsId = base::getNum($rs[$prefix . 'id'], 0);
-            $todayDate = base::getNum(base::formatDate(base::getDateTime(), '10'), 0);
-            $tableLogin = tpl::take(':/account:config.db_table_login', 'cfg');
-            $prefixLogin = tpl::take(':/account:config.db_prefix_login', 'cfg');
-            $sql = new sql($db, $tableLogin, $prefixLogin);
-            $sql -> status = 0;
-            $sql -> date = $todayDate;
-            $sql -> account_id = $rsId;
-            $sqlstr = $sql -> getSQL('count(*)');
-            $rs = $db -> fetch($sqlstr);
-            if (is_array($rs)) $num = base::getNum($rs[0], 0);
-            $numMax = base::getNum(tpl::take('::config.login-error-max', 'cfg'), 0);
-            if ($numMax < $num) $bool = true;
-          }
+          $num = 0;
+          $rsId = base::getNum($dal -> val($rs, 'id'), 0);
+          $todayDate = base::getNum(base::formatDate(base::getDateTime(), '10'), 0);
+          $tableLogin = tpl::take(':/account:config.db_table_login', 'cfg');
+          $prefixLogin = tpl::take(':/account:config.db_prefix_login', 'cfg');
+          $dal = new dal($tableLogin, $prefixLogin);
+          $dal -> status = 0;
+          $dal -> date = $todayDate;
+          $dal -> account_id = $rsId;
+          $num = base::getNum($dal -> getRsCount());
+          $numMax = base::getNum(tpl::take('::config.login-error-max', 'cfg'), 0);
+          if ($numMax < $num) $bool = true;
         }
       }
       return $bool;
@@ -79,64 +72,54 @@ namespace jtbc\console {
       $authentication = $argAuthentication;
       if (!base::isEmpty($username) && !base::isEmpty($password))
       {
-        $db = conn::db();
-        if (!is_null($db))
+        $table = tpl::take(':/account:config.db_table', 'cfg');
+        $prefix = tpl::take(':/account:config.db_prefix', 'cfg');
+        $dal = new dal($table, $prefix);
+        $dal -> username = $username;
+        $dal -> lock = 0;
+        $rs = $dal -> select();
+        if (is_array($rs))
         {
-          $table = tpl::take(':/account:config.db_table', 'cfg');
-          $prefix = tpl::take(':/account:config.db_prefix', 'cfg');
-          $sql = new sql($db, $table, $prefix);
-          $sql -> username = $username;
-          $sql -> lock = 0;
-          $sqlstr = $sql -> sql;
-          $rs = $db -> fetch($sqlstr);
-          if (is_array($rs))
+          $rsId = base::getNum($dal -> val($rs, 'id'), 0);
+          $rsRole = base::getNum($dal -> val($rs, 'role'), 0);
+          $rsUsername = base::getString($dal -> val($rs, 'username'));
+          $rsPassword = base::getString($dal -> val($rs, 'password'));
+          if ($rsPassword == md5($password) || md5(WEBKEY . $rsPassword) == $authentication)
           {
-            $rsId = base::getNum($rs[$prefix . 'id'], 0);
-            $rsRole = base::getNum($rs[$prefix . 'role'], 0);
-            $rsUsername = base::getString($rs[$prefix . 'username']);
-            $rsPassword = base::getString($rs[$prefix . 'password']);
-            if ($rsPassword == md5($password) || md5(WEBKEY . $rsPassword) == $authentication)
+            if (base::isEmpty($authentication))
             {
-              if (base::isEmpty($authentication))
+              $re = auto::autoUpdateByVars($rsId, array('lasttime' => base::getDateTime(), 'lastip' => request::getRemortIP()), $table, $prefix);
+            }
+            if ($rsRole == -1)
+            {
+              $rsr = array('super' => 1);
+              $popedom = array('super' => 1);
+            }
+            else
+            {
+              $table = tpl::take(':/role:config.db_table', 'cfg');
+              $prefix = tpl::take(':/role:config.db_prefix', 'cfg');
+              $dal = new dal($table, $prefix);
+              $dal -> id = $rsRole;
+              $rsr = $dal -> select();
+              if (is_array($rsr))
               {
-                $preset = array();
-                $preset[$prefix . 'lasttime'] = base::getDateTime();
-                $preset[$prefix . 'lastip'] = request::getRemortIP();
-                $sqlstr = auto::getAutoUpdateSQLByVars($table, $prefix . 'id', $rsId, $preset);
-                $re = $db -> exec($sqlstr);
-              }
-              if ($rsRole == -1)
-              {
-                $rsr = array('super' => 1);
-                $popedom = array('super' => 1);
+                $rsPopedom = base::getString($dal -> val($rsr, 'popedom'));
+                $popedom = json_decode($rsPopedom, true);
               }
               else
               {
-                $table = tpl::take(':/role:config.db_table', 'cfg');
-                $prefix = tpl::take(':/role:config.db_prefix', 'cfg');
-                $sql = new sql($db, $table, $prefix);
-                $sql -> id = $rsRole;
-                $sqlstr = $sql -> sql;
-                $rsr = $db -> fetch($sqlstr);
-                if (is_array($rsr))
-                {
-                  $rsPopedom = base::getString($rsr[$prefix . 'popedom']);
-                  $popedom = json_decode($rsPopedom, true);
-                }
-                else
-                {
-                  $rsr = array('super' => 0);
-                  $popedom = array('super' => 0);
-                }
+                $rsr = array('super' => 0);
+                $popedom = array('super' => 0);
               }
-              $this -> sessionInfo = $rs;
-              $this -> sessionRole = $rsr;
-              $this -> sessionPopedom = $popedom;
-              $_SESSION[APPNAME . 'console_info'] = $this -> sessionInfo;
-              $_SESSION[APPNAME . 'console_role'] = $this -> sessionRole;
-              $_SESSION[APPNAME . 'console_popedom'] = $this -> sessionPopedom;
-              $bool = true;
             }
+            $this -> sessionInfo = $rs;
+            $this -> sessionRole = $rsr;
+            $this -> sessionPopedom = $popedom;
+            $_SESSION[APPNAME . 'console_info'] = $this -> sessionInfo;
+            $_SESSION[APPNAME . 'console_role'] = $this -> sessionRole;
+            $_SESSION[APPNAME . 'console_popedom'] = $this -> sessionPopedom;
+            $bool = true;
             if (base::isEmpty($authentication))
             {
               $loginStatus = 0;
@@ -145,11 +128,10 @@ namespace jtbc\console {
               $tableLogin = tpl::take(':/account:config.db_table_login', 'cfg');
               $prefixLogin = tpl::take(':/account:config.db_prefix_login', 'cfg');
               $preset = array();
-              $preset[$prefixLogin . 'account_id'] = $rsId;
-              $preset[$prefixLogin . 'date'] = $todayDate;
-              $preset[$prefixLogin . 'status'] = $loginStatus;
-              $sqlstr = auto::getAutoInsertSQLByVars($tableLogin, $preset);
-              $db -> exec($sqlstr);
+              $preset['account_id'] = $rsId;
+              $preset['date'] = $todayDate;
+              $preset['status'] = $loginStatus;
+              $re = auto::autoInsertByVars($preset, $tableLogin, $prefixLogin);
             }
           }
         }
@@ -236,19 +218,17 @@ namespace jtbc\console {
       $content = $argContent;
       $userip = $argUserIp;
       $accountId = $this -> getMyInfo('id');
-      $db = conn::db();
       $table = tpl::take(':/log:config.db_table', 'cfg');
       $prefix = tpl::take(':/log:config.db_prefix', 'cfg');
-      if (!is_null($db) && !base::isEmpty($table) && !base::isEmpty($content))
+      if (!base::isEmpty($table) && !base::isEmpty($content))
       {
         $preset = array();
-        $preset[$prefix . 'genre'] = $genre;
-        $preset[$prefix . 'content'] = $content;
-        $preset[$prefix . 'userip'] = $userip;
-        $preset[$prefix . 'account_id'] = $accountId;
-        $preset[$prefix . 'time'] = base::getDateTime();
-        $sqlstr = auto::getAutoInsertSQLByVars($table, $preset);
-        $re = $db -> exec($sqlstr);
+        $preset['genre'] = $genre;
+        $preset['content'] = $content;
+        $preset['userip'] = $userip;
+        $preset['account_id'] = $accountId;
+        $preset['time'] = base::getDateTime();
+        $re = auto::autoInsertByVars($preset, $table, $prefix);
         if (is_numeric($re)) $bool = true;
       }
       return $bool;
@@ -372,17 +352,12 @@ namespace jtbc\console {
       if ($id == -1) $tmpstr = tpl::take(':/role:manage.text-super', 'lng');
       else
       {
-        $db = conn::db();
-        if (!is_null($db))
-        {
-          $table = tpl::take(':/role:config.db_table', 'cfg');
-          $prefix = tpl::take(':/role:config.db_prefix', 'cfg');
-          $sql = new sql($db, $table, $prefix);
-          $sql -> id = $id;
-          $sqlstr = $sql -> sql;
-          $rs = $db -> fetch($sqlstr);
-          if (is_array($rs)) $tmpstr = base::getString($rs[$prefix . 'topic']);
-        }
+        $table = tpl::take(':/role:config.db_table', 'cfg');
+        $prefix = tpl::take(':/role:config.db_prefix', 'cfg');
+        $dal = new dal($table, $prefix);
+        $dal -> id = $id;
+        $rs = $dal -> select();
+        if (is_array($rs)) $tmpstr = base::getString($dal -> val($rs, 'topic'));
       }
       return $tmpstr;
     }
@@ -425,21 +400,16 @@ namespace jtbc\console {
       $newpassword = $argNewPassword;
       if (md5($password) == $this -> getMyInfo('password'))
       {
-        $db = conn::db();
         $accountId = $this -> getMyInfo('id');
         $table = tpl::take(':/account:config.db_table', 'cfg');
         $prefix = tpl::take(':/account:config.db_prefix', 'cfg');
-        if (!is_null($db))
+        $dal = new dal($table, $prefix);
+        $dal -> id = $accountId;
+        $re = $dal -> update(array('password' => md5($newpassword)));
+        if (is_numeric($re))
         {
-          $preset = array();
-          $preset[$prefix . 'password'] = md5($newpassword);
-          $sqlstr = auto::getAutoUpdateSQLByVars($table, $prefix . 'id', $accountId, $preset);
-          $re = $db -> exec($sqlstr);
-          if (is_numeric($re))
-          {
-            $bool = true;
-            setcookie(APPNAME . 'console[authentication]', md5(WEBKEY . md5($newpassword)), 0, COOKIESPATH);
-          }
+          $bool = true;
+          setcookie(APPNAME . 'console[authentication]', md5(WEBKEY . md5($newpassword)), 0, COOKIESPATH);
         }
       }
       return $bool;

@@ -35,39 +35,32 @@ class ui extends console\page {
     $sort = base::getNum(request::get('sort'), 1);
     $filegroup = base::getNum(request::get('filegroup'), -1);
     if ($mode == 'multiple') $selectmode = 'multiple';
-    $db = conn::db();
-    if (!is_null($db))
+    $account = self::account();
+    $tmpstr = tpl::take('managerapi.list', 'tpl');
+    $tpl = new tpl($tmpstr);
+    $loopString = $tpl -> getLoopString('{@}');
+    $dal = new dal();
+    $dal -> lang = $account -> getLang();
+    if ($filegroup != -1) $dal -> filegroup = $filegroup;
+    if (!base::isEmpty($keyword)) $dal -> setFuzzyLike('topic', $keyword);
+    if ($sort == 1) $dal -> orderBy('hot', 'desc');
+    else $dal -> orderBy('time', 'desc');
+    $dal -> limit(0, 100);
+    $rsa = $dal -> selectAll();
+    foreach ($rsa as $i => $rs)
     {
-      $account = self::account();
-      $tmpstr = tpl::take('managerapi.list', 'tpl');
-      $tpl = new tpl($tmpstr);
-      $loopString = $tpl -> getLoopString('{@}');
-      $table = tpl::take('config.db_table', 'cfg');
-      $prefix = tpl::take('config.db_prefix', 'cfg');
-      $sql = new sql($db, $table, $prefix);
-      $sql -> lang = $account -> getLang();
-      if ($filegroup != -1) $sql -> filegroup = $filegroup;
-      if (!base::isEmpty($keyword)) $sql -> setFuzzyLike('topic', $keyword);
-      if ($sort == 1) $sql -> orderBy('hot');
-      else $sql -> orderBy('time');
-      $sql -> orderBy('id');
-      $sqlstr = $sql -> sql . ' limit 100';
-      $rsa = $db -> fetchAll($sqlstr);
-      foreach ($rsa as $i => $rs)
-      {
-        $rsTopic = base::getString($rs[$prefix . 'topic']);
-        $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
-        $loopLineString = str_replace('{$-filejson}', base::htmlEncode(self::ppGetFileJSON($rs, $prefix)), $loopLineString);
-        $loopLineString = str_replace('{$-topic-keyword-highlight}', base::replaceKeyWordHighlight(base::htmlEncode(base::replaceKeyWordHighlight($rsTopic, $keyword))), $loopLineString);
-        $tpl -> insertLoopLine(tpl::parse($loopLineString));
-      }
-      $variable['-selectmode'] = $selectmode;
-      $variable['-filegroup'] = $filegroup;
-      $variable['-sort'] = $sort;
-      $variable['-keyword'] = $keyword;
-      $tmpstr = $tpl -> assign($variable) -> getTpl();
-      $tmpstr = tpl::parse($tmpstr);
+      $rsTopic = base::getString($dal -> val($rs, 'topic'));
+      $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
+      $loopLineString = str_replace('{$-filejson}', base::htmlEncode(self::ppGetFileJSON($rs, $prefix)), $loopLineString);
+      $loopLineString = str_replace('{$-topic-keyword-highlight}', base::replaceKeyWordHighlight(base::htmlEncode(base::replaceKeyWordHighlight($rsTopic, $keyword))), $loopLineString);
+      $tpl -> insertLoopLine(tpl::parse($loopLineString));
     }
+    $variable['-selectmode'] = $selectmode;
+    $variable['-filegroup'] = $filegroup;
+    $variable['-sort'] = $sort;
+    $variable['-keyword'] = $keyword;
+    $tmpstr = $tpl -> assign($variable) -> getTpl();
+    $tmpstr = tpl::parse($tmpstr);
     $tmpstr = self::formatResult($status, $tmpstr);
     return $tmpstr;
   }
@@ -78,12 +71,11 @@ class ui extends console\page {
     $status = 0;
     $message = '';
     $id = base::getNum(request::get('id'), 0);
-    $table = tpl::take('config.db_table', 'cfg');
-    $prefix = tpl::take('config.db_prefix', 'cfg');
-    $db = conn::db();
+    $dal = new dal();
+    $db = $dal -> db;
     if (!is_null($db))
     {
-      if ($db -> fieldNumberAdd($table, $prefix, 'hot', $id)) $status = 1;
+      if ($db -> fieldNumberAdd($dal -> table, $dal -> prefix, 'hot', $id)) $status = 1;
     }
     $tmpstr = self::formatMsgResult($status, $message);
     return $tmpstr;

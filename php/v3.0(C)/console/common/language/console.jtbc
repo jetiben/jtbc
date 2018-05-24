@@ -75,6 +75,10 @@
       <zh-cn><![CDATA[操作失败，权限校验失败]]></zh-cn>
     </item>
     <item>
+      <name><![CDATA[text-tips-error-others]]></name>
+      <zh-cn><![CDATA[程序异常，请检查源代码]]></zh-cn>
+    </item>
+    <item>
       <name><![CDATA[text-error-db-102]]></name>
       <zh-cn><![CDATA[数据库链接失败]]></zh-cn>
     </item>

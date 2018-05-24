@@ -59,19 +59,18 @@ class ui extends page {
               $exec = $db -> exec($mysql);
               if (is_numeric($exec))
               {
-                conn::$db = $db;
+                conn::$dbW = $db;
                 $table = tpl::take(':/account:config.db_table', 'cfg');
                 $prefix = tpl::take(':/account:config.db_prefix', 'cfg');
                 $preset = array();
-                $preset[$prefix . 'username'] = $username;
-                $preset[$prefix . 'password'] = md5($password);
-                $preset[$prefix . 'email'] = $email;
-                $preset[$prefix . 'role'] = -1;
-                $preset[$prefix . 'lastip'] = request::getRemortIP();
-                $preset[$prefix . 'lasttime'] = base::getDateTime();
-                $preset[$prefix . 'time'] = base::getDateTime();
-                $sqlstr = auto::getAutoInsertSQLByVars($table, $preset);
-                $re = $db -> exec($sqlstr);
+                $preset['username'] = $username;
+                $preset['password'] = md5($password);
+                $preset['email'] = $email;
+                $preset['role'] = -1;
+                $preset['lastip'] = request::getRemortIP();
+                $preset['lasttime'] = base::getDateTime();
+                $preset['time'] = base::getDateTime();
+                $re = auto::autoInsertByVars($preset, $table, $prefix);
                 if (is_numeric($re))
                 {
                   $constPath = route::getActualRoute('common/incfiles/const.php');

@@ -5,7 +5,7 @@
 namespace jtbc\universal {
   use jtbc\auto;
   use jtbc\base;
-  use jtbc\conn;
+  use jtbc\dal;
   use jtbc\image;
   use jtbc\route;
   use jtbc\sql;
@@ -19,26 +19,21 @@ namespace jtbc\universal {
       $uploadid = 0;
       if (is_array($fileInfo))
       {
-        $db = conn::db();
-        if (!is_null($db))
+        $table = tpl::take('global.universal/upload:config.db_table', 'cfg');
+        $prefix = tpl::take('global.universal/upload:config.db_prefix', 'cfg');
+        if (!base::isEmpty($table) && !base::isEmpty($prefix))
         {
-          $table = tpl::take('global.universal/upload:config.db_table', 'cfg');
-          $prefix = tpl::take('global.universal/upload:config.db_prefix', 'cfg');
-          if (!base::isEmpty($table) && !base::isEmpty($prefix))
-          {
-            $preset = array();
-            $preset[$prefix . 'topic'] = $fileInfo['filename'];
-            $preset[$prefix . 'filepath'] = $fileInfo['filepath'];
-            $preset[$prefix . 'fileurl'] = $fileInfo['fileurl'];
-            $preset[$prefix . 'filetype'] = $fileInfo['filetype'];
-            $preset[$prefix . 'filesize'] = $fileInfo['filesize'];
-            $preset[$prefix . 'filesizetext'] = $fileInfo['filesizetext'];
-            $preset[$prefix . 'genre'] = $genre;
-            $preset[$prefix . 'time'] = base::getDateTime();
-            $sqlstr = auto::getAutoInsertSQLByVars($table, $preset);
-            $re = $db -> exec($sqlstr);
-            if (is_numeric($re)) $uploadid = $db -> lastInsertId;
-          }
+          $preset = array();
+          $preset['topic'] = $fileInfo['filename'];
+          $preset['filepath'] = $fileInfo['filepath'];
+          $preset['fileurl'] = $fileInfo['fileurl'];
+          $preset['filetype'] = $fileInfo['filetype'];
+          $preset['filesize'] = $fileInfo['filesize'];
+          $preset['filesizetext'] = $fileInfo['filesizetext'];
+          $preset['genre'] = $genre;
+          $preset['time'] = base::getDateTime();
+          $re = auto::autoInsertByVars($preset, $table, $prefix);
+          if (is_numeric($re)) $uploadid = auto::$lastInsertId;
         }
       }
       return $uploadid;
@@ -49,17 +44,15 @@ namespace jtbc\universal {
       $bool = false;
       $genre = $argGenre;
       $associatedId = base::getNum($argAssociatedId, 0);
-      $db = conn::db();
-      if (!is_null($db))
+      $table = tpl::take('global.universal/upload:config.db_table', 'cfg');
+      $prefix = tpl::take('global.universal/upload:config.db_prefix', 'cfg');
+      if (!base::isEmpty($table) && !base::isEmpty($prefix))
       {
-        $table = tpl::take('global.universal/upload:config.db_table', 'cfg');
-        $prefix = tpl::take('global.universal/upload:config.db_prefix', 'cfg');
-        if (!base::isEmpty($table) && !base::isEmpty($prefix))
-        {
-          $sqlstr = "update " . $table . " set " . $prefix . "status=2 where " . $prefix . "genre='" . addslashes($genre) . "' and " . $prefix . "associated_id=" . $associatedId;
-          $re = $db -> exec($sqlstr);
-          if (is_numeric($re)) $bool = true;
-        }
+        $dal = new dal($table, $prefix);
+        $dal -> genre = $genre;
+        $dal -> associated_id = $associatedId;
+        $re = $dal -> update(array('status' => 2));
+        if (is_numeric($re)) $bool = true;
       }
       return $bool;
     }
@@ -73,36 +66,33 @@ namespace jtbc\universal {
       $fileInfoArray = json_decode($fileInfo, true);
       if (is_array($fileInfoArray))
       {
-        $db = conn::db();
-        if (!is_null($db))
+        $table = tpl::take('global.universal/upload:config.db_table', 'cfg');
+        $prefix = tpl::take('global.universal/upload:config.db_prefix', 'cfg');
+        if (!base::isEmpty($table) && !base::isEmpty($prefix))
         {
-          $table = tpl::take('global.universal/upload:config.db_table', 'cfg');
-          $prefix = tpl::take('global.universal/upload:config.db_prefix', 'cfg');
-          if (!base::isEmpty($table) && !base::isEmpty($prefix))
+          $updateInfo = function($argUploadId) use ($db, $genre, $table, $prefix, $associatedId, &$bool)
           {
-            $updateInfo = function($argUploadId) use ($db, $genre, $table, $prefix, $associatedId, &$bool)
+            $myUploadId = base::getNum($argUploadId, 0);
+            $dal = new dal($table, $prefix);
+            $dal -> id = $myUploadId;
+            $preset = array();
+            $preset['status'] = 1;
+            $preset['genre'] = $genre;
+            $preset['associated_id'] = $associatedId;
+            $re = $dal -> update($preset);
+            if (is_numeric($re)) $bool = true;
+          };
+          $uploadid = base::getNum(@$fileInfoArray['uploadid'], 0);
+          if ($uploadid != 0) $updateInfo($uploadid);
+          else
+          {
+            foreach ($fileInfoArray as $key => $val)
             {
-              $myUploadId = base::getNum($argUploadId, 0);
-              $preset = array();
-              $preset[$prefix . 'status'] = 1;
-              $preset[$prefix . 'genre'] = $genre;
-              $preset[$prefix . 'associated_id'] = $associatedId;
-              $sqlstr = auto::getAutoUpdateSQLByVars($table, $prefix . 'id', $myUploadId, $preset);
-              $re = $db -> exec($sqlstr);
-              if (is_numeric($re)) $bool = true;
-            };
-            $uploadid = base::getNum(@$fileInfoArray['uploadid'], 0);
-            if ($uploadid != 0) $updateInfo($uploadid);
-            else
-            {
-              foreach ($fileInfoArray as $key => $val)
+              $newFileInfoArray = json_decode($val, true);
+              if (is_array($newFileInfoArray))
               {
-                $newFileInfoArray = json_decode($val, true);
-                if (is_array($newFileInfoArray))
-                {
-                  $uploadid = base::getNum(@$newFileInfoArray['uploadid'], 0);
-                  if ($uploadid != 0) $updateInfo($uploadid);
-                }
+                $uploadid = base::getNum(@$newFileInfoArray['uploadid'], 0);
+                if ($uploadid != 0) $updateInfo($uploadid);
               }
             }
           }
@@ -111,38 +101,34 @@ namespace jtbc\universal {
       return $bool;
     }
 
-    public static function statusAutoUpdate($argGenre, $argAssociatedId, $argTable, $argPrefix)
+    public static function statusAutoUpdate($argGenre, $argAssociatedId, $argTable = null, $argPrefix = null, $argDbLink = 'any')
     {
       $bool = true;
       $genre = $argGenre;
       $associatedId = base::getNum($argAssociatedId, 0);
       $table = $argTable;
       $prefix = $argPrefix;
-      $db = conn::db();
-      if (!is_null($db))
+      $dbLink = $argDbLink;
+      $dal = new dal($table, $prefix, $dbLink);
+      $dal -> id = $associatedId;
+      $rs = $dal -> select();
+      if (is_array($rs))
       {
-        $sql = new sql($db, $table, $prefix);
-        $sql -> id = $associatedId;
-        $sqlstr = $sql -> sql;
-        $rs = $db -> fetch($sqlstr);
-        if (is_array($rs))
+        self::statusReset($genre, $associatedId);
+        $columns = $dal -> db -> showFullColumns($dal -> table);
+        foreach ($columns as $i => $item)
         {
-          self::statusReset($genre, $associatedId);
-          $columns = $db -> showFullColumns($table);
-          foreach ($columns as $i => $item)
+          $filedName = $item['Field'];
+          $comment = base::getString($item['Comment']);
+          if (!base::isEmpty($comment))
           {
-            $filedName = $item['Field'];
-            $comment = base::getString($item['Comment']);
-            if (!base::isEmpty($comment))
+            $commentAry = json_decode($comment, true);
+            if (!empty($commentAry) && array_key_exists('uploadStatusAutoUpdate', $commentAry))
             {
-              $commentAry = json_decode($comment, true);
-              if (!empty($commentAry) && array_key_exists('uploadStatusAutoUpdate', $commentAry))
+              $autoUpdate = base::getString($commentAry['uploadStatusAutoUpdate']);
+              if ($autoUpdate == 'true')
               {
-                $autoUpdate = base::getString($commentAry['uploadStatusAutoUpdate']);
-                if ($autoUpdate == 'true')
-                {
-                  if (self::statusUpdate($genre, $associatedId, $rs[$filedName]) == false) $bool = false;
-                }
+                if (self::statusUpdate($genre, $associatedId, $rs[$filedName]) == false) $bool = false;
               }
             }
           }
@@ -155,20 +141,20 @@ namespace jtbc\universal {
     {
       $bool = false;
       $ids = $argIds;
-      $db = conn::db();
-      if (!is_null($db) && base::checkIDAry($ids))
+      if (base::checkIDAry($ids))
       {
         $table = tpl::take('global.universal/upload:config.db_table', 'cfg');
         $prefix = tpl::take('global.universal/upload:config.db_prefix', 'cfg');
         if (!base::isEmpty($table) && !base::isEmpty($prefix))
         {
           $bool = true;
-          $sqlstr = "select * from " . $table . " where " . $prefix . "id in (" . $ids . ")";
-          $rsa = $db -> fetchAll($sqlstr);
+          $dal = new dal($table, $prefix);
+          $dal -> setIn('id', $ids);
+          $rsa = $dal -> selectAll();
           foreach ($rsa as $i => $rs)
           {
-            $rsGenre = base::getString($rs[$prefix . 'genre']);
-            $rsFilepath = base::getString($rs[$prefix . 'filepath']);
+            $rsGenre = base::getString($dal -> val($rs, 'genre'));
+            $rsFilepath = base::getString($dal -> val($rs, 'filepath'));
             $fileFullPath = route::getActualRoute($rsGenre . '/' . $rsFilepath);
             if (is_file($fileFullPath))
             {

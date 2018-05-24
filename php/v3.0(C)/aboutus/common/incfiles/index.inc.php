@@ -11,25 +11,18 @@ class ui extends page {
   {
     $tmpstr = '';
     $id = base::getNum(request::get('id'), 0);
-    $db = conn::db();
-    if (!is_null($db))
+    $dal = new dal();
+    $dal -> publish = 1;
+    $dal -> lang = self::getPara('lang');
+    if ($id != 0) $dal -> id = $id;
+    $dal -> orderBy('time', 'desc');
+    $rs = $dal -> select();
+    if (is_array($rs))
     {
-      $table = tpl::take('config.db_table', 'cfg');
-      $prefix = tpl::take('config.db_prefix', 'cfg');
-      $sql = new sql($db, $table, $prefix, 'time');
-      $sql -> publish = 1;
-      $sql -> lang = self::getPara('lang');
-      if ($id != 0) $sql -> id = $id;
-      $sqlstr = $sql -> sql . " limit 0,1";
-      $rs = $db -> fetch($sqlstr);
-      if (is_array($rs))
-      {
-        $rsTopic = base::getString($rs[$prefix . 'topic']);
-        self::setPageTitle(base::htmlEncode($rsTopic));
-        $tmpstr = tpl::take('index.detail', 'tpl');
-        $tmpstr = tpl::replaceTagByAry($tmpstr, $rs, 10);
-        $tmpstr = tpl::parse($tmpstr);
-      }
+      self::setPageTitle($dal -> val($rs, 'topic'));
+      $tmpstr = tpl::take('index.detail', 'tpl');
+      $tmpstr = tpl::replaceTagByAry($tmpstr, $rs, 10);
+      $tmpstr = tpl::parse($tmpstr);
     }
     return $tmpstr;
   }

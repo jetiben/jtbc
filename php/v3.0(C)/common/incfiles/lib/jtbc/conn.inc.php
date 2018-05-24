@@ -5,12 +5,14 @@
 namespace jtbc {
   class conn
   {
-    public static $db = null;
+    public static $dbW = null;
+    public static $dbR = null;
 
-    public static function db()
+    public static function db($argDbLink = 'any')
     {
       $db = null;
-      if (!is_null(self::$db)) $db = self::$db;
+      $dbLink = $argDbLink;
+      if (!is_null(self::$dbW)) $db = self::$dbW;
       else
       {
         $db = new db();
@@ -21,7 +23,7 @@ namespace jtbc {
         $db -> dbStructureCache = DB_STRUCTURE_CACHE;
         $db -> init();
         if ($db -> errStatus != 0) $db = null;
-        else self::$db = $db;
+        else self::$dbW = $db;
       }
       return $db;
     }

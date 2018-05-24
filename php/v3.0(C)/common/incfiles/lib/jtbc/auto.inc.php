@@ -5,46 +5,52 @@
 namespace jtbc {
   class auto
   {
-    public static function getAutoInsertSQL($argTable, $argVars = null, $argSpecialField = null, $argSource = null, $argNamePre = '', $argNameSuffix = '', $argMode = 0)
+    public static $lastInsertId = null;
+
+    public static function autoInsert($argVars = null, $argSpecialField = null, $argTable = null, $argPrefix = null, $argDbLink = 'any', $argSource = null, $argNamePre = '', $argNameSuffix = '', $argMode = 0)
     {
-      $tmpstr = '';
+      $result = null;
       $table = $argTable;
+      $prefix = $argPrefix;
+      $dbLink = $argDbLink;
       $specialField = $argSpecialField;
       $namePre = $argNamePre;
       $nameSuffix = $argNameSuffix;
       $vars = $argVars;
       $source = $argSource;
       $mode = base::getNum($argMode, 0);
-      $db = conn::db();
+      $dal = new dal($table, $prefix, $dbLink);
+      $db = $dal -> db;
       if (!is_null($db))
       {
-        $columns = $db -> showFullColumns($table);
+        $dalSource = array();
+        $columns = $db -> showFullColumns($dal -> table);
         if (is_array($columns))
         {
-          $fieldString = '';
-          $fieldValues = '';
-          $tmpstr = 'insert into ' . $table . ' (';
           foreach ($columns as $i => $item)
           {
             $fieldValid = false;
             $fieldName = $item['Field'];
-            $fieldType = $item['Type'];
             $comment = base::getString($item['Comment']);
-            $fieldTypeN = $fieldType;
-            $fieldTypeL = null;
-            if (is_numeric(strpos($fieldType, '(')))
-            {
-              $fieldTypeN = base::getLRStr($fieldType, '(', 'left');
-              $fieldTypeL = base::getNum(base::getLRStr(base::getLRStr($fieldType, '(', 'right'), ')', 'left'), 0);
-            }
-            $requestValue = '';
+            $requestValue = null;
             $requestName = base::getLRStr($fieldName, '_', 'rightr');
             if (!base::isEmpty($namePre)) $requestName = $namePre . $requestName;
             if (!base::isEmpty($nameSuffix)) $requestName = $requestName . $nameSuffix;
-            if (is_array($vars)) $requestValue = base::getString(@$vars[$fieldName]);
+            if (is_array($vars))
+            {
+              if (array_key_exists($requestName, $vars)) $requestValue = $vars[$requestName];
+            }
             if ($mode == 0)
             {
-              if (!base::checkInstr($specialField, $fieldName, ','))
+              $inSpecialField = false;
+              if (!is_null($specialField))
+              {
+                $newSpecialFieldAry = array();
+                $specialFieldAry = explode(',', $specialField);
+                foreach ($specialFieldAry as $key => $val) array_push($newSpecialFieldAry, $dal -> prefix . $val);
+                if (in_array($fieldName, $newSpecialFieldAry)) $inSpecialField = true;
+              }
+              if ($inSpecialField == false)
               {
                 $manual = false;
                 if (!base::isEmpty($comment))
@@ -58,16 +64,11 @@ namespace jtbc {
                 if ($manual == false)
                 {
                   $fieldValid = true;
-                  if (base::isEmpty($requestValue))
+                  if (is_null($requestValue))
                   {
                     if (is_array($source))
                     {
-                      if (array_key_exists($requestName, $source))
-                      {
-                        $requestValue = $source[$requestName];
-                        if (!is_array($requestValue)) $requestValue = base::getString($requestValue);
-                        else $requestValue = base::getString(implode(',', $requestValue));
-                      }
+                      if (array_key_exists($requestName, $source)) $requestValue = $source[$requestName];
                     }
                   }
                 }
@@ -77,112 +78,89 @@ namespace jtbc {
             {
               if (is_array($vars))
               {
-                if (array_key_exists($fieldName, $vars)) $fieldValid = true;
+                if (array_key_exists($requestName, $vars)) $fieldValid = true;
               }
             }
             if ($fieldValid == true)
             {
-              if ($fieldTypeN == 'int' || $fieldTypeN == 'integer' || $fieldTypeN == 'double')
-              {
-                $fieldString .= $fieldName . ',';
-                $fieldValues .= base::getNum($requestValue, 0) . ',';
-              }
-              else if ($fieldTypeN == 'varchar')
-              {
-                $fieldString .= $fieldName . ',';
-                $fieldValues .= '\'' . addslashes(base::getLeft($requestValue, $fieldTypeL)) . '\',';
-              }
-              else if ($fieldTypeN == 'datetime')
-              {
-                $fieldString .= $fieldName . ',';
-                $fieldValues .= '\'' . addslashes(base::getDateTime($requestValue)) . '\',';
-              }
-              else if ($fieldTypeN == 'text')
-              {
-                $fieldString .= $fieldName . ',';
-                $fieldValues .= '\'' . addslashes(base::getLeft($requestValue, 20000)) . '\',';
-              }
-              else if ($fieldTypeN == 'mediumtext')
-              {
-                $fieldString .= $fieldName . ',';
-                $fieldValues .= '\'' . addslashes(base::getLeft($requestValue, 5000000)) . '\',';
-              }
-              else if ($fieldTypeN == 'longtext')
-              {
-                $fieldString .= $fieldName . ',';
-                $fieldValues .= '\'' . addslashes(base::getLeft($requestValue, 1000000000)) . '\',';
-              }
+              if (is_array($requestValue)) $requestValue = base::getString(implode(',', $requestValue));
+              $dalSource[$fieldName] = $requestValue;
             }
           }
-          if (!base::isEmpty($fieldString)) $fieldString = base::getLRStr($fieldString, ',', 'leftr');
-          if (!base::isEmpty($fieldValues)) $fieldValues = base::getLRStr($fieldValues, ',', 'leftr');
-          $tmpstr .= $fieldString;
-          $tmpstr .= ') values (';
-          $tmpstr .= $fieldValues;
-          $tmpstr .= ')';
         }
+        $result = $dal -> insert($dalSource);
+        self::$lastInsertId = $dal -> lastInsertId;
       }
-      return $tmpstr;
+      return $result;
     }
 
-    public static function getAutoInsertSQLByVars($argTable, $argVars)
+    public static function autoInsertByVars($argVars = null, $argTable = null, $argPrefix = null, $argDbLink = 'any')
     {
       $table = $argTable;
+      $prefix = $argPrefix;
+      $dbLink = $argDbLink;
       $vars = $argVars;
-      $tmpstr = self::getAutoInsertSQL($table, $vars, null, null, '', '', 1);
-      return $tmpstr;
+      $result = self::autoInsert($vars, null, $table, $prefix, $dbLink, null, '', '', 1);
+      return $result;
     }
 
-    public static function getAutoInsertSQLByRequest($argTable, $argVars, $argSpecialField = null)
+    public static function autoInsertByRequest($argVars = null, $argSpecialField = null, $argTable = null, $argPrefix = null, $argDbLink = 'any')
     {
       $table = $argTable;
+      $prefix = $argPrefix;
+      $dbLink = $argDbLink;
       $vars = $argVars;
       $specialField = $argSpecialField;
-      $tmpstr = self::getAutoInsertSQL($table, $vars, $specialField, request::post(), '', '', 0);
-      return $tmpstr;
+      $result = self::autoInsert($vars, $specialField, $table, $prefix, $dbLink, request::post(), '', '', 0);
+      return $result;
     }
 
-    public static function getAutoUpdateSQL($argTable, $argIdField, $argId, $argVars = null, $argSpecialField = null, $argSource = null, $argNamePre = '', $argNameSuffix = '', $argMode = 0)
+    public static function autoUpdate($argId, $argVars = null, $argSpecialField = null, $argTable = null, $argPrefix = null, $argDbLink = 'any', $argSource = null, $argNamePre = '', $argNameSuffix = '', $argMode = 0)
     {
-      $tmpstr = '';
+      $result = null;
       $table = $argTable;
+      $prefix = $argPrefix;
+      $dbLink = $argDbLink;
       $specialField = $argSpecialField;
-      $idField = $argIdField;
       $id = base::getNum($argId, 0);
       $namePre = $argNamePre;
       $nameSuffix = $argNameSuffix;
       $vars = $argVars;
       $source = $argSource;
       $mode = base::getNum($argMode, 0);
-      $db = conn::db();
+      $dal = new dal($table, $prefix, $dbLink);
+      $dal -> id = $id;
+      $db = $dal -> db;
       if (!is_null($db))
       {
-        $columns = $db -> showFullColumns($table);
+        $dalSource = array();
+        $columns = $db -> showFullColumns($dal -> table);
         if (is_array($columns))
         {
-          $fieldStringValues = '';
-          $tmpstr = 'update ' . $table . ' set ';
           foreach ($columns as $i => $item)
           {
             $fieldValid = false;
             $fieldName = $item['Field'];
-            $fieldType = $item['Type'];
             $comment = base::getString($item['Comment']);
-            $fieldTypeN = $fieldType;
-            $fieldTypeL = null;
-            if (is_numeric(strpos($fieldType, '(')))
-            {
-              $fieldTypeN = base::getLRStr($fieldType, '(', 'left');
-              $fieldTypeL = base::getNum(base::getLRStr(base::getLRStr($fieldType, '(', 'right'), ')', 'left'), 0);
-            }
-            $requestValue = '';
+            $requestValue = null;
             $requestName = base::getLRStr($fieldName, '_', 'rightr');
             if (!base::isEmpty($namePre)) $requestName = $namePre . $requestName;
             if (!base::isEmpty($nameSuffix)) $requestName = $requestName . $nameSuffix;
-            if (is_array($vars)) $requestValue = base::getString(@$vars[$fieldName]);
+            if (is_array($vars))
+            {
+              if (array_key_exists($requestName, $vars)) $requestValue = $vars[$requestName];
+            }
             if ($mode == 0)
             {
-              if (!base::checkInstr($specialField, $fieldName, ','))
+              $inSpecialField = false;
+              if (!is_null($specialField))
+              {
+                $newSpecialFieldAry = array();
+                $specialFieldAry = explode(',', $specialField);
+                foreach ($specialFieldAry as $key => $val) array_push($newSpecialFieldAry, $dal -> prefix . $val);
+                if (in_array($fieldName, $newSpecialFieldAry)) $inSpecialField = true;
+              }
+              if ($inSpecialField == false)
               {
                 $manual = false;
                 if (!base::isEmpty($comment))
@@ -196,16 +174,11 @@ namespace jtbc {
                 if ($manual == false)
                 {
                   $fieldValid = true;
-                  if (base::isEmpty($requestValue))
+                  if (is_null($requestValue))
                   {
                     if (is_array($source))
                     {
-                      if (array_key_exists($requestName, $source))
-                      {
-                        $requestValue = $source[$requestName];
-                        if (!is_array($requestValue)) $requestValue = base::getString($requestValue);
-                        else $requestValue = base::getString(implode(',', $requestValue));
-                      }
+                      if (array_key_exists($requestName, $source)) $requestValue = $source[$requestName];
                     }
                   }
                 }
@@ -215,64 +188,42 @@ namespace jtbc {
             {
               if (is_array($vars))
               {
-                if (array_key_exists($fieldName, $vars)) $fieldValid = true;
+                if (array_key_exists($requestName, $vars)) $fieldValid = true;
               }
             }
             if ($fieldValid == true)
             {
-              if ($fieldTypeN == 'int' || $fieldTypeN == 'integer' || $fieldTypeN == 'double')
-              {
-                $fieldStringValues .= $fieldName . '=' . base::getNum($requestValue, 0) . ',';
-              }
-              else if ($fieldTypeN == 'varchar')
-              {
-                $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($requestValue, $fieldTypeL)) . '\',';
-              }
-              else if ($fieldTypeN == 'datetime')
-              {
-                $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getDateTime($requestValue)) . '\',';
-              }
-              else if ($fieldTypeN == 'text')
-              {
-                $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($requestValue, 20000)) . '\',';
-              }
-              else if ($fieldTypeN == 'mediumtext')
-              {
-                $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($requestValue, 5000000)) . '\',';
-              }
-              else if ($fieldTypeN == 'longtext')
-              {
-                $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($requestValue, 1000000000)) . '\',';
-              }
+              if (is_array($requestValue)) $requestValue = base::getString(implode(',', $requestValue));
+              $dalSource[$fieldName] = $requestValue;
             }
           }
-          if (!base::isEmpty($fieldStringValues)) $fieldStringValues = base::getLRStr($fieldStringValues, ',', 'leftr');
-          $tmpstr .= $fieldStringValues;
-          $tmpstr .= ' where ' . $idField . '=' . $id;
         }
+        $result = $dal -> update($dalSource);
       }
-      return $tmpstr;
+      return $result;
     }
 
-    public static function getAutoUpdateSQLByVars($argTable, $argIdField, $argId, $argVars)
+    public static function autoUpdateByVars($argId, $argVars, $argTable = null, $argPrefix = null, $argDbLink = 'any')
     {
       $table = $argTable;
+      $prefix = $argPrefix;
+      $dbLink = $argDbLink;
       $vars = $argVars;
-      $idField = $argIdField;
       $id = base::getNum($argId, 0);
-      $tmpstr = self::getAutoUpdateSQL($table, $idField, $id, $vars, null, null, '', '', 1);
+      $result = self::autoUpdate($id, $vars, null, $table, $prefix, $dbLink, null, '', '', 1);
       return $tmpstr;
     }
 
-    public static function getAutoUpdateSQLByRequest($argTable, $argIdField, $argId, $argVars = null, $argSpecialField = null)
+    public static function autoUpdateByRequest($argId, $argVars = null, $argSpecialField = null, $argTable = null, $argPrefix = null, $argDbLink = 'any')
     {
       $table = $argTable;
+      $prefix = $argPrefix;
+      $dbLink = $argDbLink;
       $vars = $argVars;
-      $idField = $argIdField;
       $id = base::getNum($argId, 0);
       $specialField = $argSpecialField;
-      $tmpstr = self::getAutoUpdateSQL($table, $idField, $id, $vars, $specialField, request::post(), '', '', 0);
-      return $tmpstr;
+      $result = self::autoUpdate($id, $vars, $specialField, $table, $prefix, $dbLink, request::post(), '', '', 0);
+      return $result;
     }
 
     public static function getAutoFieldFormat($argFieldArray, $argMode = 0, $argVars = null, $argTplPath = '::console')
@@ -379,18 +330,21 @@ namespace jtbc {
 
     }
 
-    public static function getAutoFieldFormatByTable($argTable, $argMode = 0, $argVars = null, $argTplPath = null)
+    public static function getAutoFieldFormatByTable($argMode = 0, $argTable = null, $argPrefix = null, $argDbLink = 'any', $argVars = null, $argTplPath = null)
     {
       $tmpstr = '';
-      $table = $argTable;
       $mode = $argMode;
+      $table = $argTable;
+      $prefix = $argPrefix;
+      $dbLink = $argDbLink;
       $vars = $argVars;
       $tplPath = $argTplPath;
-      $db = conn::db();
+      $dal = new dal($table, $prefix, $dbLink);
+      $db = $dal -> db;
       if (!is_null($db))
       {
         $fieldArray = array();
-        $columns = $db -> showFullColumns($table);
+        $columns = $db -> showFullColumns($dal -> table);
         foreach ($columns as $i => $item)
         {
           $comment = base::getString($item['Comment']);
@@ -409,21 +363,24 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    public static function getAutoFieldFormatByList($argTable, $argList, $argMode = 0, $argVars = null, $argTplPath = null)
+    public static function getAutoFieldFormatByList($argList, $argMode = 0, $argTable = null, $argPrefix = null, $argDbLink = 'any', $argVars = null, $argTplPath = null)
     {
       $tmpstr = '';
-      $table = $argTable;
       $list = $argList;
       $mode = $argMode;
+      $table = $argTable;
+      $prefix = $argPrefix;
+      $dbLink = $argDbLink;
       $vars = $argVars;
       $tplPath = $argTplPath;
       if (is_array($list))
       {
-        $db = conn::db();
+        $dal = new dal($table, $prefix, $dbLink);
+        $db = $dal -> db;
         if (!is_null($db))
         {
           $fieldArray = array();
-          $columns = $db -> showFullColumns($table);
+          $columns = $db -> showFullColumns($dal -> table);
           foreach ($list as $key => $val)
           {
             foreach ($columns as $i => $item)
@@ -452,19 +409,26 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    public static function pushAutoRequestErrorByTable(&$error, $argTable, $argTplPath = '::console')
+    public static function pushAutoRequestErrorByTable(&$error, $argTable = null, $argPrefix = null, $argDbLink = 'any', $argNamePre = '', $argNameSuffix = '', $argTplPath = '::console')
     {
       $table = $argTable;
+      $prefix = $argPrefix;
+      $dbLink = $argDbLink;
+      $namePre = $argNamePre;
+      $nameSuffix = $argNameSuffix;
       $tplPath = $argTplPath;
-      $db = conn::db();
+      $dal = new dal($table, $prefix, $dbLink);
+      $db = $dal -> db;
       if (!is_null($db))
       {
-        $columns = $db -> showFullColumns($table);
+        $columns = $db -> showFullColumns($dal -> table);
         foreach ($columns as $i => $item)
         {
           $fieldName = $item['Field'];
           $comment = base::getString($item['Comment']);
           $requestName = base::getLRStr($fieldName, '_', 'rightr');
+          if (!base::isEmpty($namePre)) $requestName = $namePre . $requestName;
+          if (!base::isEmpty($nameSuffix)) $requestName = $requestName . $nameSuffix;
           if (!base::isEmpty($comment))
           {
             $commentAry = json_decode($comment, true);

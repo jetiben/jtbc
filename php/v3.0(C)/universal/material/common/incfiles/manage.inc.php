@@ -15,22 +15,15 @@ class ui extends console\page {
     $account = self::account();
     if ($account -> checkCurrentGenrePopedom('edit'))
     {
-      $db = conn::db();
-      if (!is_null($db))
+      $dal = new dal();
+      $dal -> id = $id;
+      $rs = $dal -> select();
+      if (is_array($rs))
       {
-        $table = tpl::take('config.db_table', 'cfg');
-        $prefix = tpl::take('config.db_prefix', 'cfg');
-        $sql = new sql($db, $table, $prefix);
-        $sql -> id = $id;
-        $sqlstr = $sql -> sql;
-        $rs = $db -> fetch($sqlstr);
-        if (is_array($rs))
-        {
-          $tmpstr = tpl::take('manage.edit', 'tpl');
-          $tmpstr = tpl::replaceTagByAry($tmpstr, $rs, 10);
-          $tmpstr = tpl::parse($tmpstr);
-          $tmpstr = $account -> replaceAccountTag($tmpstr);
-        }
+        $tmpstr = tpl::take('manage.edit', 'tpl');
+        $tmpstr = tpl::replaceTagByAry($tmpstr, $rs, 10);
+        $tmpstr = tpl::parse($tmpstr);
+        $tmpstr = $account -> replaceAccountTag($tmpstr);
       }
     }
     $tmpstr = self::formatResult($status, $tmpstr);
@@ -44,38 +37,30 @@ class ui extends console\page {
     $page = base::getNum(request::get('page'), 0);
     $filegroup = base::getNum(request::get('filegroup'), -1);
     $pagesize = base::getNum(tpl::take('config.pagesize', 'cfg'), 0);
-    $db = conn::db();
-    if (!is_null($db))
+    $account = self::account();
+    $tmpstr = tpl::take('manage.list', 'tpl');
+    $tpl = new tpl($tmpstr);
+    $loopString = $tpl -> getLoopString('{@}');
+    $dal = new dal();
+    $dal -> lang = $account -> getLang();
+    if ($filegroup != -1) $dal -> filegroup = $filegroup;
+    $dal -> orderBy('time', 'desc');
+    $pagi = new pagi($dal);
+    $rsAry = $pagi -> getDataAry($page, $pagesize);
+    if (is_array($rsAry))
     {
-      $account = self::account();
-      $tmpstr = tpl::take('manage.list', 'tpl');
-      $tpl = new tpl($tmpstr);
-      $loopString = $tpl -> getLoopString('{@}');
-      $table = tpl::take('config.db_table', 'cfg');
-      $prefix = tpl::take('config.db_prefix', 'cfg');
-      $sql = new sql($db, $table, $prefix);
-      $sql -> lang = $account -> getLang();
-      if ($filegroup != -1) $sql -> filegroup = $filegroup;
-      $sql -> orderBy('time');
-      $sql -> orderBy('id');
-      $sqlstr = $sql -> sql;
-      $pagi = new pagi($db);
-      $rsAry = $pagi -> getDataAry($sqlstr, $page, $pagesize);
-      if (is_array($rsAry))
+      foreach($rsAry as $rs)
       {
-        foreach($rsAry as $rs)
-        {
-          $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
-          $tpl -> insertLoopLine(tpl::parse($loopLineString));
-        }
+        $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
+        $tpl -> insertLoopLine(tpl::parse($loopLineString));
       }
-      $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
-      $variable['-batch-list'] = implode(',', $batchAry);
-      $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
-      $tmpstr = $tpl -> assign($variable) -> assign($pagi -> getVars()) -> getTpl();
-      $tmpstr = tpl::parse($tmpstr);
-      $tmpstr = $account -> replaceAccountTag($tmpstr);
     }
+    $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
+    $variable['-batch-list'] = implode(',', $batchAry);
+    $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
+    $tmpstr = $tpl -> assign($variable) -> assign($pagi -> getVars()) -> getTpl();
+    $tmpstr = tpl::parse($tmpstr);
+    $tmpstr = $account -> replaceAccountTag($tmpstr);
     $tmpstr = self::formatResult($status, $tmpstr);
     return $tmpstr;
   }
@@ -92,38 +77,32 @@ class ui extends console\page {
     }
     else
     {
-      $db = conn::db();
-      if (!is_null($db))
+      $upResult = universal\upload::up2self(@$_FILES['file'], '', '', false);
+      $upResultArray = json_decode($upResult, 1);
+      if (is_array($upResultArray))
       {
-        $upResult = universal\upload::up2self(@$_FILES['file'], '', '', false);
-        $upResultArray = json_decode($upResult, 1);
-        if (is_array($upResultArray))
+        $status = $upResultArray['status'];
+        $message = $upResultArray['message'];
+        $para = $upResultArray['para'];
+        if ($status == 1)
         {
-          $status = $upResultArray['status'];
-          $message = $upResultArray['message'];
-          $para = $upResultArray['para'];
-          if ($status == 1)
+          $paraArray = json_decode($para, 1);
+          if (is_array($paraArray))
           {
-            $paraArray = json_decode($para, 1);
-            if (is_array($paraArray))
+            $preset = array();
+            $preset['topic'] = $paraArray['filename'];
+            $preset['filepath'] = $paraArray['filepath'];
+            $preset['fileurl'] = $paraArray['fileurl'];
+            $preset['filetype'] = $paraArray['filetype'];
+            $preset['filesize'] = $paraArray['filesize'];
+            $preset['filegroup'] = base::getFileGroup($paraArray['filetype']);
+            $preset['lang'] = $account -> getLang();
+            $preset['time'] = base::getDateTime();
+            $re = auto::autoInsertByVars($preset);
+            if (is_numeric($re))
             {
-              $table = tpl::take('config.db_table', 'cfg');
-              $prefix = tpl::take('config.db_prefix', 'cfg');
-              $preset = array();
-              $preset[$prefix . 'topic'] = $paraArray['filename'];
-              $preset[$prefix . 'filepath'] = $paraArray['filepath'];
-              $preset[$prefix . 'fileurl'] = $paraArray['fileurl'];
-              $preset[$prefix . 'filetype'] = $paraArray['filetype'];
-              $preset[$prefix . 'filesize'] = $paraArray['filesize'];
-              $preset[$prefix . 'filegroup'] = base::getFileGroup($paraArray['filetype']);
-              $preset[$prefix . 'lang'] = $account -> getLang();
-              $preset[$prefix . 'time'] = base::getDateTime();
-              $sqlstr = auto::getAutoInsertSQLByVars($table, $preset);
-              $re = $db -> exec($sqlstr);
-              if (is_numeric($re))
-              {
-                $account -> creatCurrentGenreLog('manage.log-add-1', array('id' => $db -> lastInsertId, 'filepath' => $paraArray['filepath']));
-              }
+              $id = auto::$lastInsertId;
+              $account -> creatCurrentGenreLog('manage.log-add-1', array('id' => $id, 'filepath' => $paraArray['filepath']));
             }
           }
         }
@@ -145,39 +124,31 @@ class ui extends console\page {
     }
     else
     {
-      $db = conn::db();
-      if (!is_null($db))
+      $dal = new dal();
+      $dal -> id = $id;
+      $rs = $dal -> select();
+      if (is_array($rs))
       {
-        $table = tpl::take('config.db_table', 'cfg');
-        $prefix = tpl::take('config.db_prefix', 'cfg');
-        $sql = new sql($db, $table, $prefix);
-        $sql -> id = $id;
-        $sqlstr = $sql -> sql;
-        $rs = $db -> fetch($sqlstr);
-        if (is_array($rs))
+        $rsFilePath = base::getString($dal -> val($rs, 'filepath'));
+        $upResult = universal\upload::up2self(@$_FILES['file'], '', $rsFilePath, false);
+        $upResultArray = json_decode($upResult, 1);
+        if (is_array($upResultArray))
         {
-          $rsFilePath = base::getString($rs[$prefix . 'filepath']);
-          $upResult = universal\upload::up2self(@$_FILES['file'], '', $rsFilePath, false);
-          $upResultArray = json_decode($upResult, 1);
-          if (is_array($upResultArray))
+          $status = $upResultArray['status'];
+          $message = $upResultArray['message'];
+          $para = $upResultArray['para'];
+          if ($status == 1)
           {
-            $status = $upResultArray['status'];
-            $message = $upResultArray['message'];
-            $para = $upResultArray['para'];
-            if ($status == 1)
+            $paraArray = json_decode($para, 1);
+            if (is_array($paraArray))
             {
-              $paraArray = json_decode($para, 1);
-              if (is_array($paraArray))
+              $preset = array();
+              $preset['topic'] = $paraArray['filename'];
+              $preset['filesize'] = $paraArray['filesize'];
+              $re = auto::autoUpdateByVars($id, $preset);
+              if (is_numeric($re))
               {
-                $preset = array();
-                $preset[$prefix . 'topic'] = $paraArray['filename'];
-                $preset[$prefix . 'filesize'] = $paraArray['filesize'];
-                $sqlstr = auto::getAutoUpdateSQLByVars($table, $prefix . 'id', $id, $preset);
-                $re = $db -> exec($sqlstr);
-                if (is_numeric($re))
-                {
-                  $account -> creatCurrentGenreLog('manage.log-replace-1', array('id' => $id));
-                }
+                $account -> creatCurrentGenreLog('manage.log-replace-1', array('id' => $id));
               }
             }
           }
@@ -206,23 +177,16 @@ class ui extends console\page {
       if (base::isEmpty($topic)) array_push($error, tpl::take('manage.text-tips-edit-error-1', 'lng'));
       if (count($error) == 0)
       {
-        $db = conn::db();
-        if (!is_null($db))
+        $preset = array();
+        $preset['lang'] = $account -> getLang();
+        $re = auto::autoUpdateByRequest($id, $preset, 'filepath,fileurl,filetype,filesize,filegroup,hot');
+        if (is_numeric($re))
         {
-          $table = tpl::take('config.db_table', 'cfg');
-          $prefix = tpl::take('config.db_prefix', 'cfg');
-          $specialFiled = $prefix . 'filepath,' . $prefix . 'fileurl,' . $prefix . 'filetype,' . $prefix . 'filesize,' . $prefix . 'filegroup,' . $prefix . 'hot';
-          $preset = array();
-          $preset[$prefix . 'lang'] = $account -> getLang();
-          $sqlstr = auto::getAutoUpdateSQLByRequest($table, $prefix . 'id', $id, $preset, $specialFiled);
-          $re = $db -> exec($sqlstr);
-          if (is_numeric($re))
-          {
-            $status = 1;
-            $message = tpl::take('manage.text-tips-edit-done', 'lng');
-            $account -> creatCurrentGenreLog('manage.log-edit-1', array('id' => $id));
-          }
+          $status = 1;
+          $message = tpl::take('manage.text-tips-edit-done', 'lng');
+          $account -> creatCurrentGenreLog('manage.log-edit-1', array('id' => $id));
         }
+        else array_push($error, tpl::take('::console.text-tips-error-others', 'lng'));
       }
     }
     if (count($error) != 0) $message = implode('|', $error);

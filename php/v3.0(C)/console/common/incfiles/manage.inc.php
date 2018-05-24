@@ -93,9 +93,9 @@ class ui extends page {
     $account = self::account();
     if (!$account -> checkLogin())
     {
-      $db = conn::db();
+      $connTest = dal::connTest()
       $tmpstr = tpl::take('manage.login', 'tpl');
-      $tmpstr = str_replace('{$-db-error}', is_null($db)? '1': '0', $tmpstr);
+      $tmpstr = str_replace('{$-db-error}', $connTest? '1': '0', $tmpstr);
       $tmpstr = tpl::parse($tmpstr);
     }
     else

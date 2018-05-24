@@ -10,7 +10,26 @@ namespace jtbc {
     private $prefix;
     private $pocket = array();
     private $orderby = null;
+    private $mode = 'select';
+    private $source = array();
     private $additionalSQL = null;
+    private $limitStart = null;
+    private $limitLength = null;
+
+    public function changeMode($argMode)
+    {
+      $mode = $argMode;
+      $modeList = array('select', 'insert', 'update', 'delete');
+      if (in_array($mode, $modeList)) $this -> mode = $mode;
+      return $this;
+    }
+
+    public function changeSource($argSource)
+    {
+      $source = $argSource;
+      if (is_array($source)) $this -> source = $source;
+      return $this;
+    }
 
     public function getFieldInfo($argDesc, $argField)
     {
@@ -24,32 +43,17 @@ namespace jtbc {
       return $fieldInfo;
     }
 
-    public function getSQL($argField = null, $argAutoFilter = true)
+    public function getWhere($argAutoFilter = true)
     {
-      $field = $argField;
+      $where = '';
       $autoFilter = $argAutoFilter;
       $db = $this -> db;
       $table = $this -> table;
       $prefix = $this -> prefix;
       $pocket = $this -> pocket;
-      $orderby = $this -> orderby;
       $additionalSQL = $this -> additionalSQL;
-      $fieldStr = '*';
-      if (is_array($field))
-      {
-        foreach ($field as $key => $val)
-        {
-          $field[$key] = $prefix . $val;
-        }
-        $fieldStr = implode(',', $field);
-      }
-      else if ($field == 'count(*)')
-      {
-        $fieldStr = 'count(*) as count';
-      }
-      $hasWhere = false;
-      $sql = "select " . $fieldStr . " from " . $table;
       $desc = $db -> desc($table);
+      $hasWhere = false;
       if ($autoFilter == true)
       {
         $deleteField = $prefix . 'delete';
@@ -57,10 +61,10 @@ namespace jtbc {
         if (is_array($deleteFieldInfo))
         {
           $hasWhere = true;
-          $sql .= " where " . $deleteField . "=0";
+          $where .= " where " . $deleteField . "=0";
         }
       }
-      if ($hasWhere != true) $sql .= " where 1=1";
+      if ($hasWhere != true) $where .= " where 1=1";
       if (!empty($pocket))
       {
         foreach ($pocket as $key => $val)
@@ -107,44 +111,82 @@ namespace jtbc {
                 $valType = gettype($currentVal);
                 if ($currentRelation == 'in')
                 {
-                  if ($valType == 'integer' || $valType == 'double') $sql .= " " . $currentConcat . " " . $currentField . " in (" . base::getNum($currentVal, 0) . ")";
+                  if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . " in (" . base::getNum($currentVal, 0) . ")";
                   else if ($valType == 'string')
                   {
-                    if (base::checkIDAry($currentVal)) $sql .= " " . $currentConcat . " " . $currentField  . " in (" . addslashes($currentVal) . ")";
+                    if (base::checkIDAry($currentVal)) $where .= " " . $currentConcat . " " . $currentField  . " in (" . addslashes($currentVal) . ")";
                   }
                 }
                 else if ($currentRelation == 'like')
                 {
-                  if ($valType == 'integer' || $valType == 'double') $sql .= " " . $currentConcat . " " . $currentField . " like " . base::getNum($currentVal, 0);
-                  else if ($valType == 'string') $sql .= " " . $currentConcat . " " . $currentField  . " like '" . addslashes($currentVal) . "'";
+                  if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . " like " . base::getNum($currentVal, 0);
+                  else if ($valType == 'string') $where .= " " . $currentConcat . " " . $currentField  . " like '" . addslashes($currentVal) . "'";
                 }
                 else if ($currentRelation == '!=')
                 {
-                  if ($valType == 'integer' || $valType == 'double') $sql .= " " . $currentConcat . " " . $currentField . "!=" . base::getNum($currentVal, 0);
-                  else if ($valType == 'string') $sql .= " " . $currentConcat . " " . $currentField  . "!='" . addslashes($currentVal) . "'";
+                  if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . "!=" . base::getNum($currentVal, 0);
+                  else if ($valType == 'string') $where .= " " . $currentConcat . " " . $currentField  . "!='" . addslashes($currentVal) . "'";
                 }
                 else if ($currentRelation == '>=')
                 {
-                  if ($valType == 'integer' || $valType == 'double') $sql .= " " . $currentConcat . " " . $currentField . ">=" . base::getNum($currentVal, 0);
+                  if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . ">=" . base::getNum($currentVal, 0);
                 }
                 else if ($currentRelation == '<=')
                 {
-                  if ($valType == 'integer' || $valType == 'double') $sql .= " " . $currentConcat . " " . $currentField . "<=" . base::getNum($currentVal, 0);
+                  if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . "<=" . base::getNum($currentVal, 0);
                 }
                 else if ($currentRelation == '=')
                 {
-                  if ($valType == 'integer' || $valType == 'double') $sql .= " " . $currentConcat . " " . $currentField . "=" . base::getNum($currentVal, 0);
-                  else if ($valType == 'string') $sql .= " " . $currentConcat . " " . $currentField  . "='" . addslashes($currentVal) . "'";
+                  if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . "=" . base::getNum($currentVal, 0);
+                  else if ($valType == 'string') $where .= " " . $currentConcat . " " . $currentField  . "='" . addslashes($currentVal) . "'";
                 }
               }
             }
           }
         }
       }
-      if (!is_null($additionalSQL))
+      if (!is_null($additionalSQL)) $where .= $additionalSQL;
+      return $where;
+    }
+
+    public function getSQL($argAutoFilter = true, $argField = null)
+    {
+      $sql = '';
+      $field = $argField;
+      $autoFilter = $argAutoFilter;
+      $mode = $this -> mode;
+      if ($mode == 'select') $sql = $this -> getSelectSQL($argAutoFilter, $argField);
+      else if ($mode == 'insert') $sql = $this -> getInsertSQL();
+      else if ($mode == 'update') $sql = $this -> getUpdateSQL($argAutoFilter);
+      else if ($mode == 'delete') $sql = $this -> getDeleteSQL($argAutoFilter);
+      return $sql;
+    }
+
+    public function getSelectSQL($argAutoFilter = true, $argField = null)
+    {
+      $field = $argField;
+      $autoFilter = $argAutoFilter;
+      $db = $this -> db;
+      $table = $this -> table;
+      $prefix = $this -> prefix;
+      $orderby = $this -> orderby;
+      $limitStart = $this -> limitStart;
+      $limitLength = $this -> limitLength;
+      $desc = $db -> desc($table);
+      $fieldStr = '*';
+      if (is_array($field))
       {
-        $sql .= $additionalSQL;
+        foreach ($field as $key => $val)
+        {
+          $field[$key] = $prefix . $val;
+        }
+        $fieldStr = implode(',', $field);
       }
+      else if ($field == 'count(*)')
+      {
+        $fieldStr = 'count(*) as count';
+      }
+      $sql = "select " . $fieldStr . " from " . $table . $this -> getWhere($autoFilter);
       if (!is_null($orderby))
       {
         $orderbyType = gettype($orderby);
@@ -179,7 +221,202 @@ namespace jtbc {
           if (!empty($newOrderBy)) $sql .= " order by " . implode(',', $newOrderBy);
         }
       }
+      if (!is_null($limitStart) && !is_null($limitLength)) $sql .= " limit " . $limitStart . ", " . $limitLength;
       return $sql;
+    }
+
+    public function getInsertSQL($argFuzzy = true)
+    {
+      $sql = '';
+      $fuzzy = $argFuzzy;
+      $db = $this -> db;
+      $table = $this -> table;
+      $prefix = $this -> prefix;
+      $source = $this -> source;
+      $columns = $db -> showFullColumns($table);
+      if (is_array($columns))
+      {
+        $matchCount = 0;
+        $fieldString = '';
+        $fieldValues = '';
+        $sql = "insert into " . $table . " (";
+        foreach ($columns as $i => $item)
+        {
+          $fieldValid = false;
+          $fieldName = $item['Field'];
+          $fieldType = $item['Type'];
+          $fieldTypeN = $fieldType;
+          $fieldTypeL = null;
+          if (is_numeric(strpos($fieldType, '(')))
+          {
+            $fieldTypeN = base::getLRStr($fieldType, '(', 'left');
+            $fieldTypeL = base::getNum(base::getLRStr(base::getLRStr($fieldType, '(', 'right'), ')', 'left'), 0);
+          }
+          $fieldValue = null;
+          $sourceName = $fieldName;
+          if (array_key_exists($sourceName, $source)) $fieldValue = $source[$sourceName];
+          else
+          {
+            if ($fuzzy == true)
+            {
+              $sourceName = base::getLRStr($fieldName, '_', 'rightr');
+              if (array_key_exists($sourceName, $source)) $fieldValue = $source[$sourceName];
+            }
+          }
+          if (!is_null($fieldValue))
+          {
+            $matchCount +=1;
+            if ($fieldTypeN == 'int' || $fieldTypeN == 'integer' || $fieldTypeN == 'double')
+            {
+              $fieldString .= $fieldName . ',';
+              $fieldValues .= base::getNum($fieldValue, 0) . ',';
+            }
+            else if ($fieldTypeN == 'varchar')
+            {
+              $fieldString .= $fieldName . ',';
+              $fieldValues .= "'" . addslashes(base::getLeft($fieldValue, $fieldTypeL)) . "',";
+            }
+            else if ($fieldTypeN == 'datetime')
+            {
+              $fieldString .= $fieldName . ',';
+              $fieldValues .= "'" . addslashes(base::getDateTime($fieldValue)) . "',";
+            }
+            else if ($fieldTypeN == 'text')
+            {
+              $fieldString .= $fieldName . ',';
+              $fieldValues .= "'" . addslashes(base::getLeft($fieldValue, 20000)) . "',";
+            }
+            else if ($fieldTypeN == 'mediumtext')
+            {
+              $fieldString .= $fieldName . ',';
+              $fieldValues .= "'" . addslashes(base::getLeft($fieldValue, 5000000)) . "',";
+            }
+            else if ($fieldTypeN == 'longtext')
+            {
+              $fieldString .= $fieldName . ',';
+              $fieldValues .= "'" . addslashes(base::getLeft($fieldValue, 1000000000)) . "',";
+            }
+            else
+            {
+              $matchCount -= 1;
+            }
+          }
+        }
+        if ($matchCount == 0) $sql = '';
+        else
+        {
+          $fieldString = base::getLRStr($fieldString, ',', 'leftr');
+          $fieldValues = base::getLRStr($fieldValues, ',', 'leftr');
+          $sql .= $fieldString . ") values (" . $fieldValues . ")";
+        }
+      }
+      return $sql;
+    }
+
+    public function getTruncateSQL()
+    {
+      $table = $this -> table;
+      $sql = "truncate table " . $table;
+      return $sql;
+    }
+
+    public function getUpdateSQL($argAutoFilter = true, $argFuzzy = true)
+    {
+      $sql = '';
+      $autoFilter = $argAutoFilter;
+      $fuzzy = $argFuzzy;
+      $db = $this -> db;
+      $table = $this -> table;
+      $prefix = $this -> prefix;
+      $source = $this -> source;
+      $columns = $db -> showFullColumns($table);
+      if (is_array($columns))
+      {
+        $matchCount = 0;
+        $fieldStringValues = '';
+        $sql = 'update ' . $table . ' set ';
+        foreach ($columns as $i => $item)
+        {
+          $fieldValid = false;
+          $fieldName = $item['Field'];
+          $fieldType = $item['Type'];
+          $fieldTypeN = $fieldType;
+          $fieldTypeL = null;
+          if (is_numeric(strpos($fieldType, '(')))
+          {
+            $fieldTypeN = base::getLRStr($fieldType, '(', 'left');
+            $fieldTypeL = base::getNum(base::getLRStr(base::getLRStr($fieldType, '(', 'right'), ')', 'left'), 0);
+          }
+          $fieldValue = null;
+          $sourceName = $fieldName;
+          if (array_key_exists($sourceName, $source)) $fieldValue = $source[$sourceName];
+          else
+          {
+            if ($fuzzy == true)
+            {
+              $sourceName = base::getLRStr($fieldName, '_', 'rightr');
+              if (array_key_exists($sourceName, $source)) $fieldValue = $source[$sourceName];
+            }
+          }
+          if (!is_null($fieldValue))
+          {
+            $matchCount +=1;
+            if ($fieldTypeN == 'int' || $fieldTypeN == 'integer' || $fieldTypeN == 'double')
+            {
+              $fieldStringValues .= $fieldName . '=' . base::getNum($fieldValue, 0) . ',';
+            }
+            else if ($fieldTypeN == 'varchar')
+            {
+              $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($fieldValue, $fieldTypeL)) . '\',';
+            }
+            else if ($fieldTypeN == 'datetime')
+            {
+              $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getDateTime($fieldValue)) . '\',';
+            }
+            else if ($fieldTypeN == 'text')
+            {
+              $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($fieldValue, 20000)) . '\',';
+            }
+            else if ($fieldTypeN == 'mediumtext')
+            {
+              $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($fieldValue, 5000000)) . '\',';
+            }
+            else if ($fieldTypeN == 'longtext')
+            {
+              $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($fieldValue, 1000000000)) . '\',';
+            }
+            else
+            {
+              $matchCount -= 1;
+            }
+          }
+        }
+        if ($matchCount == 0) $sql = '';
+        else
+        {
+          $fieldStringValues = base::getLRStr($fieldStringValues, ',', 'leftr');
+          $sql .= $fieldStringValues . $this -> getWhere($autoFilter);
+        }
+      }
+      return $sql;
+    }
+
+    public function getDeleteSQL($argAutoFilter = true)
+    {
+      $autoFilter = $argAutoFilter;
+      $table = $this -> table;
+      $sql = "delete from " . $table . $this -> getWhere($autoFilter);
+      return $sql;
+    }
+
+    public function limit($argStart = 0, $arglength = 1)
+    {
+      $start = base::getNum($argStart, 0);
+      $length = base::getNum($arglength, 1);
+      if ($start < 0) $start = 0;
+      if ($length < 1) $length = 1;
+      $this -> limitStart = $start;
+      $this -> limitLength = $length;
     }
 
     public function orderBy($argField, $argDescOrAsc = 'desc')
@@ -207,6 +444,7 @@ namespace jtbc {
         array_push($orderby, array($field, $descOrAsc));
       }
       $this -> orderby = $orderby;
+      return $this;
     }
 
     public function set($argName, $argValue)
@@ -216,34 +454,35 @@ namespace jtbc {
       $pocket = $this -> pocket;
       array_push($pocket, array($name, $value));
       $this -> pocket = $pocket;
+      return $this;
     }
 
     public function setMin($argName, $argValue)
     {
       $name = $argName;
       $value = $argValue;
-      $this -> set(array($name, '>='), $value);
+      return $this -> set(array($name, '>='), $value);
     }
 
     public function setMax($argName, $argValue)
     {
       $name = $argName;
       $value = $argValue;
-      $this -> set(array($name, '<='), $value);
+      return $this -> set(array($name, '<='), $value);
     }
 
     public function setIn($argName, $argValue)
     {
       $name = $argName;
       $value = $argValue;
-      $this -> set(array($name, 'in'), $value);
+      return $this -> set(array($name, 'in'), $value);
     }
 
     public function setLike($argName, $argValue)
     {
       $name = $argName;
       $value = $argValue;
-      $this -> set(array($name, 'like'), $value);
+      return $this -> set(array($name, 'like'), $value);
     }
 
     public function setFuzzyLike($argName, $argValue)
@@ -255,18 +494,20 @@ namespace jtbc {
       {
         if (!base::isEmpty($val)) $this -> setLike($name, '%' . $val . '%');
       }
+      return $this;
     }
 
     public function setUnequal($argName, $argValue)
     {
       $name = $argName;
       $value = $argValue;
-      $this -> set(array($name, '!='), $value);
+      return $this -> set(array($name, '!='), $value);
     }
 
     public function setAdditionalSQL($argAdditionalSQL)
     {
       $this -> additionalSQL = $argAdditionalSQL;
+      return $this;
     }
 
     public function __get($argName)

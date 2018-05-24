@@ -11,29 +11,25 @@ class ui extends console\page {
   {
     $tmpstr = '';
     $role = base::getNum($argRole, -1);
-    $db = conn::db();
-    if (!is_null($db))
+    $optionUnselected = tpl::take('global.config.xmlselect_unselect', 'tpl');
+    $optionselected = tpl::take('global.config.xmlselect_select', 'tpl');
+    if ($role == -1) $tmpstr .= $optionselected;
+    else $tmpstr .= $optionUnselected;
+    $tmpstr = str_replace('{$explain}', tpl::take(':/role:manage.text-super', 'lng'), $tmpstr);
+    $tmpstr = str_replace('{$value}', '-1', $tmpstr);
+    $table = tpl::take(':/role:config.db_table', 'cfg');
+    $prefix = tpl::take(':/role:config.db_prefix', 'cfg');
+    $dal = new dal($table, $prefix);
+    $dal -> orderBy('time', 'desc');
+    $rsa = $dal -> selectAll();
+    foreach ($rsa as $i => $rs)
     {
-      $optionUnselected = tpl::take('global.config.xmlselect_unselect', 'tpl');
-      $optionselected = tpl::take('global.config.xmlselect_select', 'tpl');
-      if ($role == -1) $tmpstr .= $optionselected;
+      $rsId = base::getNum($dal -> val($rs, 'id'), 0);
+      $rsTopic = base::getString($dal -> val($rs, 'topic'));
+      if ($role == $rsId) $tmpstr .= $optionselected;
       else $tmpstr .= $optionUnselected;
-      $tmpstr = str_replace('{$explain}', tpl::take(':/role:manage.text-super', 'lng'), $tmpstr);
-      $tmpstr = str_replace('{$value}', '-1', $tmpstr);
-      $table = tpl::take(':/role:config.db_table', 'cfg');
-      $prefix = tpl::take(':/role:config.db_prefix', 'cfg');
-      $sql = new sql($db, $table, $prefix, 'time');
-      $sqlstr = $sql -> sql;
-      $rsa = $db -> fetchAll($sqlstr);
-      foreach ($rsa as $i => $rs)
-      {
-        $rsId = base::getNum($rs[$prefix . 'id'], 0);
-        $rsTopic = base::getString($rs[$prefix . 'topic']);
-        if ($role == $rsId) $tmpstr .= $optionselected;
-        else $tmpstr .= $optionUnselected;
-        $tmpstr = str_replace('{$explain}', base::htmlEncode($rsTopic), $tmpstr);
-        $tmpstr = str_replace('{$value}', $rsId, $tmpstr);
-      }
+      $tmpstr = str_replace('{$explain}', base::htmlEncode($rsTopic), $tmpstr);
+      $tmpstr = str_replace('{$value}', $rsId, $tmpstr);
     }
     return $tmpstr;
   }
@@ -62,24 +58,17 @@ class ui extends console\page {
     $account = self::account();
     if ($account -> checkCurrentGenrePopedom('edit'))
     {
-      $db = conn::db();
-      if (!is_null($db))
+      $dal = new dal();
+      $dal -> id = $id;
+      $rs = $dal -> select();
+      if (is_array($rs))
       {
-        $table = tpl::take('config.db_table', 'cfg');
-        $prefix = tpl::take('config.db_prefix', 'cfg');
-        $sql = new sql($db, $table, $prefix);
-        $sql -> id = $id;
-        $sqlstr = $sql -> sql;
-        $rs = $db -> fetch($sqlstr);
-        if (is_array($rs))
-        {
-          $rsRole = base::getNum($rs[$prefix . 'role'], 0);
-          $tmpstr = tpl::take('manage.edit', 'tpl');
-          $tmpstr = tpl::replaceTagByAry($tmpstr, $rs, 10);
-          $tmpstr = str_replace('{$-select-role-html}', self::ppGetSelectRoleHTML($rsRole), $tmpstr);
-          $tmpstr = tpl::parse($tmpstr);
-          $tmpstr = $account -> replaceAccountTag($tmpstr);
-        }
+        $rsRole = base::getNum($dal -> val($rs, 'role'), 0);
+        $tmpstr = tpl::take('manage.edit', 'tpl');
+        $tmpstr = tpl::replaceTagByAry($tmpstr, $rs, 10);
+        $tmpstr = str_replace('{$-select-role-html}', self::ppGetSelectRoleHTML($rsRole), $tmpstr);
+        $tmpstr = tpl::parse($tmpstr);
+        $tmpstr = $account -> replaceAccountTag($tmpstr);
       }
     }
     $tmpstr = self::formatResult($status, $tmpstr);
@@ -93,36 +82,31 @@ class ui extends console\page {
     $page = base::getNum(request::get('page'), 0);
     $lock = base::getNum(request::get('lock'), 0);
     $pagesize = base::getNum(tpl::take('config.pagesize', 'cfg'), 0);
-    $db = conn::db();
-    if (!is_null($db))
+    $account = self::account();
+    $tmpstr = tpl::take('manage.list', 'tpl');
+    $tpl = new tpl($tmpstr);
+    $loopString = $tpl -> getLoopString('{@}');
+    $dal = new dal();
+    if ($lock == 1) $dal -> lock = 1;
+    $dal -> orderBy('time', 'desc');
+    $pagi = new pagi($dal);
+    $rsAry = $pagi -> getDataAry($page, $pagesize);
+    if (is_array($rsAry))
     {
-      $account = self::account();
-      $tmpstr = tpl::take('manage.list', 'tpl');
-      $tpl = new tpl($tmpstr);
-      $loopString = $tpl -> getLoopString('{@}');
-      $table = tpl::take('config.db_table', 'cfg');
-      $prefix = tpl::take('config.db_prefix', 'cfg');
-      $sql = new sql($db, $table, $prefix, 'time');
-      if ($lock == 1) $sql -> lock = 1;
-      $sqlstr = $sql -> sql;
-      $pagi = new pagi($db);
-      $rsAry = $pagi -> getDataAry($sqlstr, $page, $pagesize);
-      if (is_array($rsAry))
+      foreach($rsAry as $rs)
       {
-        foreach($rsAry as $rs)
-        {
-          $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
-          $loopLineString = str_replace('{$-role-topic}', base::htmlEncode($account -> getRoleTopicById($rs[$prefix . 'role'])), $loopLineString);
-          $tpl -> insertLoopLine($loopLineString);
-        }
+        $rsRole = base::getNum($dal -> val($rs, 'role'), 0);
+        $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
+        $loopLineString = str_replace('{$-role-topic}', base::htmlEncode($account -> getRoleTopicById($rsRole)), $loopLineString);
+        $tpl -> insertLoopLine($loopLineString);
       }
-      $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
-      $variable['-batch-list'] = implode(',', $batchAry);
-      $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
-      $tmpstr = $tpl -> assign($variable) -> assign($pagi -> getVars()) -> getTpl();
-      $tmpstr = tpl::parse($tmpstr);
-      $tmpstr = $account -> replaceAccountTag($tmpstr);
     }
+    $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
+    $variable['-batch-list'] = implode(',', $batchAry);
+    $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
+    $tmpstr = $tpl -> assign($variable) -> assign($pagi -> getVars()) -> getTpl();
+    $tmpstr = tpl::parse($tmpstr);
+    $tmpstr = $account -> replaceAccountTag($tmpstr);
     $tmpstr = self::formatResult($status, $tmpstr);
     return $tmpstr;
   }
@@ -143,33 +127,26 @@ class ui extends console\page {
     }
     else
     {
-      $table = tpl::take('config.db_table', 'cfg');
-      $prefix = tpl::take('config.db_prefix', 'cfg');
-      auto::pushAutoRequestErrorByTable($error, $table);
+      auto::pushAutoRequestErrorByTable($error);
       if (base::isEmpty($password)) array_push($error, tpl::take('manage.text-tips-field-error-1', 'lng'));
       if ($password != $cpassword) array_push($error, tpl::take('manage.text-tips-field-error-2', 'lng'));
       if (count($error) == 0)
       {
-        $db = conn::db();
-        if (!is_null($db))
+        $dal = new dal();
+        $dal -> username = $username;
+        $rs = $dal -> select();
+        if (is_array($rs)) array_push($error, tpl::take('manage.text-tips-add-error-101', 'lng'));
+        else
         {
-          $sql = new sql($db, $table, $prefix);
-          $sql -> username = $username;
-          $sqlstr = $sql -> sql;
-          $rs = $db -> fetch($sqlstr);
-          if (is_array($rs)) array_push($error, tpl::take('manage.text-tips-add-error-101', 'lng'));
-          else
+          $preset = array();
+          $preset['password'] = md5($password);
+          $preset['time'] = base::getDateTime();
+          $re = auto::autoInsertByRequest($preset);
+          if (is_numeric($re))
           {
-            $preset = array();
-            $preset[$prefix . 'password'] = md5($password);
-            $preset[$prefix . 'time'] = base::getDateTime();
-            $sqlstr = auto::getAutoInsertSQLByRequest($table, $preset);
-            $re = $db -> exec($sqlstr);
-            if (is_numeric($re))
-            {
-              $status = 1;
-              $account -> creatCurrentGenreLog('manage.log-add-1', array('id' => $db -> lastInsertId));
-            }
+            $status = 1;
+            $id = auto::$lastInsertId;
+            $account -> creatCurrentGenreLog('manage.log-add-1', array('id' => $id));
           }
         }
       }
@@ -196,33 +173,24 @@ class ui extends console\page {
     }
     else
     {
-      $table = tpl::take('config.db_table', 'cfg');
-      $prefix = tpl::take('config.db_prefix', 'cfg');
-      auto::pushAutoRequestErrorByTable($error, $table);
+      auto::pushAutoRequestErrorByTable($error);
       if (!base::isEmpty($password) && $password != $cpassword) array_push($error, tpl::take('manage.text-tips-field-error-2', 'lng'));
       if (count($error) == 0)
       {
-        $db = conn::db();
-        if (!is_null($db))
+        $dal = new dal();
+        $dal -> username = $username;
+        $dal -> setUnequal('id', $id);
+        $rs = $dal -> select();
+        if (is_array($rs)) array_push($error, tpl::take('manage.text-tips-edit-error-101', 'lng'));
+        else
         {
-          $sql = new sql($db, $table, $prefix);
-          $sql -> username = $username;
-          $sql -> setUnequal('id', $id);
-          $sqlstr = $sql -> sql;
-          $rs = $db -> fetch($sqlstr);
-          if (is_array($rs)) array_push($error, tpl::take('manage.text-tips-edit-error-101', 'lng'));
-          else
+          $re = auto::autoUpdateByRequest($id, null, 'password');
+          if (is_numeric($re))
           {
-            $specialFiled = $prefix . 'password';
-            $sqlstr = auto::getAutoUpdateSQLByRequest($table, $prefix . 'id', $id, null, $specialFiled);
-            $re = $db -> exec($sqlstr);
-            if (is_numeric($re))
-            {
-              $status = 1;
-              $message = tpl::take('manage.text-tips-edit-done', 'lng');
-              $account -> creatCurrentGenreLog('manage.log-edit-1', array('id' => $id));
-              if (!base::isEmpty($password)) $db -> exec("update " . $table . " set " . $prefix . "password='" . md5($password) . "' where " . $prefix . "id=" . $id);
-            }
+            $status = 1;
+            $message = tpl::take('manage.text-tips-edit-done', 'lng');
+            $account -> creatCurrentGenreLog('manage.log-edit-1', array('id' => $id));
+            if (!base::isEmpty($password)) $re = auto::autoUpdateByVars($id, array('password' => md5($password)));
           }
         }
       }

@@ -12,32 +12,25 @@ class ui extends console\page {
   {
     $genre = $argGenre;
     $fid = base::getNum($argFid, 0);
-    $db = conn::db();
     $pathnavHTML = tpl::take('::console.link', 'tpl', 0, array('text' => base::htmlEncode(tpl::take('global.' . $genre . ':category.title', 'cfg')) . ':/', 'link' => '?type=list&amp;genre=' . urlencode($genre)));
-    if (!is_null($db))
+    $getChildHTML = function($argCFid) use ($db, $genre, &$getChildHTML)
     {
-      $getChildHTML = function($argCFid) use ($db, $genre, &$getChildHTML)
+      $tmpstr = '';
+      $cfid = base::getNum($argCFid, 0);
+      $dal = new dal();
+      $dal -> id = $cfid;
+      $rs = $dal -> select();
+      if (is_array($rs))
       {
-        $tmpstr = '';
-        $cfid = base::getNum($argCFid, 0);
-        $table = tpl::take('config.db_table', 'cfg');
-        $prefix = tpl::take('config.db_prefix', 'cfg');
-        $sql = new sql($db, $table, $prefix);
-        $sql -> id = $cfid;
-        $sqlstr = $sql -> sql;
-        $rs = $db -> fetch($sqlstr);
-        if (is_array($rs))
-        {
-          $rsId = base::getNum($rs[$prefix . 'id'], 0);
-          $rsFId = base::getNum($rs[$prefix . 'fid'], 0);
-          $rsTopic = base::getString($rs[$prefix . 'topic']);
-          $tmpstr = tpl::take('::console.link', 'tpl', 0, array('text' => base::htmlEncode($rsTopic) . '/', 'link' => '?type=list&amp;genre=' . urlencode($genre) . '&amp;fid=' . $cfid));
-          if ($rsFId != 0) $tmpstr = $getChildHTML($rsFId) . $tmpstr;
-        }
-        return $tmpstr;
-      };
-      $pathnavHTML .= $getChildHTML($fid);
-    }
+        $rsId = base::getNum($dal -> val($rs, 'id'), 0);
+        $rsFId = base::getNum($dal -> val($rs, 'fid'), 0);
+        $rsTopic = base::getString($dal -> val($rs, 'topic'));
+        $tmpstr = tpl::take('::console.link', 'tpl', 0, array('text' => base::htmlEncode($rsTopic) . '/', 'link' => '?type=list&amp;genre=' . urlencode($genre) . '&amp;fid=' . $cfid));
+        if ($rsFId != 0) $tmpstr = $getChildHTML($rsFId) . $tmpstr;
+      }
+      return $tmpstr;
+    };
+    $pathnavHTML .= $getChildHTML($fid);
     return $pathnavHTML;
   }
 
@@ -77,33 +70,26 @@ class ui extends console\page {
     $account = self::account();
     if ($account -> checkCurrentGenrePopedom('edit'))
     {
-      $db = conn::db();
-      if (!is_null($db))
+      $hasImage = 0;
+      $hasIntro = 0;
+      $allGenre = universal\category::getAllGenre();
+      $dal = new dal();
+      $dal -> id = $id;
+      $rs = $dal -> select();
+      if (is_array($rs))
       {
-        $hasImage = 0;
-        $hasIntro = 0;
-        $allGenre = universal\category::getAllGenre();
-        $table = tpl::take('config.db_table', 'cfg');
-        $prefix = tpl::take('config.db_prefix', 'cfg');
-        $sql = new sql($db, $table, $prefix);
-        $sql -> id = $id;
-        $sqlstr = $sql -> sql;
-        $rs = $db -> fetch($sqlstr);
-        if (is_array($rs))
+        $rsGenre = base::getString($dal -> val($rs, 'genre'));
+        if (in_array($rsGenre, $allGenre))
         {
-          $rsGenre = base::getString($rs[$prefix . 'genre']);
-          if (in_array($rsGenre, $allGenre))
-          {
-            $hasImage = base::getNum(tpl::take('global.' . $rsGenre . ':category.has_image', 'cfg'), 0);
-            $hasIntro = base::getNum(tpl::take('global.' . $rsGenre . ':category.has_intro', 'cfg'), 0);
-          }
-          $tmpstr = tpl::take('manage.edit', 'tpl');
-          $tmpstr = tpl::replaceTagByAry($tmpstr, $rs, 10);
-          $tmpstr = str_replace('{$-has_image}', base::htmlEncode($hasImage), $tmpstr);
-          $tmpstr = str_replace('{$-has_intro}', base::htmlEncode($hasIntro), $tmpstr);
-          $tmpstr = tpl::parse($tmpstr);
-          $tmpstr = $account -> replaceAccountTag($tmpstr);
+          $hasImage = base::getNum(tpl::take('global.' . $rsGenre . ':category.has_image', 'cfg'), 0);
+          $hasIntro = base::getNum(tpl::take('global.' . $rsGenre . ':category.has_intro', 'cfg'), 0);
         }
+        $tmpstr = tpl::take('manage.edit', 'tpl');
+        $tmpstr = tpl::replaceTagByAry($tmpstr, $rs, 10);
+        $tmpstr = str_replace('{$-has_image}', base::htmlEncode($hasImage), $tmpstr);
+        $tmpstr = str_replace('{$-has_intro}', base::htmlEncode($hasIntro), $tmpstr);
+        $tmpstr = tpl::parse($tmpstr);
+        $tmpstr = $account -> replaceAccountTag($tmpstr);
       }
     }
     $tmpstr = self::formatResult($status, $tmpstr);
@@ -116,53 +102,47 @@ class ui extends console\page {
     $tmpstr = '';
     $fid = base::getNum(request::get('fid'), 0);
     $genre = base::getString(request::get('genre'));
-    $db = conn::db();
-    if (!is_null($db))
+    $account = self::account();
+    $allGenre = universal\category::getAllGenre();
+    if ((base::isEmpty($genre) || !in_array($genre, $allGenre)))
     {
-      $account = self::account();
-      $allGenre = universal\category::getAllGenre();
-      if ((base::isEmpty($genre) || !in_array($genre, $allGenre)))
-      {
-        $genre = '';
-        if (!empty($allGenre)) $genre = universal\category::getFirstValidGenre($allGenre);
-      }
-      if (base::isEmpty($genre))
-      {
-        $tmpstr = tpl::take('manage.list-null', 'tpl');
-        $tmpstr = tpl::parse($tmpstr);
-      }
-      else
-      {
-        $tmpstr = tpl::take('manage.list', 'tpl');
-        $tpl = new tpl($tmpstr);
-        $loopString = $tpl -> getLoopString('{@}');
-        $table = tpl::take('config.db_table', 'cfg');
-        $prefix = tpl::take('config.db_prefix', 'cfg');
-        $sql = new sql($db, $table, $prefix);
-        $sql -> fid = $fid;
-        $sql -> genre = $genre;
-        $sql -> lang = $account -> getLang();
-        $sql -> orderBy('order', 'asc');
-        $sql -> orderBy('id', 'asc');
-        $sqlstr = $sql -> sql;
-        $rsa = $db -> fetchAll($sqlstr);
-        foreach ($rsa as $i => $rs)
-        {
-          $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
-          $tpl -> insertLoopLine(tpl::parse($loopLineString));
-        }
-        $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
-        $variable['-batch-list'] = implode(',', $batchAry);
-        $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
-        $variable['-current-genre'] = $genre;
-        $variable['-current-fid'] = $fid;
-        $tmpstr = $tpl -> assign($variable) -> getTpl();
-        $tmpstr = str_replace('{$-allgenre-select}', universal\category::getAllGenreSelect($allGenre, $genre), $tmpstr);
-        $tmpstr = str_replace('{$-path-nav}', self::ppGetPathNav($genre, $fid), $tmpstr);
-        $tmpstr = tpl::parse($tmpstr);
-      }
-      $tmpstr = $account -> replaceAccountTag($tmpstr);
+      $genre = '';
+      if (!empty($allGenre)) $genre = universal\category::getFirstValidGenre($allGenre);
     }
+    if (base::isEmpty($genre))
+    {
+      $tmpstr = tpl::take('manage.list-null', 'tpl');
+      $tmpstr = tpl::parse($tmpstr);
+    }
+    else
+    {
+      $tmpstr = tpl::take('manage.list', 'tpl');
+      $tpl = new tpl($tmpstr);
+      $loopString = $tpl -> getLoopString('{@}');
+      $dal = new dal();
+      $dal -> fid = $fid;
+      $dal -> genre = $genre;
+      $dal -> lang = $account -> getLang();
+      $dal -> orderBy('order', 'asc');
+      $dal -> orderBy('id', 'asc');
+      $rsa = $dal -> selectAll();
+      foreach ($rsa as $i => $rs)
+      {
+        $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
+        $loopLineString = str_replace('{$-current-genre}', base::htmlEncode($genre), $loopLineString);
+        $tpl -> insertLoopLine(tpl::parse($loopLineString));
+      }
+      $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
+      $variable['-batch-list'] = implode(',', $batchAry);
+      $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
+      $variable['-current-genre'] = $genre;
+      $variable['-current-fid'] = $fid;
+      $tmpstr = $tpl -> assign($variable) -> getTpl();
+      $tmpstr = str_replace('{$-allgenre-select}', universal\category::getAllGenreSelect($allGenre, $genre), $tmpstr);
+      $tmpstr = str_replace('{$-path-nav}', self::ppGetPathNav($genre, $fid), $tmpstr);
+      $tmpstr = tpl::parse($tmpstr);
+    }
+    $tmpstr = $account -> replaceAccountTag($tmpstr);
     $tmpstr = self::formatResult($status, $tmpstr);
     return $tmpstr;
   }
@@ -181,28 +161,22 @@ class ui extends console\page {
     }
     else
     {
-      $table = tpl::take('config.db_table', 'cfg');
-      $prefix = tpl::take('config.db_prefix', 'cfg');
-      auto::pushAutoRequestErrorByTable($error, $table);
+      auto::pushAutoRequestErrorByTable($error);
       if (count($error) == 0)
       {
-        $db = conn::db();
-        if (!is_null($db))
+        $preset = array();
+        $preset['order'] = 888888;
+        $preset['lang'] = $account -> getLang();
+        $preset['time'] = base::getDateTime();
+        $re = auto::autoInsertByRequest($preset);
+        if (is_numeric($re))
         {
-          $preset = array();
-          $preset[$prefix . 'order'] = 888888;
-          $preset[$prefix . 'lang'] = $account -> getLang();
-          $preset[$prefix . 'time'] = base::getDateTime();
-          $sqlstr = auto::getAutoInsertSQLByRequest($table, $preset);
-          $re = $db -> exec($sqlstr);
-          if (is_numeric($re))
-          {
-            $status = 1;
-            $id = $db -> lastInsertId;
-            universal\upload::statusAutoUpdate(self::getPara('genre'), $id, $table, $prefix);
-            $account -> creatCurrentGenreLog('manage.log-add-1', array('id' => $id));
-          }
+          $status = 1;
+          $id = auto::$lastInsertId;
+          universal\upload::statusAutoUpdate(self::getPara('genre'), $id);
+          $account -> creatCurrentGenreLog('manage.log-add-1', array('id' => $id));
         }
+        else array_push($error, tpl::take('::console.text-tips-error-others', 'lng'));
       }
     }
     if (count($error) != 0) $message = implode('|', $error);
@@ -225,25 +199,18 @@ class ui extends console\page {
     }
     else
     {
-      $table = tpl::take('config.db_table', 'cfg');
-      $prefix = tpl::take('config.db_prefix', 'cfg');
-      auto::pushAutoRequestErrorByTable($error, $table);
+      auto::pushAutoRequestErrorByTable($error);
       if (count($error) == 0)
       {
-        $db = conn::db();
-        if (!is_null($db))
+        $re = auto::autoUpdateByRequest($id, null, 'fid,order,time,genre,lang');
+        if (is_numeric($re))
         {
-          $specialFiled = $prefix . 'fid,' . $prefix . 'order,' . $prefix . 'time,' . $prefix . 'genre,' . $prefix . 'lang';
-          $sqlstr = auto::getAutoUpdateSQLByRequest($table, $prefix . 'id', $id, null, $specialFiled);
-          $re = $db -> exec($sqlstr);
-          if (is_numeric($re))
-          {
-            $status = 1;
-            universal\upload::statusAutoUpdate(self::getPara('genre'), $id, $table, $prefix);
-            $message = tpl::take('manage.text-tips-edit-done', 'lng');
-            $account -> creatCurrentGenreLog('manage.log-edit-1', array('id' => $id));
-          }
+          $status = 1;
+          universal\upload::statusAutoUpdate(self::getPara('genre'), $id);
+          $message = tpl::take('manage.text-tips-edit-done', 'lng');
+          $account -> creatCurrentGenreLog('manage.log-edit-1', array('id' => $id));
         }
+        else array_push($error, tpl::take('::console.text-tips-error-others', 'lng'));
       }
     }
     if (count($error) != 0) $message = implode('|', $error);
@@ -266,24 +233,18 @@ class ui extends console\page {
     }
     else
     {
-      $db = conn::db();
-      if (!is_null($db))
+      if (base::checkIDAry($ids))
       {
-        if (base::checkIDAry($ids))
+        $status = 1;
+        $index = 0;
+        $idsAry = explode(',', $ids);
+        foreach ($idsAry as $key => $val)
         {
-          $status = 1;
-          $table = tpl::take('config.db_table', 'cfg');
-          $prefix = tpl::take('config.db_prefix', 'cfg');
-          $index = 0;
-          $idsAry = explode(',', $ids);
-          foreach ($idsAry as $key => $val)
-          {
-            $id = base::getNum($val, 0);
-            $db -> exec("update " . $table . " set " . $prefix . "order=" . $index . " where " . $prefix . "delete=0 and " . $prefix . "id=" . $id);
-            $index += 1;
-          }
-          $account -> creatCurrentGenreLog('manage.log-sort-1', array('id' => $ids));
+          $id = base::getNum($val, 0);
+          $re = auto::autoUpdateByVars($id, array('order' => $index));
+          $index += 1;
         }
+        $account -> creatCurrentGenreLog('manage.log-sort-1', array('id' => $ids));
       }
     }
     if (count($error) != 0) $message = implode('|', $error);

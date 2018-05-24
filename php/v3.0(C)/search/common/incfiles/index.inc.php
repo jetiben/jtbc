@@ -40,7 +40,7 @@ class ui extends page {
       $sqlstr .= ") jtbc where 1=1" . sql::getCutKeywordSQL('un_topic', $keyword);
       $sqlstr .= " order by un_time desc";
       $pagi = new pagi($db);
-      $rsAry = $pagi -> getDataAry($sqlstr, $page, $pagesize);
+      $rsAry = $pagi -> getDataAry($page, $pagesize, 0, $sqlstr);
       if (is_array($rsAry))
       {
         foreach($rsAry as $rs)

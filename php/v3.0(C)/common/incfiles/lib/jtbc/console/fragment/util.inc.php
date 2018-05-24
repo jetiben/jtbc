@@ -4,7 +4,7 @@
 //******************************//
 namespace jtbc\console\fragment {
   use jtbc\base;
-  use jtbc\conn;
+  use jtbc\dal;
   use jtbc\hook;
   use jtbc\tpl;
   use jtbc\request;
@@ -22,11 +22,12 @@ namespace jtbc\console\fragment {
       $batchAry = self::$batch;
       if (is_array($batchAry) && base::checkIDAry($ids))
       {
-        $table = tpl::take('config.db_table', 'cfg');
-        $prefix = tpl::take('config.db_prefix', 'cfg');
-        $db = conn::db();
+        $dal = new dal();
+        $db = $dal -> db;
         if (!is_null($db))
         {
+          $table = $dal -> table;
+          $prefix = $dal -> prefix;
           if ($batch == 'delete' && in_array('delete', $batchAry) && $account -> checkCurrentGenrePopedom('delete'))
           {
             if ($db -> fieldSwitch($table, $prefix, 'delete', $ids))
@@ -83,11 +84,12 @@ namespace jtbc\console\fragment {
       }
       else
       {
-        $table = tpl::take('config.db_table', 'cfg');
-        $prefix = tpl::take('config.db_prefix', 'cfg');
-        $db = conn::db();
+        $dal = new dal();
+        $db = $dal -> db;
         if (!is_null($db))
         {
+          $table = $dal -> table;
+          $prefix = $dal -> prefix;
           if ($db -> fieldSwitch($table, $prefix, 'delete', $id, 1))
           {
             $status = 1;
