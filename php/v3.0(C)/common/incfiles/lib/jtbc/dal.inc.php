@@ -132,7 +132,7 @@ namespace jtbc {
       $args = $argArgs;
       if (!method_exists($this, $name))
       {
-        if (is_callable(array($this -> sql, $name))) call_user_func_array(array($this -> sql, $name), $args);
+        if (is_callable(array($this -> sql, $name))) return call_user_func_array(array($this -> sql, $name), $args);
       }
     }
 

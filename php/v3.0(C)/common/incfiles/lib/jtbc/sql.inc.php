@@ -518,6 +518,11 @@ namespace jtbc {
       return $tmpstr;
     }
 
+    public function __set($argName, $argValue)
+    {
+      $this -> set($argName, $argValue);
+    }
+
     public static function getCutKeywordSQL($argField, $argKeyword)
     {
       $sql = '';
@@ -532,11 +537,6 @@ namespace jtbc {
         }
       }
       return $sql;
-    }
-
-    public function __set($argName, $argValue)
-    {
-      $this -> set($argName, $argValue);
     }
 
     function __construct($argDb, $argTable, $argPrefix, $argOrderBy = null)
