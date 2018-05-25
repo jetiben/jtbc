@@ -51,7 +51,7 @@ class ui extends console\page {
         }
       }
     }
-    if (count($error) != 0) $message = implode('|', $error);
+    if (!empty($error)) $message = implode('|', $error);
     $tmpstr = self::formatMsgResult($status, $message);
     return $tmpstr;
   }

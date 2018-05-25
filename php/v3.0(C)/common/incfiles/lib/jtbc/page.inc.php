@@ -127,6 +127,7 @@ namespace jtbc {
           }
         }
       }
+      self::setPara('processtime', (microtime(true) - STARTTIME));
       return $tmpstr;
     }
 

@@ -21,6 +21,7 @@ define('DB_STRUCTURE_CACHE', false);
 define('LANGUAGE', 'zh-cn');
 define('SEPARATOR', ' - ');
 define('SITESTATUS', 0);
+define('STARTTIME', microtime(true));
 define('THEME', 'default');
 define('TEMPLATE', 'default');
 define('VERSION', '3.0.1.6');

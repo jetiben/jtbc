@@ -30,7 +30,7 @@ class ui extends page {
       }
       else array_push($error, tpl::take('api.text-tips-add-error-others', 'lng'));
     }
-    if (count($error) != 0) $message = implode('|', $error);
+    if (!empty($error)) $message = implode('|', $error);
     $tmpstr = self::formatMsgResult($status, $message);
     return $tmpstr;
   }

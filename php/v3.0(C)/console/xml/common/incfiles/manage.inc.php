@@ -254,7 +254,7 @@ class ui extends console\page {
         else array_push($error, tpl::take('manage.text-tips-add-error-2', 'lng'));
       }
     }
-    if (count($error) != 0) $message = implode('|', $error);
+    if (!empty($error)) $message = implode('|', $error);
     $tmpstr = self::formatMsgResult($status, $message);
     return $tmpstr;
   }
@@ -291,7 +291,7 @@ class ui extends console\page {
       }
       else array_push($error, tpl::take('manage.text-tips-edit-error-1', 'lng'));
     }
-    if (count($error) != 0) $message = implode('|', $error);
+    if (!empty($error)) $message = implode('|', $error);
     $tmpstr = self::formatMsgResult($status, $message);
     return $tmpstr;
   }
@@ -357,7 +357,7 @@ class ui extends console\page {
         else array_push($error, tpl::take('manage.text-tips-delete-error-2', 'lng'));
       }
     }
-    if (count($error) != 0) $message = implode('|', $error);
+    if (!empty($error)) $message = implode('|', $error);
     $tmpstr = self::formatMsgResult($status, $message);
     return $tmpstr;
   }

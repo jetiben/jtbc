@@ -164,6 +164,15 @@ namespace jtbc {
       return $tmpstr;
     }
 
+    public static function formatSecond($argSecond)
+    {
+      $tmpstr = '';
+      $second = $argSecond;
+      if ($second >= 1) $tmpstr = number_format($second, 3) . 's';
+      else $tmpstr = number_format($second * 1000, 3) . 'ms';
+      return $tmpstr;
+    }
+
     public static function getDateTime($argDateTime = '')
     {
       $tmpstr = '';
