@@ -38,6 +38,11 @@ namespace jtbc {
       {
         $sql = $this -> sql -> getDeleteSQL($autoFilter);
         if (!base::isEmpty($sql)) $result = $db -> exec($sql);
+        else
+        {
+          $this -> err = 455;
+          throw new Exception('"$sql" cannot be empty.');
+        }
       }
       return $result;
     }
@@ -56,6 +61,11 @@ namespace jtbc {
           $result = $db -> exec($sql);
           $this -> lastInsertId = $db -> lastInsertId;
         }
+        else
+        {
+          $this -> err = 453;
+          throw new Exception('"$sql" cannot be empty.');
+        }
       }
       return $result;
     }
@@ -69,6 +79,11 @@ namespace jtbc {
       {
         $sql = $this -> sql -> getSelectSQL(true, $field);
         if (!base::isEmpty($sql)) $result = $db -> fetch($sql);
+        else
+        {
+          $this -> err = 451;
+          throw new Exception('"$sql" cannot be empty.');
+        }
       }
       return $result;
     }
@@ -82,6 +97,11 @@ namespace jtbc {
       {
         $sql = $this -> sql -> getSelectSQL(true, $field);
         if (!base::isEmpty($sql)) $result = $db -> fetchAll($sql);
+        else
+        {
+          $this -> err = 452;
+          throw new Exception('"$sql" cannot be empty.');
+        }
       }
       return $result;
     }
@@ -94,6 +114,11 @@ namespace jtbc {
       {
         $sql = $this -> sql -> getTruncateSQL();
         if (!base::isEmpty($sql)) $result = $db -> exec($sql);
+        else
+        {
+          $this -> err = 456;
+          throw new Exception('"$sql" cannot be empty.');
+        }
       }
       return $result;
     }
@@ -109,6 +134,11 @@ namespace jtbc {
       {
         $sql = $this -> sql -> changeSource($source) -> getUpdateSQL($autoFilter, $fuzzy);
         if (!base::isEmpty($sql)) $result = $db -> exec($sql);
+        else
+        {
+          $this -> err = 454;
+          throw new Exception('"$sql" cannot be empty.');
+        }
       }
       return $result;
     }
@@ -204,7 +234,11 @@ namespace jtbc {
         $this -> table = $table;
         $this -> prefix = $prefix;
         $this -> sql = new sql($this -> db, $this -> table, $this -> prefix);
-        if (base::isEmpty($table)) throw new Exception('"table" cannot be empty.');
+        if (base::isEmpty($table))
+        {
+          $this -> err = 450;
+          throw new Exception('"$table" cannot be empty.');
+        }
       }
       else $this -> err = 444;
     }
