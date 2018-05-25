@@ -126,6 +126,33 @@ namespace jtbc {
       return $val;
     }
 
+    public function set()
+    {
+      $args = func_get_args();
+      $argsCount = count($args);
+      if ($argsCount == 1)
+      {
+        $arg = $args[0];
+        if (is_array($arg))
+        {
+          foreach ($arg as $key => $val)
+          {
+            $this -> sql -> set($key, $val);
+          }
+        }
+      }
+      else if ($argsCount == 2)
+      {
+        $this -> sql -> set($args[0], $args[1]);
+      }
+      else if ($argsCount == 4)
+      {
+        $this -> sql -> set($args[0], $args[1]);
+        $this -> sql -> set($args[2], $args[3]);
+      }
+      return $this;
+    }
+
     public function __call($argName, $argArgs) 
     {
       $name = $argName;
