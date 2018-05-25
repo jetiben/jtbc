@@ -8,7 +8,6 @@ namespace jtbc\universal {
   use jtbc\cache;
   use jtbc\dal;
   use jtbc\route;
-  use jtbc\sql;
   use jtbc\tpl;
   class category
   {

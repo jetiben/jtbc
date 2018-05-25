@@ -8,7 +8,6 @@ namespace jtbc\universal {
   use jtbc\dal;
   use jtbc\image;
   use jtbc\route;
-  use jtbc\sql;
   use jtbc\tpl;
   class upload
   {

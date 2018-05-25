@@ -8,7 +8,6 @@ namespace jtbc\console {
   use jtbc\dal;
   use jtbc\request;
   use jtbc\route;
-  use jtbc\sql;
   use jtbc\tpl;
   class account
   {
