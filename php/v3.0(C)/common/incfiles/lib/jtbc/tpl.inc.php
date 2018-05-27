@@ -94,7 +94,7 @@ namespace jtbc {
       $codename = $argCodeName;
       $value = $argValue;
       $nodeName = $argNodeName;
-      $codename = self::getAbbrTransKey($codename);
+      $codename = self::getAbbrTransKey($codename, $type);
       $routeStr = self::getXMLRoute($codename, $type);
       $key = base::getLRStr($codename, '.', 'right');
       $activeValue = self::getActiveValue($type);
@@ -144,47 +144,61 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    public static function getAbbrTransKey($argCodeName)
+    public static function getAbbrTransKey($argCodeName, &$type)
     {
       $codename = $argCodeName;
       if (!base::isEmpty($codename))
       {
-        if (substr($codename, 0, 3) == '../')
+        if (is_numeric(strpos($codename, '>>')))
         {
-          $parent = route::getGenreByAppellation('parent');
-          $grandparent = route::getGenreByAppellation('grandparent');
-          $greatgrandparent = route::getGenreByAppellation('greatgrandparent');
-          if (substr($codename, 0, 9) == '../../../')
+          $typeList = array('tpl', 'lng', 'cfg');
+          $newType = base::getLRStr($codename, '>>', 'left');
+          $newCodename = base::getLRStr($codename, '>>', 'right');
+          if (in_array($newType, $typeList))
           {
-            if (!is_null($greatgrandparent))
-            {
-              if (is_numeric(strpos($codename, ':'))) $codename = str_replace('../../../', 'global.' . $greatgrandparent . '/', $codename);
-              else $codename = str_replace('../../../', 'global.' . $greatgrandparent . ':', $codename);
-            }
-          }
-          else if (substr($codename, 0, 6) == '../../')
-          {
-            if (!is_null($grandparent))
-            {
-              if (is_numeric(strpos($codename, ':'))) $codename = str_replace('../../', 'global.' . $grandparent . '/', $codename);
-              else $codename = str_replace('../../', 'global.' . $grandparent . ':', $codename);
-            }
-          }
-          else if (substr($codename, 0, 3) == '../')
-          {
-            if (!is_null($parent))
-            {
-              if (is_numeric(strpos($codename, ':'))) $codename = str_replace('../', 'global.' . $parent . '/', $codename);
-              else $codename = str_replace('../', 'global.' . $parent . ':', $codename);
-            }
+            $type = $newType;
+            $codename = self::getAbbrTransKey($newCodename, $type);
           }
         }
-        else if (substr($codename, 0, 1) == '.')
+        else
         {
-          if (substr_count($codename, '.') == 2) $codename = 'global.' . base::getLRStr($codename, '.', 'rightr');
+          if (substr($codename, 0, 3) == '../')
+          {
+            $parent = route::getGenreByAppellation('parent');
+            $grandparent = route::getGenreByAppellation('grandparent');
+            $greatgrandparent = route::getGenreByAppellation('greatgrandparent');
+            if (substr($codename, 0, 9) == '../../../')
+            {
+              if (!is_null($greatgrandparent))
+              {
+                if (is_numeric(strpos($codename, ':'))) $codename = str_replace('../../../', 'global.' . $greatgrandparent . '/', $codename);
+                else $codename = str_replace('../../../', 'global.' . $greatgrandparent . ':', $codename);
+              }
+            }
+            else if (substr($codename, 0, 6) == '../../')
+            {
+              if (!is_null($grandparent))
+              {
+                if (is_numeric(strpos($codename, ':'))) $codename = str_replace('../../', 'global.' . $grandparent . '/', $codename);
+                else $codename = str_replace('../../', 'global.' . $grandparent . ':', $codename);
+              }
+            }
+            else if (substr($codename, 0, 3) == '../')
+            {
+              if (!is_null($parent))
+              {
+                if (is_numeric(strpos($codename, ':'))) $codename = str_replace('../', 'global.' . $parent . '/', $codename);
+                else $codename = str_replace('../', 'global.' . $parent . ':', $codename);
+              }
+            }
+          }
+          else if (substr($codename, 0, 1) == '.')
+          {
+            if (substr_count($codename, '.') == 2) $codename = 'global.' . base::getLRStr($codename, '.', 'rightr');
+          }
+          else if (substr($codename, 0, 2) == '::') $codename = 'global.' . CONSOLEDIR . ':' . base::getLRStr($codename, '::', 'right');
+          else if (substr($codename, 0, 2) == ':/') $codename = 'global.' . CONSOLEDIR . '/' . base::getLRStr($codename, ':/', 'right');
         }
-        else if (substr($codename, 0, 2) == '::') $codename = 'global.' . CONSOLEDIR . ':' . base::getLRStr($codename, '::', 'right');
-        else if (substr($codename, 0, 2) == ':/') $codename = 'global.' . CONSOLEDIR . '/' . base::getLRStr($codename, ':/', 'right');
       }
       return $codename;
     }
@@ -588,11 +602,6 @@ namespace jtbc {
       $parse = base::getNum($argParse, 0);
       $vars = $argVars;
       $nodeName = base::getString($argNodeName);
-      if (is_null($type))
-      {
-        $type = 'tpl';
-        $parse = 1;
-      }
       if (is_array($codename))
       {
         $result = array();
@@ -603,7 +612,12 @@ namespace jtbc {
       }
       if (!is_array($result))
       {
-        $codename = self::getAbbrTransKey($codename);
+        $codename = self::getAbbrTransKey($codename, $type);
+        if (is_null($type))
+        {
+          $type = 'tpl';
+          $parse = 1;
+        }
         $genre = route::getCurrentGenre();
         $thisGenre = is_numeric(strpos($codename, ':'))? base::getLRStr(base::getLRStr($codename, ':', 'leftr'), 'global.', 'right'): $genre;
         $routeStr = self::getXMLRoute($codename, $type);
