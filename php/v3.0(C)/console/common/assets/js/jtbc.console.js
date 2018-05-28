@@ -128,6 +128,11 @@ jtbc.console = {
             };
           });
         }
+        else if (thisObj.attr('mode') == 'icontips')
+        {
+          thisObj.find('icon').each(function(){ if (!$(this).is(':hidden')) thisObj.attr('icon-hidden', 'no'); });
+          if (thisObj.attr('icon-hidden') != 'no') thisObj.append('<span class="ash">' + thisObj.attr('text-null') + '</span>');
+        }
         else if (thisObj.attr('mode') == 'pagigo')
         {
           thisObj.on('click', function(){
@@ -167,7 +172,7 @@ jtbc.console = {
           if (thisObj.attr('parent') == '2') pointObj = pointObj.parent();
           else if (thisObj.attr('parent') == '3') pointObj = pointObj.parent().parent();
           pointObj = pointObj.find(thisObj.attr('shortcut'));
-          if (!pointObj.hasClass('show-0'))
+          if (!pointObj.is(':hidden'))
           {
             thisObj.addClass('hand').on('click', function(){ pointObj.trigger('click'); });
           };

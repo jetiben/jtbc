@@ -71,6 +71,10 @@
       <zh-cn><![CDATA[从媒体素材中选择]]></zh-cn>
     </item>
     <item>
+      <name><![CDATA[nopermission]]></name>
+      <zh-cn><![CDATA[无权限]]></zh-cn>
+    </item>
+    <item>
       <name><![CDATA[text-tips-error-403]]></name>
       <zh-cn><![CDATA[操作失败，权限校验失败]]></zh-cn>
     </item>

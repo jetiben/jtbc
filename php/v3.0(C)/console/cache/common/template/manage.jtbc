@@ -34,7 +34,7 @@
           <td><span class="mainlink">{$topic}</span></td>
           <td>{$size}</td>
           <td>{$lasttime}</td>
-          <td><icons><icon class="delete show-{$-account-popedom-delete}" title="{$=take('global.config.delete', 'lng')}" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-delete', 'lng')}[{$topic}]{$=take('::console.q', 'lng')}" mode="confirmurlexec" urlexec="?type=action&action=delete&id={$-urlencode-topic}"></icon></icons></td>
+          <td><icons mode="icontips" text-null="{$=take('::console.nopermission', 'lng')}"><icon class="delete show-{$-account-popedom-delete}" title="{$=take('global.config.delete', 'lng')}" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-delete', 'lng')}[{$topic}]{$=take('::console.q', 'lng')}" mode="confirmurlexec" urlexec="?type=action&action=delete&id={$-urlencode-topic}"></icon></icons></td>
         </tr>{@}
         <tr mode="alonetips" class="tips hide">
           <td colspan="6">{$=take('manage.text-tips-list-null', 'lng')}</td>

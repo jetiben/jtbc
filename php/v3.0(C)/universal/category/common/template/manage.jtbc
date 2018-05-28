@@ -60,7 +60,7 @@
           <td class="id center">{$id}</td>
           <td><a class="link" link="?type=list&amp;genre={$-current-genre}&amp;fid={$id}"><span class="mainlink hand">{$topic}</span></a></td>
           <td>{$time}</td>
-          <td><icons><icon rsid="{$id}" class="edit show-{$-account-popedom-edit}" title="{$=take('global.config.edit', 'lng')}"></icon><icon class="delete show-{$-account-popedom-delete}" title="{$=take('global.config.delete', 'lng')}" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-delete-id', 'lng')}[{$id}]{$=take('::console.q', 'lng')}" mode="confirmurlexec" urlexec="?type=action&action=delete&id={$id}"></icon></icons></td>
+          <td><icons mode="icontips" text-null="{$=take('::console.nopermission', 'lng')}"><icon rsid="{$id}" class="edit show-{$-account-popedom-edit}" title="{$=take('global.config.edit', 'lng')}"></icon><icon class="delete show-{$-account-popedom-delete}" title="{$=take('global.config.delete', 'lng')}" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-delete-id', 'lng')}[{$id}]{$=take('::console.q', 'lng')}" mode="confirmurlexec" urlexec="?type=action&action=delete&id={$id}"></icon></icons></td>
         </tr>{@}
         <tr mode="alonetips" class="tips hide">
           <td colspan="6">{$=take('manage.text-tips-list-null', 'lng')}</td>
