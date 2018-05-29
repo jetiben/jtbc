@@ -159,26 +159,29 @@ namespace jtbc {
     public function set()
     {
       $args = func_get_args();
-      $argsCount = count($args);
-      if ($argsCount == 1)
+      if ($this -> err == 0)
       {
-        $arg = $args[0];
-        if (is_array($arg))
+        $argsCount = count($args);
+        if ($argsCount == 1)
         {
-          foreach ($arg as $key => $val)
+          $arg = $args[0];
+          if (is_array($arg))
           {
-            $this -> sql -> set($key, $val);
+            foreach ($arg as $key => $val)
+            {
+              $this -> sql -> set($key, $val);
+            }
           }
         }
-      }
-      else if ($argsCount == 2)
-      {
-        $this -> sql -> set($args[0], $args[1]);
-      }
-      else if ($argsCount == 4)
-      {
-        $this -> sql -> set($args[0], $args[1]);
-        $this -> sql -> set($args[2], $args[3]);
+        else if ($argsCount == 2)
+        {
+          $this -> sql -> set($args[0], $args[1]);
+        }
+        else if ($argsCount == 4)
+        {
+          $this -> sql -> set($args[0], $args[1]);
+          $this -> sql -> set($args[2], $args[3]);
+        }
       }
       return $this;
     }
@@ -187,15 +190,18 @@ namespace jtbc {
     {
       $name = $argName;
       $args = $argArgs;
-      if (!method_exists($this, $name))
+      if ($this -> err == 0)
       {
-        if (is_callable(array($this -> sql, $name))) return call_user_func_array(array($this -> sql, $name), $args);
+        if (!method_exists($this, $name))
+        {
+          if (is_callable(array($this -> sql, $name))) return call_user_func_array(array($this -> sql, $name), $args);
+        }
       }
     }
 
     public function __set($argName, $argValue)
     {
-      $this -> sql -> set($argName, $argValue);
+      if ($this -> err == 0) $this -> sql -> set($argName, $argValue);
     }
 
     public static function connTest($argDbLink = 'any')
@@ -204,6 +210,30 @@ namespace jtbc {
       $db = conn::db($dbLink);
       if (!is_null($db)) $bool = true;
       return $bool;
+    }
+
+    public static function selectBySQL($argSql, $argDbLink = 'any')
+    {
+      $result = null;
+      $sql = $argSql;
+      $db = conn::db($dbLink);
+      if (!is_null($db))
+      {
+        if (!base::isEmpty($sql)) $result = $db -> fetch($sql);
+      }
+      return $result;
+    }
+
+    public static function selectAllBySQL($argSql, $argDbLink = 'any')
+    {
+      $result = null;
+      $sql = $argSql;
+      $db = conn::db($dbLink);
+      if (!is_null($db))
+      {
+        if (!base::isEmpty($sql)) $result = $db -> fetchAll($sql);
+      }
+      return $result;
     }
 
     function __construct()
@@ -228,16 +258,19 @@ namespace jtbc {
       $db = conn::db($dbLink);
       if (!is_null($db))
       {
+        $this -> db = $db;
         if (is_null($table)) $table = tpl::take('config.db_table', 'cfg');
         if (is_null($prefix)) $prefix = tpl::take('config.db_prefix', 'cfg');
-        $this -> db = $db;
-        $this -> table = $table;
-        $this -> prefix = $prefix;
-        $this -> sql = new sql($this -> db, $this -> table, $this -> prefix);
         if (base::isEmpty($table))
         {
           $this -> err = 450;
           throw new Exception('"$table" cannot be empty.');
+        }
+        else
+        {
+          $this -> table = $table;
+          $this -> prefix = $prefix;
+          $this -> sql = new sql($this -> db, $this -> table, $this -> prefix);
         }
       }
       else $this -> err = 444;

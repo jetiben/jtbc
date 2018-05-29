@@ -6,8 +6,8 @@ namespace jtbc {
   class pagi
   {
     protected $dal;
-    protected $db;
-    protected $mode;
+    protected $mode = 'sql';
+    public $dbLink = 'any';
     public $rslimit = 0;
     public $pagesize = 0;
     public $rscount = 0;
@@ -19,19 +19,18 @@ namespace jtbc {
     {
       $rscount = 0;
       $sqlstr = "select count(*) as count from " . base::getLRStr(base::getLRStr($this -> sqlstr, 'from', 'rightr'), 'order by', 'leftr');
-      $rs = $this -> db -> fetch($sqlstr);
+      $rs = dal::selectBySQL($sqlstr, $this -> dbLink);
       if (is_array($rs)) $rscount = base::getNum($rs['count'], 0);
       return $rscount;
     }
 
-    public function getDataAry($argPageNum, $argPageSize, $argRsLimit = 0, $argSqlstr = null)
+    public function getDataAry($argPageNum, $argPageSize, $argSqlstr = null)
     {
       $dataAry = array();
       $this -> pagenum = base::getNum($argPageNum, 0);
       $this -> pagesize = base::getNum($argPageSize, 0);
-      $this -> rslimit = base::getNum($argRsLimit, 0);
       $this -> sqlstr = $argSqlstr;
-      if ($this -> mode == 'db') $this -> rscount = $this -> getRsCount();
+      if ($this -> mode == 'sql') $this -> rscount = $this -> getRsCount();
       else if ($this -> mode == 'dal') $this -> rscount = $this -> dal -> getRsCount();
       if ($this -> pagesize == 0) $this -> pagesize = 20;
       if ($this -> rslimit == 0) $this -> rslimit = $this -> rscount;
@@ -51,19 +50,19 @@ namespace jtbc {
       }
       if ($rslimit > 0 && $pagesize > 0)
       {
-        if ($this -> mode == 'dal')
-        {
-          $this -> dal -> limit(($rslimit - $pagesize), $pagesize);
-          $dataAry = $this -> dal -> selectAll();
-        }
-        else if ($this -> mode == 'db')
+        if ($this -> mode == 'sql')
         {
           $sqlstr = $this -> sqlstr;
           if (!is_null($sqlstr))
           {
             $sqlstr .= ' limit ' . ($rslimit - $pagesize) . ',' . $pagesize;
-            $dataAry = $this -> db -> fetchAll($sqlstr);
+            $dataAry = dal::selectAllBySQL($sqlstr, $this -> dbLink);
           }
+        }
+        else if ($this -> mode == 'dal')
+        {
+          $this -> dal -> limit(($rslimit - $pagesize), $pagesize);
+          $dataAry = $this -> dal -> selectAll();
         }
       }
       return $dataAry;
@@ -133,18 +132,13 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    function __construct($argDalOrDb)
+    function __construct($argDal = null)
     {
-      $dalordb = $argDalOrDb;
-      if ($dalordb instanceof dal)
+      $dal = $argDal;
+      if ($dal instanceof dal)
       {
         $this -> mode = 'dal';
-        $this -> dal = $dalordb;
-      }
-      else if ($dalordb instanceof db)
-      {
-        $this -> mode = 'db';
-        $this -> db = $dalordb;
+        $this -> dal = $dal;
       }
     }
   }
