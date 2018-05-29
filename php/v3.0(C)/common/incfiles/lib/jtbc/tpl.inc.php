@@ -103,13 +103,15 @@ namespace jtbc {
       return $bool;
     }
 
-    public static function getGlobalsVars($argName)
+    public static function getGlobalsVars($argName, $argMode = 0)
     {
       $tmpstr = '';
       $name = $argName;
+      $mode = base::getNum($argMode, 0);
       if (!base::isEmpty($name))
       {
-        $tmpstr = base::getSwapString(@$GLOBALS[$name], base::getSwapString(@$GLOBALS['RS_' . $name], @$GLOBALS['RST_' . $name]));
+        if ($mode == 1) $tmpstr = base::getSwapString(@$GLOBALS[$name], base::getSwapString(@$GLOBALS['RST_' . $name], @$GLOBALS['RS_' . $name]));
+        else $tmpstr = base::getSwapString(@$GLOBALS[$name], base::getSwapString(@$GLOBALS['RS_' . $name], @$GLOBALS['RST_' . $name]));
       }
       return $tmpstr;
     }
@@ -203,10 +205,11 @@ namespace jtbc {
       return $codename;
     }
 
-    public static function getEvalValue($argString)
+    public static function getEvalValue($argString, $argMode = 0)
     {
       $tstr = '';
       $string = $argString;
+      $mode = base::getNum($argMode, 0);
       $ns = __NAMESPACE__;
       if (!base::isEmpty($string))
       {
@@ -221,7 +224,7 @@ namespace jtbc {
         else if (substr($string, 0, 1) == '#')
         {
           $string = substr($string, 1, strlen($string) - 1);
-          $tstr = self::getGlobalsVars($string);
+          $tstr = self::getGlobalsVars($string, $mode);
         }
         else
         {
@@ -261,7 +264,7 @@ namespace jtbc {
                   if (!base::isEmpty($varsName))
                   {
                     $varsName = str_replace('\'', '', $varsName);
-                    $string = str_replace('#' . $varsName, $ns . '\\tpl::getGlobalsVars(\'' . $varsName . '\')', $string);
+                    $string = str_replace('#' . $varsName, $ns . '\\tpl::getGlobalsVars(\'' . $varsName . '\', ' . $mode . ')', $string);
                   }
                 }
               }
@@ -451,9 +454,10 @@ namespace jtbc {
       return $routeStr;
     }
 
-    public static function parse($argString)
+    public static function parse($argString, $argMode = 0)
     {
       $tmpstr = $argString;
+      $mode = base::getNum($argMode, 0);
       if (!base::isEmpty($tmpstr))
       {
         $regtag = preg_match_all('/<jtbc[^>]*>(.*?)<\/jtbc>/is', $tmpstr, $regArys);
@@ -471,7 +475,7 @@ namespace jtbc {
                 self::$counter += 1;
                 self::$para['jtbctag' . self::$counter] = '{@}' . $regArys[1][$i] . '{@}';
                 $evalfunction = $function . '(\'' . $parameter . ';jtbctag=jtbctag' . self::$counter . '\')';
-                $tmpstr = str_replace($tagtext, self::getEvalValue($evalfunction), $tmpstr);
+                $tmpstr = str_replace($tagtext, self::getEvalValue($evalfunction, 1), $tmpstr);
               }
             }
           }
@@ -481,7 +485,7 @@ namespace jtbc {
         {
           for ($i = 0; $i <= count($regArys[0]) - 1; $i ++)
           {
-            $tmpstr = str_replace($regArys[0][$i], self::getEvalValue($regArys[1][$i]), $tmpstr);
+            $tmpstr = str_replace($regArys[0][$i], self::getEvalValue($regArys[1][$i], $mode), $tmpstr);
           }
         }
       }

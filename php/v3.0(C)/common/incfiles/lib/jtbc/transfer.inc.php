@@ -172,7 +172,7 @@ namespace jtbc {
             $loopLineString = $loopString;
             $loopLineString = tpl::replaceTagByAry($loopLineString, $myVal, 11, $paraTransferID);
             $loopLineString = tpl::replaceTagByAry($loopLineString, array('-i' => $rsindex));
-            $tpl -> insertLoopLine(tpl::parse($loopLineString));
+            $tpl -> insertLoopLine(tpl::parse($loopLineString, 1));
           }
           $rsindex += 1;
         }
@@ -338,7 +338,7 @@ namespace jtbc {
               $loopLineString = $loopString;
               $loopLineString = tpl::replaceTagByAry($loopLineString, $myVal, 11, $paraTransferID);
               $loopLineString = tpl::replaceTagByAry($loopLineString, array('-i' => $rsindex, '-lang' => $paraLang, '-baseurl' => $paraBaseURL));
-              $tpl -> insertLoopLine(tpl::parse($loopLineString));
+              $tpl -> insertLoopLine(tpl::parse($loopLineString, 1));
             }
             $rsindex += 1;
           }
@@ -526,7 +526,7 @@ namespace jtbc {
               $loopLineString = $loopString;
               $loopLineString = tpl::replaceTagByAry($loopLineString, $myVal, 11, $paraTransferID);
               $loopLineString = tpl::replaceTagByAry($loopLineString, array('-i' => $rsindex, '-genre' => $paraGenre, '-lang' => $paraLang, '-baseurl' => $paraBaseURL));
-              $tpl -> insertLoopLine(tpl::parse($loopLineString));
+              $tpl -> insertLoopLine(tpl::parse($loopLineString, 1));
             }
             $rsindex += 1;
           }
