@@ -18,23 +18,17 @@ class ui extends page {
     if (is_array($rs))
     {
       self::setPageTitle($dal -> val($rs, 'topic'));
-      $tmpstr = tpl::take('index.detail', 'tpl');
-      $tmpstr = tpl::replaceTagByAry($tmpstr, $rs, 10);
-      $tmpstr = tpl::parse($tmpstr);
+      $tmpstr = tpl::takeAndAssign('index.detail', $rs);
     }
     return $tmpstr;
   }
 
   public static function moduleList()
   {
-    $status = 1;
-    $tmpstr = '';
     $page = base::getNum(request::get('page'), 0);
     $category = base::getNum(request::get('category'), 0);
     $pagesize = base::getNum(tpl::take('config.pagesize', 'cfg'), 0);
-    $tmpstr = tpl::take('index.list', 'tpl');
-    $tpl = new tpl($tmpstr);
-    $loopString = $tpl -> getLoopString('{@}');
+    $variable['-category'] = $category;
     $dal = new dal();
     $dal -> publish = 1;
     $dal -> lang = self::getPara('lang');
@@ -46,18 +40,8 @@ class ui extends page {
     $dal -> orderBy('time', 'desc');
     $pagi = new pagi($dal);
     $rsAry = $pagi -> getDataAry($page, $pagesize);
-    if (is_array($rsAry))
-    {
-      foreach($rsAry as $rs)
-      {
-        $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
-        $tpl -> insertLoopLine(tpl::parse($loopLineString));
-      }
-    }
-    $variable['-category'] = $category;
-    $tmpstr = $tpl -> assign($variable) -> assign($pagi -> getVars()) -> getTpl();
-    $tmpstr = tpl::replaceTagByAry($tmpstr, $variable);
-    $tmpstr = tpl::parse($tmpstr);
+    $variable = array_merge($variable, $pagi -> getVars());
+    $tmpstr = tpl::takeAndAssign('index.list', $rsAry, $variable);
     return $tmpstr;
   }
 }

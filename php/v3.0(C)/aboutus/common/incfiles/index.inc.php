@@ -20,9 +20,7 @@ class ui extends page {
     if (is_array($rs))
     {
       self::setPageTitle($dal -> val($rs, 'topic'));
-      $tmpstr = tpl::take('index.detail', 'tpl');
-      $tmpstr = tpl::replaceTagByAry($tmpstr, $rs, 10);
-      $tmpstr = tpl::parse($tmpstr);
+      $tmpstr = tpl::takeAndAssign('index.detail', $rs);
     }
     return $tmpstr;
   }

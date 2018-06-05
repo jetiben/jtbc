@@ -20,9 +20,7 @@ class ui extends console\page {
       $rs = $dal -> select();
       if (is_array($rs))
       {
-        $tmpstr = tpl::take('manage.edit', 'tpl');
-        $tmpstr = tpl::replaceTagByAry($tmpstr, $rs, 10);
-        $tmpstr = tpl::parse($tmpstr);
+        $tmpstr = tpl::takeAndAssign('manage.edit', $rs);
         $tmpstr = $account -> replaceAccountTag($tmpstr);
       }
     }
@@ -38,28 +36,17 @@ class ui extends console\page {
     $filegroup = base::getNum(request::get('filegroup'), -1);
     $pagesize = base::getNum(tpl::take('config.pagesize', 'cfg'), 0);
     $account = self::account();
-    $tmpstr = tpl::take('manage.list', 'tpl');
-    $tpl = new tpl($tmpstr);
-    $loopString = $tpl -> getLoopString('{@}');
+    $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
+    $variable['-batch-list'] = implode(',', $batchAry);
+    $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
     $dal = new dal();
     $dal -> lang = $account -> getLang();
     if ($filegroup != -1) $dal -> filegroup = $filegroup;
     $dal -> orderBy('time', 'desc');
     $pagi = new pagi($dal);
     $rsAry = $pagi -> getDataAry($page, $pagesize);
-    if (is_array($rsAry))
-    {
-      foreach($rsAry as $rs)
-      {
-        $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
-        $tpl -> insertLoopLine(tpl::parse($loopLineString));
-      }
-    }
-    $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
-    $variable['-batch-list'] = implode(',', $batchAry);
-    $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
-    $tmpstr = $tpl -> assign($variable) -> assign($pagi -> getVars()) -> getTpl();
-    $tmpstr = tpl::parse($tmpstr);
+    $variable = array_merge($variable, $pagi -> getVars());
+    $tmpstr = tpl::takeAndAssign('manage.list', $rsAry, $variable);
     $tmpstr = $account -> replaceAccountTag($tmpstr);
     $tmpstr = self::formatResult($status, $tmpstr);
     return $tmpstr;
@@ -161,7 +148,6 @@ class ui extends console\page {
 
   public static function moduleActionEdit()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $error = array();

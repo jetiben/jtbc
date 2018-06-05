@@ -17,11 +17,12 @@ class ui extends console\page {
     $account = self::account();
     if ($account -> checkCurrentGenrePopedom('add'))
     {
-      $tmpstr = tpl::take('manage.add', 'tpl');
-      $tmpstr = str_replace('{$-auto-field-format-by-table}', auto::getAutoFieldFormatByTable(), $tmpstr);
-      $tmpstr = str_replace('{$-category-nav}', universal\category::getCategoryNavByID(self::getPara('genre'), $account -> getLang(), $category), $tmpstr);
-      $tmpstr = str_replace('{$-category-select}', universal\category::getCategorySelectByGenre(self::getPara('genre'), $account -> getLang(), $account -> getCurrentGenrePopedom('category'), 'id=' . $category), $tmpstr);
-      $tmpstr = tpl::parse($tmpstr);
+      $variable['-category'] = $category;
+      $variable['-nav-category'] = $category;
+      $variable['-my-category'] = $account -> getCurrentGenrePopedom('category');
+      $variable['-lang'] = $account -> getLang();
+      $vars['-auto-field-format-by-table'] = auto::getAutoFieldFormatByTable();
+      $tmpstr = tpl::takeAndAssign('manage.add', null, $variable, $vars);
       $tmpstr = $account -> replaceAccountTag($tmpstr);
     }
     $tmpstr = self::formatResult($status, $tmpstr);
@@ -43,12 +44,12 @@ class ui extends console\page {
       if (is_array($rs))
       {
         $rsCategory = base::getNum($dal -> val($rs, 'category'), 0);
-        $tmpstr = tpl::take('manage.edit', 'tpl');
-        $tmpstr = str_replace('{$-auto-field-format-by-table}', auto::getAutoFieldFormatByTable(1), $tmpstr);
-        $tmpstr = str_replace('{$-category-nav}', universal\category::getCategoryNavByID(self::getPara('genre'), $account -> getLang(), $category), $tmpstr);
-        $tmpstr = str_replace('{$-category-select}', universal\category::getCategorySelectByGenre(self::getPara('genre'), $account -> getLang(), $account -> getCurrentGenrePopedom('category'), 'id=' . $rsCategory), $tmpstr);
-        $tmpstr = tpl::replaceTagByAry($tmpstr, $rs, 10);
-        $tmpstr = tpl::parse($tmpstr);
+        $variable['-category'] = $rsCategory;
+        $variable['-nav-category'] = $category;
+        $variable['-my-category'] = $account -> getCurrentGenrePopedom('category');
+        $variable['-lang'] = $account -> getLang();
+        $vars['-auto-field-format-by-table'] = auto::getAutoFieldFormatByTable(1);
+        $tmpstr = tpl::takeAndAssign('manage.edit', $rs, $variable, $vars);
         $tmpstr = $account -> replaceAccountTag($tmpstr);
       }
     }
@@ -59,7 +60,6 @@ class ui extends console\page {
   public static function moduleList()
   {
     $status = 1;
-    $tmpstr = '';
     $page = base::getNum(request::get('page'), 0);
     $publish = base::getNum(request::get('publish'), -1);
     $category = base::getNum(request::get('category'), 0);
@@ -67,9 +67,13 @@ class ui extends console\page {
     $pagesize = base::getNum(tpl::take('config.pagesize', 'cfg'), 0);
     $account = self::account();
     $myCategory = $account -> getCurrentGenrePopedom('category');
-    $tmpstr = tpl::take('manage.list', 'tpl');
-    $tpl = new tpl($tmpstr);
-    $loopString = $tpl -> getLoopString('{@}');
+    self::setPara('-keyword', $keyword);
+    $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
+    $variable['-batch-list'] = implode(',', $batchAry);
+    $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
+    $variable['-keyword'] = $keyword;
+    $variable['-nav-category'] = $category;
+    $variable['-lang'] = $account -> getLang();
     $dal = new dal();
     $dal -> lang = $account -> getLang();
     if ($publish != -1) $dal -> publish = $publish;
@@ -79,26 +83,8 @@ class ui extends console\page {
     if (!base::isEmpty($keyword)) $dal -> setFuzzyLike('topic', $keyword);
     $pagi = new pagi($dal);
     $rsAry = $pagi -> getDataAry($page, $pagesize);
-    if (is_array($rsAry))
-    {
-      foreach($rsAry as $rs)
-      {
-        $rsTopic = base::getString($dal -> val($rs, 'topic'));
-        $rsCategory = base::getNum($dal -> val($rs, 'category'), 0);
-        $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
-        $loopLineString = str_replace('{$-category-topic}', base::htmlEncode(universal\category::getCategoryTopicByID(self::getPara('genre'), $account -> getLang(), $rsCategory)), $loopLineString);
-        $loopLineString = str_replace('{$-topic-keyword-highlight}', base::replaceKeyWordHighlight(base::htmlEncode(base::replaceKeyWordHighlight($rsTopic, $keyword))), $loopLineString);
-        $tpl -> insertLoopLine(tpl::parse($loopLineString));
-      }
-    }
-    $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
-    $variable['-batch-list'] = implode(',', $batchAry);
-    $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
-    $variable['-keyword'] = $keyword;
-    $variable['-category'] = $category;
-    $tmpstr = $tpl -> assign($variable) -> assign($pagi -> getVars()) -> getTpl();
-    $tmpstr = str_replace('{$-category-nav}', universal\category::getCategoryNavByID(self::getPara('genre'), $account -> getLang(), $category), $tmpstr);
-    $tmpstr = tpl::parse($tmpstr);
+    $variable = array_merge($variable, $pagi -> getVars());
+    $tmpstr = tpl::takeAndAssign('manage.list', $rsAry, $variable);
     $tmpstr = $account -> replaceAccountTag($tmpstr);
     $tmpstr = self::formatResult($status, $tmpstr);
     return $tmpstr;
@@ -106,7 +92,6 @@ class ui extends console\page {
 
   public static function moduleActionAdd()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $error = array();
@@ -144,7 +129,6 @@ class ui extends console\page {
 
   public static function moduleActionEdit()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $error = array();

@@ -28,7 +28,6 @@ class ui extends console\page {
   public static function moduleList()
   {
     $status = 1;
-    $tmpstr = '';
     $selectmode = 'single';
     $mode = base::getString(request::get('mode'));
     $keyword = base::getString(request::get('keyword'));
@@ -36,9 +35,11 @@ class ui extends console\page {
     $filegroup = base::getNum(request::get('filegroup'), -1);
     if ($mode == 'multiple') $selectmode = 'multiple';
     $account = self::account();
-    $tmpstr = tpl::take('managerapi.list', 'tpl');
-    $tpl = new tpl($tmpstr);
-    $loopString = $tpl -> getLoopString('{@}');
+    self::setPara('-keyword', $keyword);
+    $variable['-selectmode'] = $selectmode;
+    $variable['-filegroup'] = $filegroup;
+    $variable['-sort'] = $sort;
+    $variable['-keyword'] = $keyword;
     $dal = new dal();
     $dal -> lang = $account -> getLang();
     if ($filegroup != -1) $dal -> filegroup = $filegroup;
@@ -47,20 +48,9 @@ class ui extends console\page {
     else $dal -> orderBy('time', 'desc');
     $dal -> limit(0, 100);
     $rsa = $dal -> selectAll();
-    foreach ($rsa as $i => $rs)
-    {
-      $rsTopic = base::getString($dal -> val($rs, 'topic'));
-      $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
+    $tmpstr = tpl::takeAndAssign('managerapi.list', $rsa, $variable, null, function(&$loopLineString, $rs) use ($dal){
       $loopLineString = str_replace('{$-filejson}', base::htmlEncode(self::ppGetFileJSON($rs, $dal -> prefix)), $loopLineString);
-      $loopLineString = str_replace('{$-topic-keyword-highlight}', base::replaceKeyWordHighlight(base::htmlEncode(base::replaceKeyWordHighlight($rsTopic, $keyword))), $loopLineString);
-      $tpl -> insertLoopLine(tpl::parse($loopLineString));
-    }
-    $variable['-selectmode'] = $selectmode;
-    $variable['-filegroup'] = $filegroup;
-    $variable['-sort'] = $sort;
-    $variable['-keyword'] = $keyword;
-    $tmpstr = $tpl -> assign($variable) -> getTpl();
-    $tmpstr = tpl::parse($tmpstr);
+    });
     $tmpstr = self::formatResult($status, $tmpstr);
     return $tmpstr;
   }

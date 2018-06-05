@@ -10,9 +10,8 @@ class ui extends console\page {
     $account = self::account();
     if ($account -> checkCurrentGenrePopedom())
     {
-      $tmpstr = tpl::take('manage.edit', 'tpl');
-      $tmpstr = str_replace('{$-lang-text}', $account -> getLangText(), $tmpstr);
-      $tmpstr = tpl::parse($tmpstr);
+      $vars['-lang-text'] = $account -> getLangText();
+      $tmpstr = tpl::takeAndAssign('manage.edit', null, null, $vars);
       $tmpstr = $account -> replaceAccountTag($tmpstr);
     }
     $tmpstr = self::formatResult($status, $tmpstr);
@@ -21,7 +20,6 @@ class ui extends console\page {
 
   public static function moduleActionEdit()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $error = array();

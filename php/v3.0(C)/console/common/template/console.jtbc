@@ -33,7 +33,7 @@
       <name><![CDATA[fieldformat-category]]></name>
       <default><![CDATA[<tr>
   <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
-  <td><select name="category" class="s1">{$-category-select}</select></td>
+  <td><select name="category" class="s1">{$=universal\category::getCategorySelectByGenre($getPara('genre'), '{$-lang}', '{$-my-category}', 'id={$-category}')}</select></td>
 </tr>]]></default>
     </item>
     <item>

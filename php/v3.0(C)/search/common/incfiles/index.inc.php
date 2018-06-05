@@ -9,14 +9,10 @@ class ui extends page {
 
   public static function moduleList()
   {
-    $status = 1;
-    $tmpstr = '';
     $page = base::getNum(request::get('page'), 0);
     $keyword = base::getString(request::get('keyword'));
     $pagesize = base::getNum(tpl::take('config.pagesize', 'cfg'), 0);
-    $tmpstr = tpl::take('index.list', 'tpl');
-    $tpl = new tpl($tmpstr);
-    $loopString = $tpl -> getLoopString('{@}');
+    self::setPara('-keyword', $keyword);
     $sqlstr = "select * from (";
     $folder = route::getFolderByGuide('search');
     $folderAry = explode('|+|', $folder);
@@ -38,18 +34,7 @@ class ui extends page {
     $sqlstr .= " order by un_time desc";
     $pagi = new pagi();
     $rsAry = $pagi -> getDataAry($page, $pagesize, $sqlstr);
-    if (is_array($rsAry))
-    {
-      foreach($rsAry as $rs)
-      {
-        $rsTopic = base::getString($rs['un_topic']);
-        $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
-        $loopLineString = str_replace('{$-topic-keyword-highlight}', base::replaceKeyWordHighlight(base::htmlEncode(base::replaceKeyWordHighlight($rsTopic, $keyword))), $loopLineString);
-        $tpl -> insertLoopLine(tpl::parse($loopLineString));
-      }
-    }
-    $tmpstr = $tpl -> assign($pagi -> getVars()) -> getTpl();
-    $tmpstr = tpl::parse($tmpstr);
+    $tmpstr = tpl::takeAndAssign('index.list', $rsAry, $pagi -> getVars());
     return $tmpstr;
   }
 }

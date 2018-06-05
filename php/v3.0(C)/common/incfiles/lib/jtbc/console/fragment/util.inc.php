@@ -12,7 +12,6 @@ namespace jtbc\console\fragment {
   {
     private static function doActionBatch()
     {
-      $tmpstr = '';
       $status = 0;
       $message = '';
       $account = self::account();
@@ -72,7 +71,6 @@ namespace jtbc\console\fragment {
 
     private static function doActionDelete()
     {
-      $tmpstr = '';
       $status = 0;
       $message = '';
       $id = base::getNum(request::get('id'), 0);

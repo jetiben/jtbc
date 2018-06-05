@@ -17,7 +17,7 @@
           <div class="result">
             <ul>{@}
               <li>
-                <a href="{$=getActualRoute(#genre)}/{$=htmlEncode($createURL('detail', '{$id}', null, #genre))}">{$-topic-keyword-highlight}</a>
+                <a href="{$=getActualRoute(#genre)}/{$=htmlEncode($createURL('detail', '{$id}', null, #genre))}">{$=replaceKeyWordHighlight($htmlEncode($replaceKeyWordHighlight(#topic, $getPara('-keyword'))))}</a>
                 <a class="url" href="{$=getActualRoute(#genre)}/{$=htmlEncode($createURL('detail', '{$id}', null, #genre))}">{$=htmlEncode($getPara('urlpre'))}{$=htmlEncode($getLRStr($getPara('url'), $getPara('genre'), 'leftr'))}{$=htmlEncode(#genre)}/{$=htmlEncode($createURL('detail', '{$id}', null, #genre))}</a>
               </li>{@}
             </ul>

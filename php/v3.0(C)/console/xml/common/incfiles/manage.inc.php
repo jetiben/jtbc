@@ -184,7 +184,6 @@ class ui extends console\page {
 
   public static function moduleActionAdd()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $error = array();
@@ -261,7 +260,6 @@ class ui extends console\page {
 
   public static function moduleActionEdit()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $error = array();
@@ -298,7 +296,6 @@ class ui extends console\page {
 
   public static function moduleActionDelete()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $error = array();

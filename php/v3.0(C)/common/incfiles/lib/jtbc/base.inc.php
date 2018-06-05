@@ -173,6 +173,25 @@ namespace jtbc {
       return $tmpstr;
     }
 
+    public static function getArrayDepth($argArray)
+    {
+      $deep = 0;
+      $ary = $argArray;
+      if (is_array($ary))
+      {
+        $deep = 1;
+        foreach ($ary as $val)
+        {
+          if (is_array($val))
+          {
+            $myDeep = self::getArrayDepth($val) + 1;
+            $deep = max($deep, $myDeep);
+          }
+        }
+      }
+      return $deep;
+    }
+
     public static function getDateTime($argDateTime = '')
     {
       $tmpstr = '';

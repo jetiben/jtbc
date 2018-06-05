@@ -9,9 +9,10 @@ class ui extends console\page {
     $tmpstr = '';
     $path = route::getActualRoute('cache/');
     $account = self::account();
-    $tmpstr = tpl::take('manage.list', 'tpl');
-    $tpl = new tpl($tmpstr);
-    $loopString = $tpl -> getLoopString('{@}');
+    $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
+    $variable['-batch-list'] = implode(',', $batchAry);
+    $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
+    $cacheAry = array();
     if (is_dir($path))
     {
       $dir = @dir($path);
@@ -19,20 +20,15 @@ class ui extends console\page {
       {
         if (is_file($path . $entry) && is_numeric(strpos($entry, '.inc.php')))
         {
-          $loopLineString = $loopString;
-          $loopLineString = str_replace('{$topic}', base::htmlEncode(base::getLRStr($entry, '.inc.php', 'leftr')), $loopLineString);
-          $loopLineString = str_replace('{$-urlencode-topic}', urlencode(base::getLRStr($entry, '.inc.php', 'leftr')), $loopLineString);
-          $loopLineString = str_replace('{$lasttime}', base::htmlEncode(date('Y-m-d H:i:s', filemtime($path . $entry))), $loopLineString);
-          $loopLineString = str_replace('{$size}', base::htmlEncode(base::formatFileSize(filesize($path . $entry))), $loopLineString);
-          $tpl -> insertLoopLine($loopLineString);
+          $info['topic'] = base::getLRStr($entry, '.inc.php', 'leftr');
+          $info['-urlencode-topic'] = urlencode(base::getLRStr($entry, '.inc.php', 'leftr'));
+          $info['lasttime'] = date('Y-m-d H:i:s', filemtime($path . $entry));
+          $info['size'] = base::formatFileSize(filesize($path . $entry));
+          array_push($cacheAry, $info);
         }
       }
     }
-    $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
-    $variable['-batch-list'] = implode(',', $batchAry);
-    $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
-    $tmpstr = $tpl -> assign($variable) -> getTpl();
-    $tmpstr = tpl::parse($tmpstr);
+    $tmpstr = tpl::takeAndAssign('manage.list', $cacheAry, $variable);
     $tmpstr = $account -> replaceAccountTag($tmpstr);
     $tmpstr = self::formatResult($status, $tmpstr);
     return $tmpstr;
@@ -40,7 +36,6 @@ class ui extends console\page {
 
   public static function moduleActionBatch()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $account = self::account();
@@ -67,7 +62,6 @@ class ui extends console\page {
 
   public static function moduleActionEmpty()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $account = self::account();
@@ -89,7 +83,6 @@ class ui extends console\page {
 
   public static function moduleActionDelete()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $id = base::getString(request::get('id'));

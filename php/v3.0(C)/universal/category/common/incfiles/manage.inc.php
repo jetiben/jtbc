@@ -51,12 +51,11 @@ class ui extends console\page {
         $hasImage = base::getNum(tpl::take('global.' . $genre . ':category.has_image', 'cfg'), 0);
         $hasIntro = base::getNum(tpl::take('global.' . $genre . ':category.has_intro', 'cfg'), 0);
       }
-      $tmpstr = tpl::take('manage.add', 'tpl');
-      $tmpstr = str_replace('{$-genre}', base::htmlEncode($genre), $tmpstr);
-      $tmpstr = str_replace('{$-fid}', base::htmlEncode($fid), $tmpstr);
-      $tmpstr = str_replace('{$-has_image}', base::htmlEncode($hasImage), $tmpstr);
-      $tmpstr = str_replace('{$-has_intro}', base::htmlEncode($hasIntro), $tmpstr);
-      $tmpstr = tpl::parse($tmpstr);
+      $variable['-genre'] = $genre;
+      $variable['-fid'] = $fid;
+      $variable['-has_image'] = $hasImage;
+      $variable['-has_intro'] = $hasIntro;
+      $tmpstr = tpl::takeAndAssign('manage.add', null, $variable);
     }
     $tmpstr = self::formatResult($status, $tmpstr);
     return $tmpstr;
@@ -84,11 +83,9 @@ class ui extends console\page {
           $hasImage = base::getNum(tpl::take('global.' . $rsGenre . ':category.has_image', 'cfg'), 0);
           $hasIntro = base::getNum(tpl::take('global.' . $rsGenre . ':category.has_intro', 'cfg'), 0);
         }
-        $tmpstr = tpl::take('manage.edit', 'tpl');
-        $tmpstr = tpl::replaceTagByAry($tmpstr, $rs, 10);
-        $tmpstr = str_replace('{$-has_image}', base::htmlEncode($hasImage), $tmpstr);
-        $tmpstr = str_replace('{$-has_intro}', base::htmlEncode($hasIntro), $tmpstr);
-        $tmpstr = tpl::parse($tmpstr);
+        $variable['-has_image'] = $hasImage;
+        $variable['-has_intro'] = $hasIntro;
+        $tmpstr = tpl::takeAndAssign('manage.edit', $rs, $variable);
         $tmpstr = $account -> replaceAccountTag($tmpstr);
       }
     }
@@ -116,9 +113,14 @@ class ui extends console\page {
     }
     else
     {
-      $tmpstr = tpl::take('manage.list', 'tpl');
-      $tpl = new tpl($tmpstr);
-      $loopString = $tpl -> getLoopString('{@}');
+      $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
+      $variable['-batch-list'] = implode(',', $batchAry);
+      $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
+      $variable['-current-genre'] = $genre;
+      $variable['-current-fid'] = $fid;
+      $variable['-current-genre'] = $genre;
+      $vars['-allgenre-select'] = universal\category::getAllGenreSelect($allGenre, $genre);
+      $vars['-path-nav'] = self::ppGetPathNav($genre, $fid);
       $dal = new dal();
       $dal -> fid = $fid;
       $dal -> genre = $genre;
@@ -126,21 +128,7 @@ class ui extends console\page {
       $dal -> orderBy('order', 'asc');
       $dal -> orderBy('id', 'asc');
       $rsa = $dal -> selectAll();
-      foreach ($rsa as $i => $rs)
-      {
-        $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
-        $loopLineString = str_replace('{$-current-genre}', base::htmlEncode($genre), $loopLineString);
-        $tpl -> insertLoopLine(tpl::parse($loopLineString));
-      }
-      $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
-      $variable['-batch-list'] = implode(',', $batchAry);
-      $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
-      $variable['-current-genre'] = $genre;
-      $variable['-current-fid'] = $fid;
-      $tmpstr = $tpl -> assign($variable) -> getTpl();
-      $tmpstr = str_replace('{$-allgenre-select}', universal\category::getAllGenreSelect($allGenre, $genre), $tmpstr);
-      $tmpstr = str_replace('{$-path-nav}', self::ppGetPathNav($genre, $fid), $tmpstr);
-      $tmpstr = tpl::parse($tmpstr);
+      $tmpstr = tpl::takeAndAssign('manage.list', $rsa, $variable, $vars);
     }
     $tmpstr = $account -> replaceAccountTag($tmpstr);
     $tmpstr = self::formatResult($status, $tmpstr);
@@ -149,7 +137,6 @@ class ui extends console\page {
 
   public static function moduleActionAdd()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $error = array();
@@ -186,7 +173,6 @@ class ui extends console\page {
 
   public static function moduleActionEdit()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $error = array();
@@ -220,7 +206,6 @@ class ui extends console\page {
 
   public static function moduleActionSort()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $error = array();

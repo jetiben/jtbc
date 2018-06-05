@@ -41,9 +41,8 @@ class ui extends console\page {
     $account = self::account();
     if ($account -> checkCurrentGenrePopedom('add'))
     {
-      $tmpstr = tpl::take('manage.add', 'tpl');
-      $tmpstr = str_replace('{$-select-role-html}', self::ppGetSelectRoleHTML(), $tmpstr);
-      $tmpstr = tpl::parse($tmpstr);
+      $vars['-select-role-html'] = self::ppGetSelectRoleHTML();
+      $tmpstr = tpl::takeAndAssign('manage.add', null, null, $vars);
       $tmpstr = $account -> replaceAccountTag($tmpstr);
     }
     $tmpstr = self::formatResult($status, $tmpstr);
@@ -64,10 +63,8 @@ class ui extends console\page {
       if (is_array($rs))
       {
         $rsRole = base::getNum($dal -> val($rs, 'role'), 0);
-        $tmpstr = tpl::take('manage.edit', 'tpl');
-        $tmpstr = tpl::replaceTagByAry($tmpstr, $rs, 10);
-        $tmpstr = str_replace('{$-select-role-html}', self::ppGetSelectRoleHTML($rsRole), $tmpstr);
-        $tmpstr = tpl::parse($tmpstr);
+        $vars['-select-role-html'] = self::ppGetSelectRoleHTML($rsRole);
+        $tmpstr = tpl::takeAndAssign('manage.edit', $rs, null, $vars);
         $tmpstr = $account -> replaceAccountTag($tmpstr);
       }
     }
@@ -78,34 +75,23 @@ class ui extends console\page {
   public static function moduleList()
   {
     $status = 1;
-    $tmpstr = '';
     $page = base::getNum(request::get('page'), 0);
     $lock = base::getNum(request::get('lock'), 0);
     $pagesize = base::getNum(tpl::take('config.pagesize', 'cfg'), 0);
     $account = self::account();
-    $tmpstr = tpl::take('manage.list', 'tpl');
-    $tpl = new tpl($tmpstr);
-    $loopString = $tpl -> getLoopString('{@}');
+    $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
+    $variable['-batch-list'] = implode(',', $batchAry);
+    $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
     $dal = new dal();
     if ($lock == 1) $dal -> lock = 1;
     $dal -> orderBy('time', 'desc');
     $pagi = new pagi($dal);
     $rsAry = $pagi -> getDataAry($page, $pagesize);
-    if (is_array($rsAry))
-    {
-      foreach($rsAry as $rs)
-      {
-        $rsRole = base::getNum($dal -> val($rs, 'role'), 0);
-        $loopLineString = tpl::replaceTagByAry($loopString, $rs, 10);
-        $loopLineString = str_replace('{$-role-topic}', base::htmlEncode($account -> getRoleTopicById($rsRole)), $loopLineString);
-        $tpl -> insertLoopLine($loopLineString);
-      }
-    }
-    $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
-    $variable['-batch-list'] = implode(',', $batchAry);
-    $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
-    $tmpstr = $tpl -> assign($variable) -> assign($pagi -> getVars()) -> getTpl();
-    $tmpstr = tpl::parse($tmpstr);
+    $variable = array_merge($variable, $pagi -> getVars());
+    $tmpstr = tpl::takeAndAssign('manage.list', $rsAry, $variable, null, function(&$loopLineString, $rs) use ($dal, $account){
+      $rsRole = base::getNum($dal -> val($rs, 'role'), 0);
+      $loopLineString = str_replace('{$-role-topic}', base::htmlEncode($account -> getRoleTopicById($rsRole)), $loopLineString);
+    });
     $tmpstr = $account -> replaceAccountTag($tmpstr);
     $tmpstr = self::formatResult($status, $tmpstr);
     return $tmpstr;
@@ -113,7 +99,6 @@ class ui extends console\page {
 
   public static function moduleActionAdd()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $error = array();
@@ -158,7 +143,6 @@ class ui extends console\page {
 
   public static function moduleActionEdit()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $error = array();

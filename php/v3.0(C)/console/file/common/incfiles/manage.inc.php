@@ -41,9 +41,9 @@ class ui extends console\page {
       }
     }
     $account = self::account();
-    $tmpstr = tpl::take('manage.list', 'tpl');
-    $tpl = new tpl($tmpstr);
-    $loopString = $tpl -> getLoopString('{@}');
+    $variable['-path'] = $path;
+    $vars['-path-nav'] = $pathnavHTML;
+    $listAry = array();
     if (is_dir($path))
     {
       $dir = @dir($path);
@@ -65,31 +65,26 @@ class ui extends console\page {
       }
       foreach ($floders as $key => $val)
       {
-        $loopLineString = $loopString;
-        $loopLineString = str_replace('{$path}', base::htmlEncode($path), $loopLineString);
-        $loopLineString = str_replace('{$topic}', base::htmlEncode(self::ppGetFolderAndFileName($key)), $loopLineString);
-        $loopLineString = str_replace('{$lasttime}', base::htmlEncode(date('Y-m-d H:i:s', filemtime($val))), $loopLineString);
-        $loopLineString = str_replace('{$-val}', base::htmlEncode(urlencode($val . '/')), $loopLineString);
-        $loopLineString = str_replace('{$-style}', '', $loopLineString);
-        $loopLineString = str_replace('{$-linkurl}', '?type=list&amp;path=' . urlencode(self::ppGetFolderAndFileName($val . '/')), $loopLineString);
-        $tpl -> insertLoopLine($loopLineString);
+        $info['path'] = $path;
+        $info['topic'] = self::ppGetFolderAndFileName($key);
+        $info['lasttime'] = date('Y-m-d H:i:s', filemtime($val));
+        $info['-val'] = urlencode($val . '/');
+        $info['-style'] = '';
+        $info['-linkurl'] = '?type=list&path=' . urlencode(self::ppGetFolderAndFileName($val . '/'));
+        array_push($listAry, $info);
       }
       foreach ($files as $key => $val)
       {
-        $loopLineString = $loopString;
-        $loopLineString = str_replace('{$path}', base::htmlEncode($path), $loopLineString);
-        $loopLineString = str_replace('{$topic}', base::htmlEncode(self::ppGetFolderAndFileName($key)), $loopLineString);
-        $loopLineString = str_replace('{$lasttime}', base::htmlEncode(date('Y-m-d H:i:s', filemtime($val))), $loopLineString);
-        $loopLineString = str_replace('{$-val}', base::htmlEncode(urlencode($val)), $loopLineString);
-        $loopLineString = str_replace('{$-style}', 'background-image:url(' . ASSETSPATH . '/icon/filetype/' . base::htmlEncode(base::getLRStr(self::ppGetFolderAndFileName($key), '.', 'right')) . '.svg),url(' . ASSETSPATH . '/icon/filetype/others.svg)', $loopLineString);
-        $loopLineString = str_replace('{$-linkurl}', '?type=edit&amp;path=' . urlencode(self::ppGetFolderAndFileName($val)), $loopLineString);
-        $tpl -> insertLoopLine($loopLineString);
+        $info['path'] = $path;
+        $info['topic'] = self::ppGetFolderAndFileName($key);
+        $info['lasttime'] = date('Y-m-d H:i:s', filemtime($val));
+        $info['-val'] = urlencode($val . '/');
+        $info['-style'] = 'background-image:url(' . ASSETSPATH . '/icon/filetype/' . base::getLRStr(self::ppGetFolderAndFileName($key), '.', 'right') . '.svg),url(' . ASSETSPATH . '/icon/filetype/others.svg)';
+        $info['-linkurl'] = '?type=edit&path=' . urlencode(self::ppGetFolderAndFileName($val));
+        array_push($listAry, $info);
       }
     }
-    $tmpstr = $tpl -> getTpl();
-    $tmpstr = str_replace('{$-path}', base::htmlEncode($path), $tmpstr);
-    $tmpstr = str_replace('{$-path-nav}', $pathnavHTML, $tmpstr);
-    $tmpstr = tpl::parse($tmpstr);
+    $tmpstr = tpl::takeAndAssign('manage.list', $listAry, $variable, $vars);
     $tmpstr = $account -> replaceAccountTag($tmpstr);
     $tmpstr = self::formatResult($status, $tmpstr);
     return $tmpstr;
@@ -133,17 +128,16 @@ class ui extends console\page {
     $account = self::account();
     if ($account -> checkCurrentGenrePopedom('edit'))
     {
+      $variable['-path'] = $path;
+      $variable['-path-urlencode'] = urlencode($path);
+      $vars['-path-nav'] = $pathnavHTML;
       if (base::checkInstr(self::$allowFiletype, $filetype, ','))
       {
-        $tmpstr = tpl::take('manage.edit', 'tpl');
-        $tmpstr = str_replace('{$-filemode}', base::htmlEncode($filemode), $tmpstr);
-        $tmpstr = str_replace('{$-file-content}', base::htmlEncode(@file_get_contents($path)), $tmpstr);
+        $variable['-filemode'] = $filemode;
+        $variable['-file-content'] = @file_get_contents($path);
+        $tmpstr = tpl::takeAndAssign('manage.edit', null, $variable, $vars);
       }
-      else $tmpstr = tpl::take('manage.edit-lock', 'tpl');
-      $tmpstr = str_replace('{$-path}', base::htmlEncode($path), $tmpstr);
-      $tmpstr = str_replace('{$-path-urlencode}', urlencode($path), $tmpstr);
-      $tmpstr = str_replace('{$-path-nav}', $pathnavHTML, $tmpstr);
-      $tmpstr = tpl::parse($tmpstr);
+      else $tmpstr = tpl::takeAndAssign('manage.edit-lock', null, $variable, $vars);
       $tmpstr = $account -> replaceAccountTag($tmpstr);
     }
     $tmpstr = self::formatResult($status, $tmpstr);
@@ -152,7 +146,6 @@ class ui extends console\page {
 
   public static function moduleGetInfo()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $val = base::getString(request::get('val'));
@@ -172,7 +165,6 @@ class ui extends console\page {
 
   public static function moduleActionAddFolder()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $name = base::getString(request::get('name'));
@@ -201,7 +193,6 @@ class ui extends console\page {
 
   public static function moduleActionAddFile()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $path = base::getString(request::get('path'));
@@ -232,7 +223,6 @@ class ui extends console\page {
 
   public static function moduleActionEditFile()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $content = base::getString(request::getPost('content'));
@@ -264,7 +254,6 @@ class ui extends console\page {
 
   public static function moduleActionRename()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $name = base::getString(request::get('name'));
@@ -293,7 +282,6 @@ class ui extends console\page {
 
   public static function moduleActionDelete()
   {
-    $tmpstr = '';
     $status = 0;
     $message = '';
     $path = base::getString(request::get('path'));

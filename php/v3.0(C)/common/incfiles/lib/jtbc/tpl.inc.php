@@ -271,6 +271,11 @@ namespace jtbc {
             }
             $fun = base::getLRStr($string, '(', 'left');
             if (function_exists($fun)) eval('$tstr = ' . $string . ';');
+            else if (substr_count($fun, '::') == 1)
+            {
+              if (is_callable(array($ns . '\\' . base::getLRStr($fun, '::', 'left'), base::getLRStr($fun, '::', 'right')))) eval('$tstr = ' . $ns . '\\' . $string . ';');
+              else if (is_callable(array(base::getLRStr($fun, '::', 'left'), base::getLRStr($fun, '::', 'right')))) eval('$tstr = ' . $string . ';');
+            }
             else
             {
               foreach ($classArray as $key => $val)
@@ -755,6 +760,58 @@ namespace jtbc {
           $tpl -> insertLoopLine($loopLineString);
         }
         $tmpstr = $tpl -> getTpl();
+        $tmpstr = self::parse($tmpstr);
+      }
+      return $tmpstr;
+    }
+
+    public static function takeAndAssign($argCodeName, $argSource = null, $argVariable = null, $argVars = null, $argLoopCall = null)
+    {
+      $tmpstr = '';
+      $codename = $argCodeName;
+      $source = $argSource;
+      $variable = $argVariable;
+      $vars = $argVars;
+      $loopCall = $argLoopCall;
+      $tmpstr = self::take($codename, 'tpl', 0, $vars);
+      if (!base::isEmpty($tmpstr))
+      {
+        if (empty($source))
+        {
+          if (substr_count($tmpstr, '{@}') == 2)
+          {
+            $tpl = new tpl($tmpstr);
+            $tpl -> assign($variable);
+            $loopString = $tpl -> getLoopString('{@}');
+            $tmpstr = $tpl -> getTpl();
+          }
+          else
+          {
+            $tmpstr = self::replaceTagByAry($tmpstr, $variable);
+          }
+        }
+        else
+        {
+          $aryDepth = base::getArrayDepth($source);
+          if ($aryDepth == 1)
+          {
+            $tmpstr = self::replaceTagByAry($tmpstr, $source, 10);
+            $tmpstr = self::replaceTagByAry($tmpstr, $variable);
+          }
+          else if ($aryDepth == 2)
+          {
+            $tpl = new tpl($tmpstr);
+            $tpl -> assign($variable);
+            $loopString = $tpl -> getLoopString('{@}');
+            foreach($source as $rs)
+            {
+              $loopLineString = self::replaceTagByAry($loopString, $rs, 10);
+              if (is_object($loopCall)) $loopCall($loopLineString, $rs);
+              $tpl -> insertLoopLine(self::parse($loopLineString));
+            }
+            $tmpstr = $tpl -> getTpl();
+          }
+        }
         $tmpstr = self::parse($tmpstr);
       }
       return $tmpstr;

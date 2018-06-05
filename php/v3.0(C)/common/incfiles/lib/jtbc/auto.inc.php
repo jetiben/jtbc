@@ -327,7 +327,6 @@ namespace jtbc {
         }
       }
       return $tmpstr;
-
     }
 
     public static function getAutoFieldFormatByTable($argMode = 0, $argTable = null, $argPrefix = null, $argDbLink = 'any', $argVars = null, $argTplPath = null)
