@@ -38,9 +38,13 @@ namespace jtbc {
             if (!base::isEmpty($nameSuffix)) $requestName = $requestName . $nameSuffix;
             if (is_array($vars))
             {
-              if (array_key_exists($requestName, $vars)) $requestValue = $vars[$requestName];
+              if (array_key_exists($requestName, $vars))
+              {
+                $fieldValid = true;
+                $requestValue = $vars[$requestName];
+              }
             }
-            if ($mode == 0)
+            if ($mode == 0 && $fieldValid == false)
             {
               $inSpecialField = false;
               if (!is_null($specialField))
@@ -72,13 +76,6 @@ namespace jtbc {
                     }
                   }
                 }
-              }
-            }
-            else if ($mode == 1)
-            {
-              if (is_array($vars))
-              {
-                if (array_key_exists($requestName, $vars)) $fieldValid = true;
               }
             }
             if ($fieldValid == true)
@@ -148,9 +145,13 @@ namespace jtbc {
             if (!base::isEmpty($nameSuffix)) $requestName = $requestName . $nameSuffix;
             if (is_array($vars))
             {
-              if (array_key_exists($requestName, $vars)) $requestValue = $vars[$requestName];
+              if (array_key_exists($requestName, $vars))
+              {
+                $fieldValid = true;
+                $requestValue = $vars[$requestName];
+              }
             }
-            if ($mode == 0)
+            if ($mode == 0 && $fieldValid == false)
             {
               $inSpecialField = false;
               if (!is_null($specialField))
@@ -182,13 +183,6 @@ namespace jtbc {
                     }
                   }
                 }
-              }
-            }
-            else if ($mode == 1)
-            {
-              if (is_array($vars))
-              {
-                if (array_key_exists($requestName, $vars)) $fieldValid = true;
               }
             }
             if ($fieldValid == true)
