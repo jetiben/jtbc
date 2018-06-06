@@ -258,6 +258,7 @@ CREATE TABLE `jtbc_universal_upload` (
   `uu_filemode` int(11) DEFAULT '0',
   `uu_genre` varchar(200) DEFAULT NULL,
   `uu_associated_id` int(11) DEFAULT '0',
+  `uu_group` int(11) DEFAULT '0',
   `uu_status` int(11) DEFAULT '0',
   `uu_time` datetime DEFAULT NULL,
   `uu_delete` int(11) DEFAULT '0' COMMENT '{"manual":"true"}',

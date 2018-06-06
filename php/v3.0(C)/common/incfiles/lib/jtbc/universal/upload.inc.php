@@ -38,11 +38,12 @@ namespace jtbc\universal {
       return $uploadid;
     }
 
-    public static function statusReset($argGenre, $argAssociatedId)
+    public static function statusReset($argGenre, $argAssociatedId, $argGroup = 0)
     {
       $bool = false;
       $genre = $argGenre;
       $associatedId = base::getNum($argAssociatedId, 0);
+      $group = base::getNum($argGroup, 0);
       $table = tpl::take('global.universal/upload:config.db_table', 'cfg');
       $prefix = tpl::take('global.universal/upload:config.db_prefix', 'cfg');
       if (!base::isEmpty($table) && !base::isEmpty($prefix))
@@ -50,26 +51,28 @@ namespace jtbc\universal {
         $dal = new dal($table, $prefix);
         $dal -> genre = $genre;
         $dal -> associated_id = $associatedId;
+        $dal -> group = $group;
         $re = $dal -> update(array('status' => 2));
         if (is_numeric($re)) $bool = true;
       }
       return $bool;
     }
 
-    public static function statusUpdate($argGenre, $argAssociatedId, $argFileInfo)
+    public static function statusUpdate($argGenre, $argAssociatedId, $argFileInfo, $argGroup = 0)
     {
       $bool = false;
       $genre = $argGenre;
       $associatedId = base::getNum($argAssociatedId, 0);
       $fileInfo = $argFileInfo;
       $fileInfoArray = json_decode($fileInfo, true);
+      $group = base::getNum($argGroup, 0);
       if (is_array($fileInfoArray))
       {
         $table = tpl::take('global.universal/upload:config.db_table', 'cfg');
         $prefix = tpl::take('global.universal/upload:config.db_prefix', 'cfg');
         if (!base::isEmpty($table) && !base::isEmpty($prefix))
         {
-          $updateInfo = function($argUploadId) use ($db, $genre, $table, $prefix, $associatedId, &$bool)
+          $updateInfo = function($argUploadId) use ($db, $genre, $table, $prefix, $associatedId, $group, &$bool)
           {
             $myUploadId = base::getNum($argUploadId, 0);
             $dal = new dal($table, $prefix);
@@ -78,6 +81,7 @@ namespace jtbc\universal {
             $preset['status'] = 1;
             $preset['genre'] = $genre;
             $preset['associated_id'] = $associatedId;
+            $preset['group'] = $group;
             $re = $dal -> update($preset);
             if (is_numeric($re)) $bool = true;
           };
@@ -100,11 +104,12 @@ namespace jtbc\universal {
       return $bool;
     }
 
-    public static function statusAutoUpdate($argGenre, $argAssociatedId, $argTable = null, $argPrefix = null, $argDbLink = 'any')
+    public static function statusAutoUpdate($argGenre, $argAssociatedId, $argGroup = 0, $argTable = null, $argPrefix = null, $argDbLink = 'any')
     {
       $bool = true;
       $genre = $argGenre;
       $associatedId = base::getNum($argAssociatedId, 0);
+      $group = base::getNum($argGroup, 0);
       $table = $argTable;
       $prefix = $argPrefix;
       $dbLink = $argDbLink;
@@ -113,7 +118,7 @@ namespace jtbc\universal {
       $rs = $dal -> select();
       if (is_array($rs))
       {
-        self::statusReset($genre, $associatedId);
+        self::statusReset($genre, $associatedId, $group);
         $columns = $dal -> db -> showFullColumns($dal -> table);
         foreach ($columns as $i => $item)
         {
@@ -127,7 +132,7 @@ namespace jtbc\universal {
               $autoUpdate = base::getString($commentAry['uploadStatusAutoUpdate']);
               if ($autoUpdate == 'true')
               {
-                if (self::statusUpdate($genre, $associatedId, $rs[$filedName]) == false) $bool = false;
+                if (self::statusUpdate($genre, $associatedId, $rs[$filedName], $group) == false) $bool = false;
               }
             }
           }
