@@ -31,12 +31,12 @@ namespace jtbc {
       return $this;
     }
 
-    public function getFieldInfo($argDesc, $argField)
+    public function getFieldInfo($argfullColumns, $argField)
     {
       $fieldInfo = null;
-      $desc = $argDesc;
+      $fullColumns = $argfullColumns;
       $field = $argField;
-      foreach ($desc as $i => $item)
+      foreach ($fullColumns as $i => $item)
       {
         if ($item['Field'] == $field) $fieldInfo = $item;
       }
@@ -52,12 +52,12 @@ namespace jtbc {
       $prefix = $this -> prefix;
       $pocket = $this -> pocket;
       $additionalSQL = $this -> additionalSQL;
-      $desc = $db -> desc($table);
+      $fullColumns = $db -> showFullColumns($table);
       $hasWhere = false;
       if ($autoFilter == true)
       {
         $deleteField = $prefix . 'delete';
-        $deleteFieldInfo = $this -> getFieldInfo($desc, $deleteField);
+        $deleteFieldInfo = $this -> getFieldInfo($fullColumns, $deleteField);
         if (is_array($deleteFieldInfo))
         {
           $hasWhere = true;
@@ -105,7 +105,7 @@ namespace jtbc {
             }
             if (!is_null($currentField))
             {
-              $currentFieldInfo = $this -> getFieldInfo($desc, $currentField);
+              $currentFieldInfo = $this -> getFieldInfo($fullColumns, $currentField);
               if (is_array($currentFieldInfo))
               {
                 $valType = gettype($currentVal);
@@ -172,7 +172,7 @@ namespace jtbc {
       $orderby = $this -> orderby;
       $limitStart = $this -> limitStart;
       $limitLength = $this -> limitLength;
-      $desc = $db -> desc($table);
+      $fullColumns = $db -> showFullColumns($table);
       $fieldStr = '*';
       if (is_array($field))
       {
@@ -193,7 +193,7 @@ namespace jtbc {
         if ($orderbyType == 'string')
         {
           $currentField = $prefix . $orderby;
-          $currentFieldInfo = $this -> getFieldInfo($desc, $currentField);
+          $currentFieldInfo = $this -> getFieldInfo($fullColumns, $currentField);
           if (is_array($currentFieldInfo)) $sql .= " order by " . $currentField . " desc";
         }
         else if ($orderbyType == 'array')
@@ -213,7 +213,7 @@ namespace jtbc {
                 {
                   if (strtolower($currentVal[1]) == 'asc') $orderType = 'asc';
                 }
-                $currentFieldInfo = $this -> getFieldInfo($desc, $currentField);
+                $currentFieldInfo = $this -> getFieldInfo($fullColumns, $currentField);
                 if (is_array($currentFieldInfo)) array_push($newOrderBy, $currentField . ' ' . $orderType);
               }
             }
@@ -244,14 +244,8 @@ namespace jtbc {
         {
           $fieldValid = false;
           $fieldName = $item['Field'];
-          $fieldType = $item['Type'];
-          $fieldTypeN = $fieldType;
-          $fieldTypeL = null;
-          if (is_numeric(strpos($fieldType, '(')))
-          {
-            $fieldTypeN = base::getLRStr($fieldType, '(', 'left');
-            $fieldTypeL = base::getNum(base::getLRStr(base::getLRStr($fieldType, '(', 'right'), ')', 'left'), 0);
-          }
+          $fieldTypeName = $item['TypeName'];
+          $fieldTypeLength = base::getNum($item['TypeLength'], 0);
           $fieldValue = null;
           $sourceName = $fieldName;
           if (array_key_exists($sourceName, $source)) $fieldValue = $source[$sourceName];
@@ -266,32 +260,32 @@ namespace jtbc {
           if (!is_null($fieldValue))
           {
             $matchCount +=1;
-            if ($fieldTypeN == 'int' || $fieldTypeN == 'integer' || $fieldTypeN == 'double')
+            if ($fieldTypeName == 'int' || $fieldTypeName == 'integer' || $fieldTypeName == 'double')
             {
               $fieldString .= $fieldName . ',';
               $fieldValues .= base::getNum($fieldValue, 0) . ',';
             }
-            else if ($fieldTypeN == 'varchar')
+            else if ($fieldTypeName == 'varchar')
             {
               $fieldString .= $fieldName . ',';
-              $fieldValues .= "'" . addslashes(base::getLeft($fieldValue, $fieldTypeL)) . "',";
+              $fieldValues .= "'" . addslashes(base::getLeft($fieldValue, $fieldTypeLength)) . "',";
             }
-            else if ($fieldTypeN == 'datetime')
+            else if ($fieldTypeName == 'datetime')
             {
               $fieldString .= $fieldName . ',';
               $fieldValues .= "'" . addslashes(base::getDateTime($fieldValue)) . "',";
             }
-            else if ($fieldTypeN == 'text')
+            else if ($fieldTypeName == 'text')
             {
               $fieldString .= $fieldName . ',';
               $fieldValues .= "'" . addslashes(base::getLeft($fieldValue, 20000)) . "',";
             }
-            else if ($fieldTypeN == 'mediumtext')
+            else if ($fieldTypeName == 'mediumtext')
             {
               $fieldString .= $fieldName . ',';
               $fieldValues .= "'" . addslashes(base::getLeft($fieldValue, 5000000)) . "',";
             }
-            else if ($fieldTypeN == 'longtext')
+            else if ($fieldTypeName == 'longtext')
             {
               $fieldString .= $fieldName . ',';
               $fieldValues .= "'" . addslashes(base::getLeft($fieldValue, 1000000000)) . "',";
@@ -339,14 +333,8 @@ namespace jtbc {
         {
           $fieldValid = false;
           $fieldName = $item['Field'];
-          $fieldType = $item['Type'];
-          $fieldTypeN = $fieldType;
-          $fieldTypeL = null;
-          if (is_numeric(strpos($fieldType, '(')))
-          {
-            $fieldTypeN = base::getLRStr($fieldType, '(', 'left');
-            $fieldTypeL = base::getNum(base::getLRStr(base::getLRStr($fieldType, '(', 'right'), ')', 'left'), 0);
-          }
+          $fieldTypeName = $item['TypeName'];
+          $fieldTypeLength = base::getNum($item['TypeLength'], 0);
           $fieldValue = null;
           $sourceName = $fieldName;
           if (array_key_exists($sourceName, $source)) $fieldValue = $source[$sourceName];
@@ -361,27 +349,27 @@ namespace jtbc {
           if (!is_null($fieldValue))
           {
             $matchCount +=1;
-            if ($fieldTypeN == 'int' || $fieldTypeN == 'integer' || $fieldTypeN == 'double')
+            if ($fieldTypeName == 'int' || $fieldTypeName == 'integer' || $fieldTypeName == 'double')
             {
               $fieldStringValues .= $fieldName . '=' . base::getNum($fieldValue, 0) . ',';
             }
-            else if ($fieldTypeN == 'varchar')
+            else if ($fieldTypeName == 'varchar')
             {
-              $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($fieldValue, $fieldTypeL)) . '\',';
+              $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($fieldValue, $fieldTypeLength)) . '\',';
             }
-            else if ($fieldTypeN == 'datetime')
+            else if ($fieldTypeName == 'datetime')
             {
               $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getDateTime($fieldValue)) . '\',';
             }
-            else if ($fieldTypeN == 'text')
+            else if ($fieldTypeName == 'text')
             {
               $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($fieldValue, 20000)) . '\',';
             }
-            else if ($fieldTypeN == 'mediumtext')
+            else if ($fieldTypeName == 'mediumtext')
             {
               $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($fieldValue, 5000000)) . '\',';
             }
-            else if ($fieldTypeN == 'longtext')
+            else if ($fieldTypeName == 'longtext')
             {
               $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($fieldValue, 1000000000)) . '\',';
             }

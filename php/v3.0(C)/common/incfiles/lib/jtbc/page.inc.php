@@ -128,6 +128,7 @@ namespace jtbc {
         }
       }
       self::setPara('processtime', (microtime(true) - STARTTIME));
+      //$tmpstr .= '<!--Processed in ' . base::formatSecond(self::getPara('processtime')) . '-->';
       return $tmpstr;
     }
 

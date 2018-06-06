@@ -16,6 +16,7 @@ namespace jtbc {
     public $errStatus = 0;
     public $errMessage;
     public $lastInsertId;
+    public static $querycount = 0;
 
     public function init()
     {
@@ -35,9 +36,9 @@ namespace jtbc {
       $rs = null;
       $sqlString = $argSQLString;
       $mode = $argMode;
-      $rq = $this -> conn -> query($sqlString);
-      if ($mode == 1) $rs = $rq -> fetch(PDO::FETCH_ASSOC);
-      else $rs = $rq -> fetch();
+      $rq = $this -> query($sqlString);
+      if ($mode == 1) $rs = $rq -> fetch();
+      else $rs = $rq -> fetch(PDO::FETCH_ASSOC);
       return $rs;
     }
 
@@ -46,15 +47,16 @@ namespace jtbc {
       $rs = null;
       $sqlString = $argSQLString;
       $mode = $argMode;
-      $rq = $this -> conn -> query($sqlString);
-      if ($mode == 1) $rs = $rq -> fetchAll(PDO::FETCH_ASSOC);
-      else $rs = $rq -> fetchAll();
+      $rq = $this -> query($sqlString);
+      if ($mode == 1) $rs = $rq -> fetchAll();
+      else $rs = $rq -> fetchAll(PDO::FETCH_ASSOC);
       return $rs;
     }
 
     public function query($argSQLString)
     {
       $sqlString = $argSQLString;
+      self::$querycount += 1;
       $query = $this -> conn -> query($sqlString);
       return $query;
     }
@@ -62,24 +64,10 @@ namespace jtbc {
     public function exec($argSQLString)
     {
       $sqlString = $argSQLString;
+      self::$querycount += 1;
       $exec = $this -> conn -> exec($sqlString);
       if (substr($sqlString, 0, 6) == 'insert') $this -> lastInsertId = $this -> conn -> lastInsertId();
       return $exec;
-    }
-
-    public function desc($argTable)
-    {
-      $table = $argTable;
-      $desc = null;
-      $cacheName = 'db_structure_desc_' . $table;
-      if ($this -> dbStructureCache == true) $desc = cache::get($cacheName);
-      if (empty($desc))
-      {
-        $query = $this -> query('desc ' . $table);
-        $desc = $query -> fetchAll(PDO::FETCH_ASSOC);
-        if ($this -> dbStructureCache == true) @cache::put($cacheName, $desc);
-      }
-      return $desc;
     }
 
     public function showFullColumns($argTable)
@@ -92,6 +80,20 @@ namespace jtbc {
       {
         $query = $this -> query('show full columns from ' . $table);
         $fullColumns = $query -> fetchAll(PDO::FETCH_ASSOC);
+        foreach ($fullColumns as $i => $item)
+        {
+          $fieldType = $item['Type'];
+          $fieldTypeName = $fieldType;
+          $fieldTypeLength = null;
+          if (is_numeric(strpos($fieldType, '(')))
+          {
+            $fieldTypeName = base::getLRStr($fieldType, '(', 'left');
+            $fieldTypeLength = base::getNum(base::getLRStr(base::getLRStr($fieldType, '(', 'right'), ')', 'left'), 0);
+          }
+          $item['TypeName'] = $fieldTypeName;
+          $item['TypeLength'] = $fieldTypeLength;
+          $fullColumns[$i] = $item;
+        }
         if ($this -> dbStructureCache == true) @cache::put($cacheName, $fullColumns);
       }
       return $fullColumns;
