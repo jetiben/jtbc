@@ -15,7 +15,7 @@ namespace jtbc {
 
     public function getRsCount()
     {
-      $rscount = 0;
+      $rscount = -1;
       $db = $this -> db;
       if (!is_null($db))
       {
