@@ -15,6 +15,7 @@ namespace jtbc {
     private $additionalSQL = null;
     private $limitStart = null;
     private $limitLength = null;
+    public $err = 0;
 
     public function changeMode($argMode)
     {
@@ -125,31 +126,37 @@ namespace jtbc {
                     }
                     if (!base::isEmpty($currentNewVal)) $where .= " " . $currentConcat . " " . $currentField  . " in (" . rtrim($currentNewVal, ',') . ")";
                   }
+                  else $this -> err = 485;
                 }
                 else if ($currentRelation == 'like')
                 {
                   if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . " like " . base::getNum($currentVal, 0);
                   else if ($valType == 'string') $where .= " " . $currentConcat . " " . $currentField  . " like '" . addslashes($currentVal) . "'";
+                  else $this -> err = 484;
                 }
                 else if ($currentRelation == '!=')
                 {
                   if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . "!=" . base::getNum($currentVal, 0);
                   else if ($valType == 'string') $where .= " " . $currentConcat . " " . $currentField  . "!='" . addslashes($currentVal) . "'";
                   else if ($valType == 'NULL') $where .= " " . $currentConcat . " " . $currentField  . " is not null";
+                  else $this -> err = 483;
                 }
                 else if ($currentRelation == '>=')
                 {
                   if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . ">=" . base::getNum($currentVal, 0);
+                  else $this -> err = 482;
                 }
                 else if ($currentRelation == '<=')
                 {
                   if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . "<=" . base::getNum($currentVal, 0);
+                  else $this -> err = 481;
                 }
                 else if ($currentRelation == '=')
                 {
                   if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . "=" . base::getNum($currentVal, 0);
                   else if ($valType == 'string') $where .= " " . $currentConcat . " " . $currentField  . "='" . addslashes($currentVal) . "'";
                   else if ($valType == 'NULL') $where .= " " . $currentConcat . " " . $currentField  . " is null";
+                  else $this -> err = 480;
                 }
               }
             }
@@ -310,9 +317,7 @@ namespace jtbc {
         if ($matchCount == 0) $sql = '';
         else
         {
-          $fieldString = base::getLRStr($fieldString, ',', 'leftr');
-          $fieldValues = base::getLRStr($fieldValues, ',', 'leftr');
-          $sql .= $fieldString . ") values (" . $fieldValues . ")";
+          $sql .= rtrim($fieldString, ',') . ") values (" . rtrim($fieldValues, ',') . ")";
         }
       }
       return $sql;
@@ -366,23 +371,23 @@ namespace jtbc {
             }
             else if ($fieldTypeName == 'varchar')
             {
-              $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($fieldValue, $fieldTypeLength)) . '\',';
+              $fieldStringValues .= $fieldName . "='" . addslashes(base::getLeft($fieldValue, $fieldTypeLength)) . "',";
             }
             else if ($fieldTypeName == 'datetime')
             {
-              $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getDateTime($fieldValue)) . '\',';
+              $fieldStringValues .= $fieldName . "='" . addslashes(base::getDateTime($fieldValue)) . "',";
             }
             else if ($fieldTypeName == 'text')
             {
-              $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($fieldValue, 20000)) . '\',';
+              $fieldStringValues .= $fieldName . "='" . addslashes(base::getLeft($fieldValue, 20000)) . "',";
             }
             else if ($fieldTypeName == 'mediumtext')
             {
-              $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($fieldValue, 5000000)) . '\',';
+              $fieldStringValues .= $fieldName . "='" . addslashes(base::getLeft($fieldValue, 5000000)) . "',";
             }
             else if ($fieldTypeName == 'longtext')
             {
-              $fieldStringValues .= $fieldName . '=\'' . addslashes(base::getLeft($fieldValue, 1000000000)) . '\',';
+              $fieldStringValues .= $fieldName . "='" . addslashes(base::getLeft($fieldValue, 1000000000)) . "',";
             }
             else
             {
@@ -393,8 +398,7 @@ namespace jtbc {
         if ($matchCount == 0) $sql = '';
         else
         {
-          $fieldStringValues = base::getLRStr($fieldStringValues, ',', 'leftr');
-          $sql .= $fieldStringValues . $this -> getWhere($autoFilter);
+          $sql .= rtrim($fieldStringValues, ',') . $this -> getWhere($autoFilter);
         }
       }
       return $sql;

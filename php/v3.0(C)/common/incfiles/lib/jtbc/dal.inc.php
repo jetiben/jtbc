@@ -37,11 +37,20 @@ namespace jtbc {
       if (!is_null($db))
       {
         $sql = $this -> sql -> getDeleteSQL($autoFilter);
-        if (!base::isEmpty($sql)) $result = $db -> exec($sql);
+        $sqlErr = $this -> sql -> err;
+        if ($sqlErr == 0)
+        {
+          if (!base::isEmpty($sql)) $result = $db -> exec($sql);
+          else
+          {
+            $this -> err = 455;
+            throw new Exception('"$sql" cannot be empty.');
+          }
+        }
         else
         {
-          $this -> err = 455;
-          throw new Exception('"$sql" cannot be empty.');
+          $this -> err = $sqlErr;
+          throw new Exception('Class "sql" returned error code (' . $sqlErr . ')');
         }
       }
       return $result;
@@ -56,15 +65,24 @@ namespace jtbc {
       if (!is_null($db))
       {
         $sql = $this -> sql -> changeSource($source) -> getInsertSQL($fuzzy);
-        if (!base::isEmpty($sql))
+        $sqlErr = $this -> sql -> err;
+        if ($sqlErr == 0)
         {
-          $result = $db -> exec($sql);
-          $this -> lastInsertId = $db -> lastInsertId;
+          if (!base::isEmpty($sql))
+          {
+            $result = $db -> exec($sql);
+            $this -> lastInsertId = $db -> lastInsertId;
+          }
+          else
+          {
+            $this -> err = 453;
+            throw new Exception('"$sql" cannot be empty.');
+          }
         }
         else
         {
-          $this -> err = 453;
-          throw new Exception('"$sql" cannot be empty.');
+          $this -> err = $sqlErr;
+          throw new Exception('Class "sql" returned error code (' . $sqlErr . ')');
         }
       }
       return $result;
@@ -78,11 +96,20 @@ namespace jtbc {
       if (!is_null($db))
       {
         $sql = $this -> sql -> getSelectSQL(true, $field);
-        if (!base::isEmpty($sql)) $result = $db -> fetch($sql);
+        $sqlErr = $this -> sql -> err;
+        if ($sqlErr == 0)
+        {
+          if (!base::isEmpty($sql)) $result = $db -> fetch($sql);
+          else
+          {
+            $this -> err = 451;
+            throw new Exception('"$sql" cannot be empty.');
+          }
+        }
         else
         {
-          $this -> err = 451;
-          throw new Exception('"$sql" cannot be empty.');
+          $this -> err = $sqlErr;
+          throw new Exception('Class "sql" returned error code (' . $sqlErr . ')');
         }
       }
       return $result;
@@ -96,11 +123,20 @@ namespace jtbc {
       if (!is_null($db))
       {
         $sql = $this -> sql -> getSelectSQL(true, $field);
-        if (!base::isEmpty($sql)) $result = $db -> fetchAll($sql);
+        $sqlErr = $this -> sql -> err;
+        if ($sqlErr == 0)
+        {
+          if (!base::isEmpty($sql)) $result = $db -> fetchAll($sql);
+          else
+          {
+            $this -> err = 452;
+            throw new Exception('"$sql" cannot be empty.');
+          }
+        }
         else
         {
-          $this -> err = 452;
-          throw new Exception('"$sql" cannot be empty.');
+          $this -> err = $sqlErr;
+          throw new Exception('Class "sql" returned error code (' . $sqlErr . ')');
         }
       }
       return $result;
@@ -113,11 +149,20 @@ namespace jtbc {
       if (!is_null($db))
       {
         $sql = $this -> sql -> getTruncateSQL();
-        if (!base::isEmpty($sql)) $result = $db -> exec($sql);
+        $sqlErr = $this -> sql -> err;
+        if ($sqlErr == 0)
+        {
+          if (!base::isEmpty($sql)) $result = $db -> exec($sql);
+          else
+          {
+            $this -> err = 456;
+            throw new Exception('"$sql" cannot be empty.');
+          }
+        }
         else
         {
-          $this -> err = 456;
-          throw new Exception('"$sql" cannot be empty.');
+          $this -> err = $sqlErr;
+          throw new Exception('Class "sql" returned error code (' . $sqlErr . ')');
         }
       }
       return $result;
@@ -133,11 +178,20 @@ namespace jtbc {
       if (!is_null($db))
       {
         $sql = $this -> sql -> changeSource($source) -> getUpdateSQL($autoFilter, $fuzzy);
-        if (!base::isEmpty($sql)) $result = $db -> exec($sql);
+        $sqlErr = $this -> sql -> err;
+        if ($sqlErr == 0)
+        {
+          if (!base::isEmpty($sql)) $result = $db -> exec($sql);
+          else
+          {
+            $this -> err = 454;
+            throw new Exception('"$sql" cannot be empty.');
+          }
+        }
         else
         {
-          $this -> err = 454;
-          throw new Exception('"$sql" cannot be empty.');
+          $this -> err = $sqlErr;
+          throw new Exception('Class "sql" returned error code (' . $sqlErr . ')');
         }
       }
       return $result;

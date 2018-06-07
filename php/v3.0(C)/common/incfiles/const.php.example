@@ -24,7 +24,7 @@ define('SITESTATUS', 0);
 define('STARTTIME', microtime(true));
 define('THEME', 'default');
 define('TEMPLATE', 'default');
-define('VERSION', '3.0.1.6');
+define('VERSION', '3.0.1.7');
 define('WEBKEY', 'J1T2B3C4');
 define('XMLSFX', '.jtbc');
 ?>
