@@ -116,6 +116,15 @@ namespace jtbc {
                   {
                     if (base::checkIDAry($currentVal)) $where .= " " . $currentConcat . " " . $currentField  . " in (" . addslashes($currentVal) . ")";
                   }
+                  else if ($valType == 'array')
+                  {
+                    $currentNewVal = '';
+                    foreach ($currentVal as $newVal)
+                    {
+                      $currentNewVal .= "'" . addslashes($newVal) . "',";
+                    }
+                    if (!base::isEmpty($currentNewVal)) $where .= " " . $currentConcat . " " . $currentField  . " in (" . rtrim($currentNewVal, ',') . ")";
+                  }
                 }
                 else if ($currentRelation == 'like')
                 {
@@ -126,6 +135,7 @@ namespace jtbc {
                 {
                   if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . "!=" . base::getNum($currentVal, 0);
                   else if ($valType == 'string') $where .= " " . $currentConcat . " " . $currentField  . "!='" . addslashes($currentVal) . "'";
+                  else if ($valType == 'NULL') $where .= " " . $currentConcat . " " . $currentField  . " is not null";
                 }
                 else if ($currentRelation == '>=')
                 {
@@ -139,6 +149,7 @@ namespace jtbc {
                 {
                   if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . "=" . base::getNum($currentVal, 0);
                   else if ($valType == 'string') $where .= " " . $currentConcat . " " . $currentField  . "='" . addslashes($currentVal) . "'";
+                  else if ($valType == 'NULL') $where .= " " . $currentConcat . " " . $currentField  . " is null";
                 }
               }
             }
