@@ -29,7 +29,7 @@ jtbc.console = {
                 var myEditorObj = $(this);
                 var myCurrentEditorIndex = myEditorObj.attr('editor-index');
                 var myEditor = tthis.para['editor-instance-' + myCurrentEditorIndex];
-                myEditorObj.val(tthis.parent.editor.getHTML(myEditor, 'content'));
+                myEditorObj.val(tthis.parent.editor.getHTML(myEditor, myEditorObj.attr('name')));
               } catch(e){};
             });
             if (!btnObj.hasClass('lock'))

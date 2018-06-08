@@ -199,6 +199,10 @@
       <zh-cn><![CDATA[用户IP]]></zh-cn>
     </item>
     <item>
+      <name><![CDATA[video]]></name>
+      <zh-cn><![CDATA[视频]]></zh-cn>
+    </item>
+    <item>
       <name><![CDATA[width]]></name>
       <zh-cn><![CDATA[宽度]]></zh-cn>
     </item>
