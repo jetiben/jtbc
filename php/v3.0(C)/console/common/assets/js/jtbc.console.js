@@ -878,6 +878,9 @@ jtbc.console.lib = {
     try { myObj.parent.parent.editor.baseHref = myObj.obj.attr('folder'); } catch(e){};
     myObj.parent.para['current-main-path'] = myObj.parent.para['root'] + myObj.obj.attr('genre') + '/';
     myObj.parent.para['current-main-fileurl'] = myObj.para['fileurl'] = myObj.parent.para['current-main-path'] + myObj.obj.attr('filename');
+    var myModule = myObj.obj.attr('module');
+    var myModuleInit = 'init' + myModule.substring(0, 1).toUpperCase() + myModule.substring(1);
+    if (myObj.hasOwnProperty(myModuleInit)) eval('myObj.' + myModuleInit + '();');
   },
   loadSelectMaterialPage: function(argMode, argCallBack)
   {

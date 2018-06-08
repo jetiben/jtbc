@@ -155,8 +155,5 @@ jtbc.console.manage = {
   {
     var tthis = this;
     tthis.parent.lib.initMainCommon(tthis);
-    var myModule = tthis.obj.attr('module');
-    if (myModule == 'add') tthis.initAdd();
-    else if (myModule == 'edit') tthis.initEdit();
   }
 }.ready();
