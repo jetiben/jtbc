@@ -18,7 +18,7 @@
       <default><![CDATA[<tr>
   <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
   <td>
-    <div class="att" mode="att" folder="{$=$folder}" editor="{$-fieldRelatedEditor}">
+    <div class="att" mode="att" name="{$fieldname}" folder="{$=$folder}" editor="{$-fieldRelatedEditor}">
       <div class="icons"><icons><icon class="db" root="{$=getActualRoute()}" title="{$=take('::console.from-material', 'lng')}"></icon><icon class="upload" title="{$=take('global.config.upload', 'lng')}"></icon></icons></div>
       <h6>{$=take('::console.att-list', 'lng')}<input type="hidden" name="{$fieldname}" value="{${$fieldname}}" /><input type="file" class="upload hide" multiple="multiple" action="?type=action&amp;action=upload" /></h6>
       <ul text-null="{$=take('::console.att-list-null', 'lng')}" text-preview-link="{$=take('::console.att-preview-link', 'lng')}" text-insert="{$=take('global.config.insert', 'lng')}" text-delete="{$=take('global.config.delete', 'lng')}">

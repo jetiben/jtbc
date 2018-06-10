@@ -645,7 +645,7 @@ jtbc.console.lib = {
     var canInsert = true;
     var insertFun = argInsertFun;
     var attObj = myObj.find('.att');
-    var attValObj = attObj.find('input[name=\'att\']');
+    var attValObj = attObj.find('input[name=\'' + attObj.attr('name') + '\']');
     if (typeof(insertFun) == 'undefined') canInsert = false;
     var resetAttInputVal = function()
     {
