@@ -205,7 +205,7 @@ namespace jtbc {
       $vars = $argVars;
       $id = base::getNum($argId, 0);
       $result = self::autoUpdate($id, $vars, null, $table, $prefix, $dbLink, null, '', '', 1);
-      return $tmpstr;
+      return $result;
     }
 
     public static function autoUpdateByRequest($argId, $argVars = null, $argSpecialField = null, $argTable = null, $argPrefix = null, $argDbLink = 'any')
