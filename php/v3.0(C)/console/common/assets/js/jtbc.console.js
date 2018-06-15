@@ -267,8 +267,8 @@ jtbc.console = {
             if (!tthis.obj.find('.leftmenu').hasClass('min'))
             {
               selGenreObj.addClass('on');
-              tthis.obj.find('.leftmenu').find('li').has(selGenreObj).addClass('on').find('span.tit').addClass('open');
-              tthis.obj.find('.leftmenu').find('dl').has(selGenreObj).addClass('open').find('span.tit').addClass('open');
+              tthis.obj.find('.leftmenu').find('li').has(selGenreObj).addClass('on').find('span.tit').first().addClass('open');
+              tthis.obj.find('.leftmenu').find('dl').has(selGenreObj).addClass('open').find('span.tit').first().addClass('open');
             };
           };
         };
