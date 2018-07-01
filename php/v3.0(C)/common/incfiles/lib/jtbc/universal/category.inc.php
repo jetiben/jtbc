@@ -272,6 +272,20 @@ namespace jtbc\universal {
       return $tmpstr;
     }
 
+    public static function getRootCategoryID($argGenre, $argLang, $argID)
+    {
+      $genre = $argGenre;
+      $lang = base::getNum($argLang, 0);
+      $rootID = base::getNum($argID, 0);
+      $rootFID = base::getNum(self::getInfoByID($genre, $lang, $rootID, 'fid'), 0);
+      while($rootFID != 0)
+      {
+        $rootID = $rootFID;
+        $rootFID = base::getNum(self::getInfoByID($genre, $lang, $rootID, 'fid'), 0);
+      }
+      return $rootID;
+    }
+
     public static function isValidGenre($argGenre)
     {
       $bool = false;

@@ -71,7 +71,7 @@ jtbc.console = {
             {
               var myCurrentEditorIndex = myEditorObj.attr('editor-index');
               var myEditor = tthis.para['editor-instance-' + myCurrentEditorIndex];
-              tthis.lib.initAttEvents(myObj, function(argContent){ tthis.parent.editor.insertHTML(myEditor, 'content', argContent); });
+              tthis.lib.initAttEvents(myObj, function(argContent){ tthis.parent.editor.insertHTML(myEditor, myEditorString.substring(myEditorString.indexOf('.') + 1), argContent); });
             }
             else tthis.lib.initAttEvents(myObj);
           }
