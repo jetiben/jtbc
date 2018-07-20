@@ -32,6 +32,11 @@ namespace jtbc {
       return $this;
     }
 
+    public function clear()
+    {
+      $this -> pocket = array();
+    }
+
     public function getFieldInfo($argfullColumns, $argField)
     {
       $fieldInfo = null;
