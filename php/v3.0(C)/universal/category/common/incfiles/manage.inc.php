@@ -13,7 +13,7 @@ class ui extends console\page {
     $genre = $argGenre;
     $fid = base::getNum($argFid, 0);
     $pathnavHTML = tpl::take('::console.link', 'tpl', 0, array('text' => base::htmlEncode(tpl::take('global.' . $genre . ':category.title', 'cfg')) . ':/', 'link' => '?type=list&amp;genre=' . urlencode($genre)));
-    $getChildHTML = function($argCFid) use ($db, $genre, &$getChildHTML)
+    $getChildHTML = function($argCFid) use ($genre, &$getChildHTML)
     {
       $tmpstr = '';
       $cfid = base::getNum($argCFid, 0);

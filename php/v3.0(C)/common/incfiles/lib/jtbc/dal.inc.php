@@ -261,6 +261,7 @@ namespace jtbc {
     public static function connTest($argDbLink = 'any')
     {
       $bool = false;
+      $dbLink = $argDbLink;
       $db = conn::db($dbLink);
       if (!is_null($db)) $bool = true;
       return $bool;
@@ -270,6 +271,7 @@ namespace jtbc {
     {
       $result = null;
       $sql = $argSql;
+      $dbLink = $argDbLink;
       $db = conn::db($dbLink);
       if (!is_null($db))
       {
@@ -282,6 +284,7 @@ namespace jtbc {
     {
       $result = null;
       $sql = $argSql;
+      $dbLink = $argDbLink;
       $db = conn::db($dbLink);
       if (!is_null($db))
       {

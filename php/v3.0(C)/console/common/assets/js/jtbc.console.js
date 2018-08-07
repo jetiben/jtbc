@@ -816,9 +816,11 @@ jtbc.console.lib = {
     });
     myObj.find('input.fileurl').on('dblclick', function(){
       var thisObj = $(this);
-      if (thisObj.val() && thisObj.attr('text-preview-title'))
+      var currentFileURL = thisObj.val();
+      if (currentFileURL && thisObj.attr('text-preview-title'))
       {
-        tthis.previewAtt(null, thisObj.attr('text-preview-title'), tthis.parent.para['current-main-path'] + thisObj.val(), thisObj.attr('text-preview-link'), '0');
+        if (!tthis.parent.parent.isAbsoluteURL(currentFileURL)) currentFileURL = tthis.parent.para['current-main-path'] + currentFileURL;
+        tthis.previewAtt(null, thisObj.attr('text-preview-title'), currentFileURL, thisObj.attr('text-preview-link'), '0');
       };
     });
     myObj.find('input.upfiles').on('change', function(){
