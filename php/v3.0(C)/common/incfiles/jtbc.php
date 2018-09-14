@@ -1,15 +1,36 @@
 <?php
+use jtbc\ui as ui;
+use jtbc\base as base;
+use jtbc\route as route;
 require_once('const.php');
 
-function require_inc($argFile)
+function jtbc_get_result($argFile)
 {
-  require_once('common/incfiles/' . basename($argFile, '.php') . '.inc.php');
+  $file = $argFile;
+  $incFile = route::getIncFilePath($file);
+  if (is_file($incFile))
+  {
+    require_once($incFile);
+    $result = ui::getResult();
+    $resultType = ui::getPara('resultType');
+    if (empty($resultType)) $resultType = 'text';
+    if ($resultType == 'text') echo $result;
+    else if ($resultType == 'url') header('location: ' . $result);
+  }
+  else http_response_code(404);
 }
 
-function require_inc_and_get_result($argFile)
+function jtbc_get_pathinfo_result()
 {
-  require_inc($argFile);
-  return jtbc\ui::getResult();
+  $scriptName = base::getScriptName();
+  $filePath = base::getLRStr($scriptName, '/', 'rightr');
+  $fileDir = pathinfo($filePath, PATHINFO_DIRNAME);
+  if (is_dir($fileDir))
+  {
+    chdir($fileDir);
+    jtbc_get_result($scriptName);
+  }
+  else http_response_code(404);
 }
 
 spl_autoload_register(function($argClass){

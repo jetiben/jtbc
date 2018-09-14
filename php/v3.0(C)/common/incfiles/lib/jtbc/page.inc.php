@@ -127,9 +127,30 @@ namespace jtbc {
           }
         }
       }
+      self::setHeader();
       self::setPara('processtime', (microtime(true) - STARTTIME));
       //$tmpstr .= '<!--Processed in ' . base::formatSecond(self::getPara('processtime')) . '-->';
       return $tmpstr;
+    }
+
+    public static function setHeader()
+    {
+      $noCache = self::getPara('noCache');
+      $contentType = self::getPara('contentType');
+      if (base::isEmpty($contentType)) $contentType = 'text/html';
+      if ($noCache === true)
+      {
+        header('Pragma: no-cache');
+        header('Cache-Control: no-cache, must-revalidate');
+      }
+      if ($contentType == 'text/html' || $contentType == 'text/xml')
+      {
+        header('Content-Type: ' . $contentType . '; charset=' . CHARSET);
+      }
+      else
+      {
+        header('Content-Type: ' . $contentType);
+      }
     }
 
     public static function setPara($argName, $argValue)
@@ -166,7 +187,7 @@ namespace jtbc {
       self::$para['filename'] = route::getCurrentFilename();
       self::$para['lang'] = request::getForeLang();
       self::$para['referer'] = @$_SERVER['HTTP_REFERER'];
-      self::$para['uri'] = $_SERVER['SCRIPT_NAME'];
+      self::$para['uri'] = base::getScriptName();
       self::$para['urs'] = $_SERVER['QUERY_STRING'];
       self::$para['url'] = self::$para['uri'];
       self::$para['urlpre'] = self::$para['http'] . self::$para['http_host'];

@@ -9,6 +9,7 @@ class ui extends console\page {
 
   public static function start()
   {
+    parent::start();
     hook::add('doActionDeleteDone', function($argId){ universal\upload::unlinkByIds($argId); });
     hook::add('doActionBatchDeleteDone', function($argIds){ universal\upload::unlinkByIds($argIds); });
   }

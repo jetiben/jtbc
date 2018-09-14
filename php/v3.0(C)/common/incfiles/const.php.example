@@ -19,6 +19,7 @@ define('DB_DATABASE', '{$db_database}');
 define('DB_TABLE_PREFIX', 'jtbc_');
 define('DB_STRUCTURE_CACHE', false);
 define('LANGUAGE', 'zh-cn');
+define('PATH_INFO_MODE', false);
 define('SEPARATOR', ' - ');
 define('SITESTATUS', 0);
 define('STARTTIME', microtime(true));

@@ -1,4 +1,5 @@
 const.php
+web.config
 upload/
 cache/
 !/php/v3.0(C)/universal/upload/

@@ -13,7 +13,7 @@
     <div class="banner">
       <h2>{$=take('index.slogan', 'lng')}</h2>
       <h3>{$=take('index.intro', 'lng')}</h3>
-      <a class="more" href="{$=getActualRoute('aboutus')}">{$=take('index.text-more', 'lng')}</a>
+      <a class="more" href="{$=getActualRoute('aboutus')}/">{$=take('index.text-more', 'lng')}</a>
     </div>
     <div class="home_item">
       <h2>{$=take('global.case:index.title', 'lng')}</h2>

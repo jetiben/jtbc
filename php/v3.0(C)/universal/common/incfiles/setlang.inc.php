@@ -1,7 +1,13 @@
 <?php
 namespace jtbc;
 class ui extends page {
-  public static function getRedirect()
+  public static function start()
+  {
+    self::setPara('noCache', true);
+    self::setPara('resultType', 'url');
+  }
+
+  public static function moduleDefault()
   {
     $backurl = request::get('backurl');
     $language = request::get('language');

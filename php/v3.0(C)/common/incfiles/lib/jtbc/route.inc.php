@@ -152,8 +152,8 @@ namespace jtbc {
     {
       $genre = '';
       $route = $argRoute;
-      $routeStr = realpath(basename($_SERVER['SCRIPT_NAME']));
-      $routeStr = base::getLRStr($routeStr, DIRECTORY_SEPARATOR, 'leftr');
+      $routeStr = realpath(self::getIncFilePath(base::getScriptName()));
+      $routeStr = base::getLRStr($routeStr, DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'incfiles' . DIRECTORY_SEPARATOR, 'leftr');
       $ary = explode(DIRECTORY_SEPARATOR, $routeStr);
       $arycount = count($ary);
       switch ($route)
@@ -182,7 +182,7 @@ namespace jtbc {
       $currentFilename = self::$currentFilename;
       if (is_null($currentFilename))
       {
-        $currentFilename = self::$currentFilename = base::getLRStr($_SERVER['SCRIPT_NAME'], '/', 'right');
+        $currentFilename = self::$currentFilename = base::getLRStr(base::getScriptName(), '/', 'right');
       }
       return $currentFilename;
     }
@@ -192,7 +192,7 @@ namespace jtbc {
       $currentFolder = self::$currentFolder;
       if (is_null($currentFolder))
       {
-        $currentFolder = self::$currentFolder = base::getLRStr($_SERVER['SCRIPT_NAME'], '/', 'leftr') . '/';
+        $currentFolder = self::$currentFolder = base::getLRStr(base::getScriptName(), '/', 'leftr') . '/';
       }
       return $currentFolder;
     }
@@ -341,6 +341,13 @@ namespace jtbc {
         }
       }
       return $genre;
+    }
+
+    public static function getIncFilePath($argFilePath)
+    {
+      $filePath = $argFilePath;
+      $incFilePath = 'common/incfiles/' . basename($filePath, '.php') . '.inc.php';
+      return $incFilePath;
     }
 
     public static function getRoute()
