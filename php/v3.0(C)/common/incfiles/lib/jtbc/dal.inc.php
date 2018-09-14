@@ -267,6 +267,19 @@ namespace jtbc {
       return $bool;
     }
 
+    public static function execBySQL($argSql, $argDbLink = 'any')
+    {
+      $result = null;
+      $sql = $argSql;
+      $dbLink = $argDbLink;
+      $db = conn::db($dbLink);
+      if (!is_null($db))
+      {
+        if (!base::isEmpty($sql)) $result = $db -> exec($sql);
+      }
+      return $result;
+    }
+
     public static function selectBySQL($argSql, $argDbLink = 'any')
     {
       $result = null;
