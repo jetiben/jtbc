@@ -13,7 +13,7 @@ namespace jtbc {
     {
       $status = $argStatus;
       $result = $argResult;
-      $tmpstr = '<?xml version="1.0" encoding="utf-8"?>';
+      $tmpstr = '<?xml version="1.0" encoding="' . CHARSET . '"?>';
       if (!is_array($result))
       {
         $result = str_replace(']]>', ']]]]><![CDATA[>', $result);
@@ -62,7 +62,7 @@ namespace jtbc {
       $status = $argStatus;
       $message = $argMessage;
       $para = $argPara;
-      $tmpstr = '<?xml version="1.0" encoding="utf-8"?><result status="' . base::getNum($status, 0) . '" message="' . base::htmlEncode($message) . '" para="' . base::htmlEncode($para) . '"></result>';
+      $tmpstr = '<?xml version="1.0" encoding="' . CHARSET . '"?><result status="' . base::getNum($status, 0) . '" message="' . base::htmlEncode($message) . '" para="' . base::htmlEncode($para) . '"></result>';
       return $tmpstr;
     }
 
