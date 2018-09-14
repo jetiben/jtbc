@@ -22,15 +22,21 @@ function jtbc_get_result($argFile)
 
 function jtbc_get_pathinfo_result()
 {
-  $scriptName = base::getScriptName();
-  $filePath = base::getLRStr($scriptName, '/', 'rightr');
-  $fileDir = pathinfo($filePath, PATHINFO_DIRNAME);
-  if (is_dir($fileDir))
+  $requestUri = @$_SERVER['REQUEST_URI'];
+  $oriScriptName = @$_SERVER['SCRIPT_NAME'];
+  if (strpos($requestUri, $oriScriptName) === 0) http_response_code(404);
+  else
   {
-    chdir($fileDir);
-    jtbc_get_result($scriptName);
+    $scriptName = base::getScriptName();
+    $filePath = base::getLRStr($scriptName, '/', 'rightr');
+    $fileDir = pathinfo($filePath, PATHINFO_DIRNAME);
+    if (is_dir($fileDir))
+    {
+      chdir($fileDir);
+      jtbc_get_result($scriptName);
+    }
+    else http_response_code(404);
   }
-  else http_response_code(404);
 }
 
 spl_autoload_register(function($argClass){
