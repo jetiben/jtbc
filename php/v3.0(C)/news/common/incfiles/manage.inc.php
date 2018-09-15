@@ -43,7 +43,7 @@ class ui extends console\page {
       $rs = $dal -> select();
       if (is_array($rs))
       {
-        $rsCategory = base::getNum($dal -> val($rs, 'category'), 0);
+        $rsCategory = base::getNum($dal -> val('category'), 0);
         $variable['-category'] = $rsCategory;
         $variable['-nav-category'] = $category;
         $variable['-my-category'] = $account -> getCurrentGenrePopedom('category');

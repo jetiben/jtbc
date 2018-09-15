@@ -22,9 +22,9 @@ class ui extends console\page {
       $rs = $dal -> select();
       if (is_array($rs))
       {
-        $rsId = base::getNum($dal -> val($rs, 'id'), 0);
-        $rsFId = base::getNum($dal -> val($rs, 'fid'), 0);
-        $rsTopic = base::getString($dal -> val($rs, 'topic'));
+        $rsId = base::getNum($dal -> val('id'), 0);
+        $rsFId = base::getNum($dal -> val('fid'), 0);
+        $rsTopic = base::getString($dal -> val('topic'));
         $tmpstr = tpl::take('::console.link', 'tpl', 0, array('text' => base::htmlEncode($rsTopic) . '/', 'link' => '?type=list&amp;genre=' . urlencode($genre) . '&amp;fid=' . $cfid));
         if ($rsFId != 0) $tmpstr = $getChildHTML($rsFId) . $tmpstr;
       }
@@ -77,7 +77,7 @@ class ui extends console\page {
       $rs = $dal -> select();
       if (is_array($rs))
       {
-        $rsGenre = base::getString($dal -> val($rs, 'genre'));
+        $rsGenre = base::getString($dal -> val('genre'));
         if (in_array($rsGenre, $allGenre))
         {
           $hasImage = base::getNum(tpl::take('global.' . $rsGenre . ':category.has_image', 'cfg'), 0);

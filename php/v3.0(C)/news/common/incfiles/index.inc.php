@@ -17,7 +17,7 @@ class ui extends page {
     $rs = $dal -> select();
     if (is_array($rs))
     {
-      self::setPageTitle($dal -> val($rs, 'topic'));
+      self::setPageTitle($dal -> val('topic'));
       $tmpstr = tpl::takeAndAssign('index.detail', $rs);
     }
     return $tmpstr;

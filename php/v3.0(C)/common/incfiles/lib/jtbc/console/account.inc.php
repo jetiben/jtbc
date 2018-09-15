@@ -46,7 +46,7 @@ namespace jtbc\console {
         if (is_array($rs))
         {
           $num = 0;
-          $rsId = base::getNum($dal -> val($rs, 'id'), 0);
+          $rsId = base::getNum($dal -> val('id'), 0);
           $todayDate = base::getNum(base::formatDate(base::getDateTime(), '10'), 0);
           $tableLogin = tpl::take(':/account:config.db_table_login', 'cfg');
           $prefixLogin = tpl::take(':/account:config.db_prefix_login', 'cfg');
@@ -79,10 +79,10 @@ namespace jtbc\console {
         $rs = $dal -> select();
         if (is_array($rs))
         {
-          $rsId = base::getNum($dal -> val($rs, 'id'), 0);
-          $rsRole = base::getNum($dal -> val($rs, 'role'), 0);
-          $rsUsername = base::getString($dal -> val($rs, 'username'));
-          $rsPassword = base::getString($dal -> val($rs, 'password'));
+          $rsId = base::getNum($dal -> val('id'), 0);
+          $rsRole = base::getNum($dal -> val('role'), 0);
+          $rsUsername = base::getString($dal -> val('username'));
+          $rsPassword = base::getString($dal -> val('password'));
           if ($rsPassword == md5($password) || md5(WEBKEY . $rsPassword) == $authentication)
           {
             if (base::isEmpty($authentication))
@@ -103,7 +103,7 @@ namespace jtbc\console {
               $rsr = $dal -> select();
               if (is_array($rsr))
               {
-                $rsPopedom = base::getString($dal -> val($rsr, 'popedom'));
+                $rsPopedom = base::getString($dal -> val('popedom'));
                 $popedom = json_decode($rsPopedom, true);
               }
               else
@@ -356,7 +356,7 @@ namespace jtbc\console {
         $dal = new dal($table, $prefix);
         $dal -> id = $id;
         $rs = $dal -> select();
-        if (is_array($rs)) $tmpstr = base::getString($dal -> val($rs, 'topic'));
+        if (is_array($rs)) $tmpstr = base::getString($dal -> val('topic'));
       }
       return $tmpstr;
     }

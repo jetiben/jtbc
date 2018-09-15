@@ -116,7 +116,7 @@ class ui extends console\page {
       $rs = $dal -> select();
       if (is_array($rs))
       {
-        $rsFilePath = base::getString($dal -> val($rs, 'filepath'));
+        $rsFilePath = base::getString($dal -> val('filepath'));
         $upResult = universal\upload::up2self(@$_FILES['file'], '', $rsFilePath, false);
         $upResultArray = json_decode($upResult, 1);
         if (is_array($upResultArray))

@@ -62,7 +62,7 @@ class ui extends console\page {
       $rs = $dal -> select();
       if (is_array($rs))
       {
-        $rsRole = base::getNum($dal -> val($rs, 'role'), 0);
+        $rsRole = base::getNum($dal -> val('role'), 0);
         $vars['-select-role-html'] = self::ppGetSelectRoleHTML($rsRole);
         $tmpstr = tpl::takeAndAssign('manage.edit', $rs, null, $vars);
         $tmpstr = $account -> replaceAccountTag($tmpstr);

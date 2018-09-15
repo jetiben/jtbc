@@ -12,6 +12,7 @@ namespace jtbc {
     public $table;
     public $prefix;
     public $lastInsertId = null;
+    private $lastRs;
 
     public function getRsCount()
     {
@@ -99,7 +100,11 @@ namespace jtbc {
         $sqlErr = $this -> sql -> err;
         if ($sqlErr == 0)
         {
-          if (!base::isEmpty($sql)) $result = $db -> fetch($sql);
+          if (!base::isEmpty($sql))
+          {
+            $result = $db -> fetch($sql);
+            $this -> lastRs = $result;
+          }
           else
           {
             $this -> err = 451;
@@ -197,15 +202,27 @@ namespace jtbc {
       return $result;
     }
 
-    public function val($argRs, $argField)
+    public function val($argRsOrField, $argField = null)
     {
-      $val = '';
-      $rs = $argRs;
+      $val = null;
+      $rsOrField = $argRsOrField;
       $field = $argField;
-      if (is_array($rs))
+      if (is_array($rsOrField))
       {
-        $fullField = $this -> prefix . $field;
-        if (array_key_exists($fullField, $rs)) $val = $rs[$fullField];
+        if (!is_null($field))
+        {
+          $fullField = $this -> prefix . $field;
+          if (array_key_exists($fullField, $rsOrField)) $val = $rsOrField[$fullField];
+        }
+      }
+      else if (is_string($rsOrField))
+      {
+        $lastRs = $this -> lastRs;
+        if (is_array($lastRs))
+        {
+          $fullField = $this -> prefix . $rsOrField;
+          if (array_key_exists($fullField, $lastRs)) $val = $lastRs[$fullField];
+        }
       }
       return $val;
     }

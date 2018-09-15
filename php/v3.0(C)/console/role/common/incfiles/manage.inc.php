@@ -202,7 +202,7 @@ class ui extends console\page {
       $rs = $dal -> select();
       if (is_array($rs))
       {
-        $rsPopedom = base::getString($dal -> val($rs, 'popedom'));
+        $rsPopedom = base::getString($dal -> val('popedom'));
         $vars['-select-popedom-html'] = self::ppGetSelectPopedomHTML('', $rsPopedom);
         $tmpstr = tpl::takeAndAssign('manage.edit', $rs, null, $vars);
         $tmpstr = $account -> replaceAccountTag($tmpstr);
