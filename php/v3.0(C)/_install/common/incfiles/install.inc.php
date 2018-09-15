@@ -1,6 +1,12 @@
 <?php
 namespace jtbc;
 class ui extends page {
+  public static function start()
+  {
+    self::setPara('noCache', true);
+    self::setPara('contentType', 'text/xml');
+  }
+
   public static function moduleActionInstall()
   {
     $status = 0;

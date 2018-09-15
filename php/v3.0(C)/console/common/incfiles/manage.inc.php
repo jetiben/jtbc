@@ -3,6 +3,12 @@ namespace jtbc;
 class ui extends page {
   public static $account = null;
 
+  public static function start()
+  {
+    self::setPara('noCache', true);
+    self::setPara('contentType', 'text/xml');
+  }
+
   public static function account()
   {
     $account = null;

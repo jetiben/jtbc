@@ -31,13 +31,13 @@
     <div class="menu" mode="pitchon" pitchon="li[name='menu{$=$genre}']">
       <ul>
         <li name="menu"><a href="{$=getActualRoute('./')}">{$=take('.public.menu-1', 'lng')}</a></li>
-        <li name="menuaboutus"><a href="{$=getActualRoute('aboutus')}">{$=take('.public.menu-2', 'lng')}</a></li>
-        <li name="menucase"><a href="{$=getActualRoute('case')}">{$=take('.public.menu-3', 'lng')}</a></li>
-        <li name="menuteam"><a href="{$=getActualRoute('team')}">{$=take('.public.menu-4', 'lng')}</a></li>
-        <li name="menucareer"><a href="{$=getActualRoute('career')}">{$=take('.public.menu-5', 'lng')}</a></li>
-        <li name="menunews"><a href="{$=getActualRoute('news')}">{$=take('.public.menu-6', 'lng')}</a></li>
-        <li name="menucontactus"><a href="{$=getActualRoute('contactus')}">{$=take('.public.menu-7', 'lng')}</a></li>
-        <li name="menuconsult"><a href="{$=getActualRoute('consult')}">{$=take('.public.menu-8', 'lng')}</a></li>
+        <li name="menuaboutus"><a href="{$=getActualRoute('aboutus/')}">{$=take('.public.menu-2', 'lng')}</a></li>
+        <li name="menucase"><a href="{$=getActualRoute('case/')}">{$=take('.public.menu-3', 'lng')}</a></li>
+        <li name="menuteam"><a href="{$=getActualRoute('team/')}">{$=take('.public.menu-4', 'lng')}</a></li>
+        <li name="menucareer"><a href="{$=getActualRoute('career/')}">{$=take('.public.menu-5', 'lng')}</a></li>
+        <li name="menunews"><a href="{$=getActualRoute('news/')}">{$=take('.public.menu-6', 'lng')}</a></li>
+        <li name="menucontactus"><a href="{$=getActualRoute('contactus/')}">{$=take('.public.menu-7', 'lng')}</a></li>
+        <li name="menuconsult"><a href="{$=getActualRoute('consult/')}">{$=take('.public.menu-8', 'lng')}</a></li>
       </ul>
     </div>
     <span mode="submenu" selector="div.menu" class="menu"><em class="e1"></em><em class="e2"></em><em class="e3"></em></span>

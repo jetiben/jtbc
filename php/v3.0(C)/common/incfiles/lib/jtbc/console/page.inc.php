@@ -9,6 +9,12 @@ namespace jtbc\console {
     public static $account = null;
     public static $checkCurrentGenre = true;
 
+    public static function start()
+    {
+      self::setPara('noCache', true);
+      self::setPara('contentType', 'text/xml');
+    }
+
     public static function account()
     {
       $account = null;
