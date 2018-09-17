@@ -2,6 +2,7 @@
 use jtbc\ui as ui;
 use jtbc\base as base;
 use jtbc\route as route;
+use jtbc\request as request;
 require_once('const.php');
 
 function jtbc_get_result($argFile)
@@ -17,7 +18,21 @@ function jtbc_get_result($argFile)
     if ($resultType == 'text') echo $result;
     else if ($resultType == 'url') header('location: ' . $result);
   }
-  else http_response_code(404);
+  else
+  {
+    $error404 = true;
+    $requestUri = @$_SERVER['REQUEST_URI'];
+    $lastName = base::getLRStr($requestUri, '/', 'right');
+    if (!base::isEmpty($lastName))
+    {
+      if (strpos($lastName, '.') === false)
+      {
+        if (empty(request::get()) && empty(request::post())) $error404 = false;
+      }
+    }
+    if ($error404 == true) http_response_code(404);
+    else header('location: ' . $requestUri . '/');
+  }
 }
 
 function jtbc_get_pathinfo_result()
