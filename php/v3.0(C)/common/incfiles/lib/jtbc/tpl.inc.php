@@ -258,14 +258,20 @@ namespace jtbc {
               $regm = preg_match_all('(#(.[^(\)|\,)]*))', $string, $innerVars);
               if ($regm)
               {
+                $globalsVarsArray = array();
                 for ($i = 0; $i <= count($innerVars[0]) - 1; $i ++)
                 {
                   $varsName = trim($innerVars[1][$i]);
                   if (!base::isEmpty($varsName))
                   {
                     $varsName = str_replace('\'', '', $varsName);
-                    $string = str_replace('#' . $varsName, $ns . '\\tpl::getGlobalsVars(\'' . $varsName . '\', ' . $mode . ')', $string);
+                    array_push($globalsVarsArray, $varsName);
                   }
+                }
+                usort($globalsVarsArray, function($a, $b){ return strlen($a) < strlen($b) ? 1: 0; });
+                foreach ($globalsVarsArray as $key => $val)
+                {
+                  $string = str_replace('#' . $val, $ns . '\\tpl::getGlobalsVars(\'' . $val . '\', ' . $mode . ')', $string);
                 }
               }
             }
