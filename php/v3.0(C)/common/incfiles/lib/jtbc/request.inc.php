@@ -56,10 +56,9 @@ namespace jtbc {
 
     public static function getRemortIP()
     {
-      $IPaddress = '';
-      if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) $IPaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-      else if (isset($_SERVER['HTTP_CLIENT_IP'])) $IPaddress = $_SERVER['HTTP_CLIENT_IP'];
-      else $IPaddress = $_SERVER['REMOTE_ADDR'];
+      $IPaddress = self::server('HTTP_X_FORWARDED_FOR');
+      if (base::isEmpty($IPaddress)) $IPaddress = self::server('HTTP_CLIENT_IP');
+      if (base::isEmpty($IPaddress)) $IPaddress = self::server('REMOTE_ADDR');
       return $IPaddress;
     }
 
@@ -90,7 +89,7 @@ namespace jtbc {
       $strers = $argStrers;
       $value = $argValue;
       $urs = $argUrs;
-      if (base::isEmpty($urs)) $urs = @$_SERVER['QUERY_STRING'];
+      if (base::isEmpty($urs)) $urs = self::server('QUERY_STRING');
       if (base::getLeft($urs, 1) == '?') $urs = base::getLRStr($urs, '?', 'rightr');
       $myAry = array();
       if (!base::isEmpty($urs))
