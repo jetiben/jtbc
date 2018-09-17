@@ -152,7 +152,7 @@ namespace jtbc {
     {
       $genre = '';
       $route = $argRoute;
-      $routeStr = realpath(self::getIncFilePath(base::getScriptName()));
+      $routeStr = realpath(self::getIncFilePath(self::getScriptName()));
       $routeStr = base::getLRStr($routeStr, DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'incfiles' . DIRECTORY_SEPARATOR, 'leftr');
       $ary = explode(DIRECTORY_SEPARATOR, $routeStr);
       $arycount = count($ary);
@@ -182,7 +182,7 @@ namespace jtbc {
       $currentFilename = self::$currentFilename;
       if (is_null($currentFilename))
       {
-        $currentFilename = self::$currentFilename = base::getLRStr(base::getScriptName(), '/', 'right');
+        $currentFilename = self::$currentFilename = base::getLRStr(self::getScriptName(), '/', 'right');
       }
       return $currentFilename;
     }
@@ -192,7 +192,7 @@ namespace jtbc {
       $currentFolder = self::$currentFolder;
       if (is_null($currentFolder))
       {
-        $currentFolder = self::$currentFolder = base::getLRStr(base::getScriptName(), '/', 'leftr') . '/';
+        $currentFolder = self::$currentFolder = base::getLRStr(self::getScriptName(), '/', 'leftr') . '/';
       }
       return $currentFolder;
     }
@@ -359,6 +359,27 @@ namespace jtbc {
       else if (is_file('../../../common/root.jtbc')) $route = 'grandson';
       else if (is_file('../../../../common/root.jtbc')) $route = 'greatgrandson';
       return $route;
+    }
+
+    public static function getScriptName()
+    {
+      $scriptName = request::server('SCRIPT_NAME');
+      if (PATH_INFO_MODE === true)
+      {
+        $pathinfo = request::server('PATH_INFO');
+        if (!base::isEmpty($pathinfo))
+        {
+          $folder = base::getLRStr($pathinfo, '/', 'leftr') . '/';
+          $file = base::getLRStr($pathinfo, '/', 'right');
+          if (base::isEmpty($file)) $file = 'index.php';
+          else
+          {
+            if (!is_numeric(strpos($file, '.'))) $file .= '.php';
+          }
+          $scriptName = $folder . $file;
+        }
+      }
+      return $scriptName;
     }
   }
 }

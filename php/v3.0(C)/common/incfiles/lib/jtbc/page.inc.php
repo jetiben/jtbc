@@ -177,8 +177,8 @@ namespace jtbc {
 
     public static function init()
     {
-      self::$para['http'] = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
-      self::$para['http_host'] = $_SERVER['HTTP_HOST'];
+      self::$para['http'] = (request::server('HTTPS') == 'on' || request::server('HTTP_X_FORWARDED_PROTO') == 'https') ? 'https://' : 'http://';
+      self::$para['http_host'] = request::server('HTTP_HOST');
       self::$para['route'] = route::getRoute();
       self::$para['genre'] = route::getCurrentGenre();
       self::$para['assetspath'] = ASSETSPATH;
@@ -186,9 +186,9 @@ namespace jtbc {
       self::$para['folder'] = route::getCurrentFolder();
       self::$para['filename'] = route::getCurrentFilename();
       self::$para['lang'] = request::getForeLang();
-      self::$para['referer'] = @$_SERVER['HTTP_REFERER'];
-      self::$para['uri'] = base::getScriptName();
-      self::$para['urs'] = $_SERVER['QUERY_STRING'];
+      self::$para['referer'] = request::server('HTTP_REFERER');
+      self::$para['uri'] = route::getScriptName();
+      self::$para['urs'] = request::server('QUERY_STRING');
       self::$para['url'] = self::$para['uri'];
       self::$para['urlpre'] = self::$para['http'] . self::$para['http_host'];
       if (!base::isEmpty(self::$para['urs'])) self::$para['url'] .= '?' . self::$para['urs'];

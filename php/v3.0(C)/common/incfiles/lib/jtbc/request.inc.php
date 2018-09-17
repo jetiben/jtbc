@@ -71,6 +71,19 @@ namespace jtbc {
       return $result;
     }
 
+    public static function server($argName = null)
+    {
+      $name = $argName;
+      $result = null;
+      if (is_null($name)) $result = $_SERVER;
+      else
+      {
+        $server = $_SERVER;
+        if (array_key_exists($name, $server)) $result = $server[$name];
+      }
+      return $result;
+    }
+
     public static function replaceQuerystring($argStrers, $argValue = '', $argUrs = '')
     {
       $tmpstr = '';

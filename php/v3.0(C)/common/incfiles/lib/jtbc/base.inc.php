@@ -441,27 +441,6 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    public static function getScriptName()
-    {
-      $scriptName = $_SERVER['SCRIPT_NAME'];
-      if (PATH_INFO_MODE === true)
-      {
-        $pathinfo = @$_SERVER['PATH_INFO'];
-        if (!self::isEmpty($pathinfo))
-        {
-          $folder = self::getLRStr($pathinfo, '/', 'leftr') . '/';
-          $file = self::getLRStr($pathinfo, '/', 'right');
-          if (self::isEmpty($file)) $file = 'index.php';
-          else
-          {
-            if (!is_numeric(strpos($file, '.'))) $file .= '.php';
-          }
-          $scriptName = $folder . $file;
-        }
-      }
-      return $scriptName;
-    }
-
     public static function htmlEncode($argString)
     {
       $string = $argString;

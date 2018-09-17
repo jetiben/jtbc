@@ -21,7 +21,7 @@ function jtbc_get_result($argFile)
   else
   {
     $error404 = true;
-    $requestUri = @$_SERVER['REQUEST_URI'];
+    $requestUri = request::server('REQUEST_URI');
     $lastName = base::getLRStr($requestUri, '/', 'right');
     if (!base::isEmpty($lastName))
     {
@@ -37,12 +37,12 @@ function jtbc_get_result($argFile)
 
 function jtbc_get_pathinfo_result()
 {
-  $requestUri = @$_SERVER['REQUEST_URI'];
-  $oriScriptName = @$_SERVER['SCRIPT_NAME'];
+  $requestUri = request::server('REQUEST_URI');
+  $oriScriptName = request::server('SCRIPT_NAME');
   if (strpos($requestUri, $oriScriptName) === 0) http_response_code(404);
   else
   {
-    $scriptName = base::getScriptName();
+    $scriptName = route::getScriptName();
     $filePath = base::getLRStr($scriptName, '/', 'rightr');
     $fileDir = pathinfo($filePath, PATHINFO_DIRNAME);
     if (is_dir($fileDir))
