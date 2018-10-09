@@ -72,7 +72,7 @@ namespace jtbc\universal {
         $prefix = tpl::take('global.universal/upload:config.db_prefix', 'cfg');
         if (!base::isEmpty($table) && !base::isEmpty($prefix))
         {
-          $updateInfo = function($argUploadId) use ($db, $genre, $table, $prefix, $associatedId, $group, &$bool)
+          $updateInfo = function($argUploadId) use ($genre, $table, $prefix, $associatedId, $group, &$bool)
           {
             $myUploadId = base::getNum($argUploadId, 0);
             $dal = new dal($table, $prefix);
