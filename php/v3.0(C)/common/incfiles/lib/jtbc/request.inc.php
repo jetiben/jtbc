@@ -16,8 +16,8 @@ namespace jtbc {
     public static function getPost($argName)
     {
       $name = $argName;
-      $tmpstr = self::post($name);
-      return $tmpstr;
+      $result = self::post($name);
+      return $result;
     }
 
     public static function getForeLang()
@@ -35,23 +35,35 @@ namespace jtbc {
 
     public static function getHTTPPara($argName, $argType = 'auto')
     {
-      $tmpstr = '';
+      $result = '';
       $name = $argName;
       $type = $argType;
       if ($type == 'auto')
       {
-        $tmpstr = base::getString(@$_POST[$name]);
-        if (base::isEmpty($tmpstr)) $tmpstr = base::getString(@$_GET[$name]);
+        $result = self::getHTTPPara($name, 'post');
+        if (base::isEmpty($result)) $result = self::getHTTPPara($name, 'get');
       }
       else if ($type == 'post')
       {
-        $tmpstr = base::getString(@$_POST[$name]);
+        $post = $_POST;
+        if (array_key_exists($name, $post))
+        {
+          $value = $post[$name];
+          if (is_array($value)) $result = json_encode($value);
+          else $result = base::getString($value);
+        }
       }
       else if ($type == 'get')
       {
-        $tmpstr = base::getString(@$_GET[$name]);
+        $get = $_GET;
+        if (array_key_exists($name, $get))
+        {
+          $value = $get[$name];
+          if (is_array($value)) $result = json_encode($value);
+          else $result = base::getString($value);
+        }
       }
-      return $tmpstr;
+      return $result;
     }
 
     public static function getRemortIP()
