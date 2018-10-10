@@ -212,7 +212,7 @@ class ui extends console\page {
     $account = self::account();
     cache::removeByKey('universal-category');
     $ids = base::getString(request::get('ids'));
-    if (!$account -> checkCurrentGenrePopedom('edit'))
+    if (!$account -> checkCurrentGenrePopedom('sort'))
     {
       array_push($error, tpl::take('::console.text-tips-error-403', 'lng'));
     }
