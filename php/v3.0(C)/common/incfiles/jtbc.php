@@ -3,6 +3,7 @@ use jtbc\ui as ui;
 use jtbc\base as base;
 use jtbc\route as route;
 use jtbc\request as request;
+use jtbc\tpl as tpl;
 require_once('const.php');
 
 function jtbc_get_result($argFile)
@@ -30,7 +31,11 @@ function jtbc_get_result($argFile)
         if (empty(request::get()) && empty(request::post())) $error404 = false;
       }
     }
-    if ($error404 == true) http_response_code(404);
+    if ($error404 == true)
+    {
+      http_response_code(404);
+      print(tpl::take('global.config.404', 'tpl'));
+    }
     else header('location: ' . $requestUri . '/');
   }
 }
@@ -39,7 +44,11 @@ function jtbc_get_pathinfo_result()
 {
   $requestUri = request::server('REQUEST_URI');
   $oriScriptName = request::server('SCRIPT_NAME');
-  if (strpos($requestUri, $oriScriptName) === 0) http_response_code(404);
+  if (strpos($requestUri, $oriScriptName) === 0)
+  {
+    http_response_code(404);
+    print(tpl::take('global.config.404', 'tpl'));
+  }
   else
   {
     $scriptName = route::getScriptName();
@@ -50,7 +59,11 @@ function jtbc_get_pathinfo_result()
       chdir($fileDir);
       jtbc_get_result($scriptName);
     }
-    else http_response_code(404);
+    else
+    {
+      http_response_code(404);
+      print(tpl::take('global.config.404', 'tpl'));
+    }
   }
 }
 
