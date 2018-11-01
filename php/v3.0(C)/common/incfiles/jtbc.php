@@ -14,10 +14,14 @@ function jtbc_get_result($argFile)
   {
     require_once($incFile);
     $result = ui::getResult();
-    $resultType = ui::getPara('resultType');
-    if (empty($resultType)) $resultType = 'text';
-    if ($resultType == 'text') echo $result;
-    else if ($resultType == 'url') header('location: ' . $result);
+    $errorCode = ui::$errorCode;
+    if ($errorCode != 0) print(ui::getErrorResult($errorCode));
+    else
+    {
+      $resultType = ui::getPara('resultType');
+      if ($resultType == 'url') header('location: ' . $result);
+      else print($result);
+    }
   }
   else
   {
@@ -31,11 +35,7 @@ function jtbc_get_result($argFile)
         if (empty(request::get()) && empty(request::post())) $error404 = false;
       }
     }
-    if ($error404 == true)
-    {
-      http_response_code(404);
-      print(tpl::take('global.config.404', 'tpl'));
-    }
+    if ($error404 == true) print(ui::getErrorResult(404));
     else header('location: ' . $requestUri . '/');
   }
 }
@@ -46,8 +46,7 @@ function jtbc_get_pathinfo_result()
   $oriScriptName = request::server('SCRIPT_NAME');
   if (strpos($requestUri, $oriScriptName) === 0)
   {
-    http_response_code(404);
-    print(tpl::take('global.config.404', 'tpl'));
+    print(ui::getErrorResult(404));
   }
   else
   {
@@ -61,8 +60,7 @@ function jtbc_get_pathinfo_result()
     }
     else
     {
-      http_response_code(404);
-      print(tpl::take('global.config.404', 'tpl'));
+      print(ui::getErrorResult(404));
     }
   }
 }

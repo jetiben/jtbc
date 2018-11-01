@@ -5,6 +5,7 @@
 namespace jtbc {
   class page
   {
+    public static $errorCode = 0;
     public static $init = false;
     public static $para = array();
     private static $title = array();
@@ -115,7 +116,8 @@ namespace jtbc {
       if (is_callable(array($class, $module))) $tmpstr = call_user_func(array($class, $module));
       else
       {
-        if ($type == 'default')
+        if ($type != 'default') self::$errorCode = 404;
+        else
         {
           $tmpstr = tpl::take('.default', 'tpl');
           $tmpstr = tpl::parse($tmpstr);
@@ -123,13 +125,31 @@ namespace jtbc {
           {
             $adjunctDefault = self::getPara('adjunct_default');
             $adjunctDefaultModule = 'module' . ucfirst($adjunctDefault);
-            if (is_callable(array($class, $adjunctDefaultModule))) $tmpstr = call_user_func(array($class, $adjunctDefaultModule));
+            if (!is_callable(array($class, $adjunctDefaultModule))) self::$errorCode = 404;
+            else $tmpstr = call_user_func(array($class, $adjunctDefaultModule));
           }
         }
       }
       self::setHeader();
       self::setPara('processtime', (microtime(true) - STARTTIME));
       //$tmpstr .= '<!--Processed in ' . base::formatSecond(self::getPara('processtime')) . '-->';
+      return $tmpstr;
+    }
+
+    public static function getErrorResult($argCode = 404)
+    {
+      $tmpstr = '';
+      $code = base::getNum($argCode, 0);
+      if ($code == 403)
+      {
+        http_response_code(403);
+        $tmpstr = tpl::take('global.config.403', 'tpl');
+      }
+      else if ($code == 404)
+      {
+        http_response_code(404);
+        $tmpstr = tpl::take('global.config.404', 'tpl');
+      }
       return $tmpstr;
     }
 

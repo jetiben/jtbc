@@ -7,6 +7,16 @@
   </configure>
   <item_list>
     <item>
+      <name><![CDATA[403]]></name>
+      <default><![CDATA[<!DOCTYPE html>
+<html><head>
+<title>403 Forbidden</title>
+</head><body>
+<h1>403 Forbidden</h1>
+<p>You don't have permission to access this URL.</p>
+</body></html>]]></default>
+    </item>
+    <item>
       <name><![CDATA[404]]></name>
       <default><![CDATA[<!DOCTYPE html>
 <html><head>

@@ -363,6 +363,7 @@ namespace jtbc {
       $paraJTBCTag = base::getParameter($para, 'jtbctag');
       $paraType = base::getParameter($para, 'type');
       $paraGenre = base::getParameter($para, 'genre');
+      $paraSubTable = base::getParameter($para, 'subtable');
       $paraDBTable = base::getParameter($para, 'db_table');
       $paraDBPrefix = base::getParameter($para, 'db_prefix');
       $paraOSQL = base::getParameter($para, 'osql');
@@ -403,8 +404,16 @@ namespace jtbc {
         }
       }
       if (base::isEmpty($paraGenre)) $paraGenre = $genre;
-      if (base::isEmpty($paraDBTable)) $paraDBTable = tpl::take('global.' . $paraGenre . ':config.db_table', 'cfg');
-      if (base::isEmpty($paraDBPrefix)) $paraDBPrefix = tpl::take('global.' . $paraGenre . ':config.db_prefix', 'cfg');
+      if (base::isEmpty($paraDBTable))
+      {
+        if (base::isEmpty($paraSubTable)) $paraDBTable = tpl::take('global.' . $paraGenre . ':config.db_table', 'cfg');
+        else $paraDBTable = tpl::take('global.' . $paraGenre . ':config.db_table_' . $paraSubTable, 'cfg');
+      }
+      if (base::isEmpty($paraDBPrefix))
+      {
+        if (base::isEmpty($paraSubTable)) $paraDBPrefix = tpl::take('global.' . $paraGenre . ':config.db_prefix', 'cfg');
+        else $paraDBPrefix = tpl::take('global.' . $paraGenre . ':config.db_prefix_' . $paraSubTable, 'cfg');
+      }
       if (!base::isEmpty($paraDBTable))
       {
         $sqlstr = '';
