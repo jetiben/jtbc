@@ -164,6 +164,7 @@ namespace jtbc {
                   else $this -> err = 480;
                 }
               }
+              else $this -> err = 500;
             }
           }
         }
