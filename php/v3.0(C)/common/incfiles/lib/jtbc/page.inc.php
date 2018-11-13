@@ -197,7 +197,7 @@ namespace jtbc {
 
     public static function init()
     {
-      self::$para['http'] = (request::server('HTTPS') == 'on' || request::server('HTTP_X_FORWARDED_PROTO') == 'https') ? 'https://' : 'http://';
+      self::$para['http'] = request::isHTTPS() ? 'https://' : 'http://';
       self::$para['http_host'] = request::server('HTTP_HOST');
       self::$para['route'] = route::getRoute();
       self::$para['genre'] = route::getCurrentGenre();
@@ -209,9 +209,9 @@ namespace jtbc {
       self::$para['referer'] = request::server('HTTP_REFERER');
       self::$para['uri'] = route::getScriptName();
       self::$para['urs'] = request::server('QUERY_STRING');
-      self::$para['url'] = self::$para['uri'];
+      self::$para['url'] = base::isEmpty(self::$para['urs'])? self::$para['uri']: self::$para['uri'] . '?' . self::$para['urs'];
       self::$para['urlpre'] = self::$para['http'] . self::$para['http_host'];
-      if (!base::isEmpty(self::$para['urs'])) self::$para['url'] .= '?' . self::$para['urs'];
+      self::$para['fullurl'] = self::$para['urlpre'] . self::$para['url'];
     }
   }
 }

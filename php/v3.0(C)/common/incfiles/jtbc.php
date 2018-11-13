@@ -1,5 +1,6 @@
 <?php
 use jtbc\ui as ui;
+use jtbc\page as page;
 use jtbc\base as base;
 use jtbc\route as route;
 use jtbc\request as request;
@@ -35,7 +36,7 @@ function jtbc_get_result($argFile)
         if (empty(request::get()) && empty(request::post())) $error404 = false;
       }
     }
-    if ($error404 == true) print(ui::getErrorResult(404));
+    if ($error404 == true) print(page::getErrorResult(404));
     else header('location: ' . $requestUri . '/');
   }
 }
@@ -46,7 +47,7 @@ function jtbc_get_pathinfo_result()
   $oriScriptName = request::server('SCRIPT_NAME');
   if (strpos($requestUri, $oriScriptName) === 0)
   {
-    print(ui::getErrorResult(404));
+    print(page::getErrorResult(404));
   }
   else
   {
@@ -60,7 +61,7 @@ function jtbc_get_pathinfo_result()
     }
     else
     {
-      print(ui::getErrorResult(404));
+      print(page::getErrorResult(404));
     }
   }
 }

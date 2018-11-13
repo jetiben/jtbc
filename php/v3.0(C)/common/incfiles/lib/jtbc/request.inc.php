@@ -82,6 +82,13 @@ namespace jtbc {
       return $result;
     }
 
+    public static function isHTTPS()
+    {
+      $bool = false;
+      if (self::server('HTTPS') == 'on' || self::server('HTTP_X_FORWARDED_PROTO') == 'https' || self::server('HTTP_X_CLIENT_SCHEME') == 'https') $bool = true;
+      return $bool;
+    }
+
     public static function server($argName = null)
     {
       $name = $argName;
