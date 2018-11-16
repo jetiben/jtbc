@@ -58,7 +58,7 @@ namespace jtbc {
           if (!base::isEmpty($val))
           {
             $valAry = explode('=', $val);
-            if (count($valAry) == 2) $tmpstr = str_replace('{$' . $valAry[0] + '}', $valAry[1], $tmpstr);
+            if (count($valAry) == 2) $tmpstr = str_replace('{$' . $valAry[0] . '}', $valAry[1], $tmpstr);
           }
         }
       }
@@ -141,7 +141,7 @@ namespace jtbc {
           if (!base::isEmpty($val))
           {
             $valAry = explode('=', $val);
-            if (count($valAry) == 2) $tmpstr = str_replace('{$' . $valAry[0] + '}', $valAry[1], $tmpstr);
+            if (count($valAry) == 2) $tmpstr = str_replace('{$' . $valAry[0] . '}', $valAry[1], $tmpstr);
           }
         }
       }
@@ -307,7 +307,7 @@ namespace jtbc {
             if (!base::isEmpty($val))
             {
               $valAry = explode('=', $val);
-              if (count($valAry) == 2) $tmpstr = str_replace('{$' . $valAry[0] + '}', $valAry[1], $tmpstr);
+              if (count($valAry) == 2) $tmpstr = str_replace('{$' . $valAry[0] . '}', $valAry[1], $tmpstr);
             }
           }
         }
@@ -504,7 +504,7 @@ namespace jtbc {
             if (!base::isEmpty($val))
             {
               $valAry = explode('=', $val);
-              if (count($valAry) == 2) $tmpstr = str_replace('{$' . $valAry[0] + '}', $valAry[1], $tmpstr);
+              if (count($valAry) == 2) $tmpstr = str_replace('{$' . $valAry[0] . '}', $valAry[1], $tmpstr);
             }
           }
         }
