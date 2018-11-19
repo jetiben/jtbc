@@ -13,6 +13,27 @@ namespace jtbc {
       return $result;
     }
 
+    public static function getCookie($argName, $argChildName = null)
+    {
+      $result = '';
+      $name = $argName;
+      $childName = $argChildName;
+      $cookieArray = $_COOKIE;
+      if (array_key_exists(APPNAME . $name, $cookieArray))
+      {
+        $tempResult = $cookieArray[APPNAME . $name];
+        if (is_null($childName)) $result = $tempResult;
+        else
+        {
+          if (is_array($tempResult))
+          {
+            if (array_key_exists($childName, $tempResult)) $result = $tempResult[$childName];
+          }
+        }
+      }
+      return $result;
+    }
+
     public static function getPost($argName)
     {
       $name = $argName;
@@ -24,7 +45,7 @@ namespace jtbc {
     {
       $language = LANGUAGE;
       $lang = base::getNum(tpl::take('global.config.lang-' . $language, 'cfg'), 0);
-      $cookieValue = base::getString(@$_COOKIE[APPNAME . 'config']['language']);
+      $cookieValue = base::getString(self::getCookie('config', 'language'));
       if (!base::isEmpty($cookieValue))
       {
         $cookieLang = base::getNum(tpl::take('global.config.lang-' . $cookieValue, 'cfg'), -1);

@@ -485,9 +485,9 @@ namespace jtbc\console {
       $this -> sessionInfo = @$_SESSION[APPNAME . 'console_info'];
       $this -> sessionRole = @$_SESSION[APPNAME . 'console_role'];
       $this -> sessionPopedom = @$_SESSION[APPNAME . 'console_popedom'];
-      $this -> cookiesUserName = @$_COOKIE[APPNAME . 'console']['username'];
-      $this -> cookiesAuthentication = @$_COOKIE[APPNAME . 'console']['authentication'];
-      $this -> lang = base::getNum(@$_COOKIE[APPNAME . 'console']['lang'], 0);
+      $this -> cookiesUserName = request::getCookie('console', 'username');
+      $this -> cookiesAuthentication = request::getCookie('console', 'authentication');
+      $this -> lang = base::getNum(request::getCookie('console', 'lang'), 0);
     }
   }
 }

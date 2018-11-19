@@ -109,24 +109,37 @@ namespace jtbc {
       $type = request::get('type');
       $action = request::get('action');
       if (base::isEmpty($type)) $type = 'default';
+      $intercepted = false;
       $class = get_called_class();
-      $module = 'module' . ucfirst($type);
-      if ($type == 'action') $module = 'moduleAction' . ucfirst($action);
       if (is_callable(array($class, 'start'))) call_user_func(array($class, 'start'));
-      if (is_callable(array($class, $module))) $tmpstr = call_user_func(array($class, $module));
-      else
+      if (is_callable(array($class, 'intercept')))
       {
-        if ($type != 'default') self::$errorCode = 404;
+        $interceptResult = call_user_func(array($class, 'intercept'));
+        if (!is_null($interceptResult))
+        {
+          $intercepted = true;
+          $tmpstr = $interceptResult;
+        }
+      }
+      if ($intercepted != true)
+      {
+        $module = 'module' . ucfirst($type);
+        if ($type == 'action') $module = 'moduleAction' . ucfirst($action);
+        if (is_callable(array($class, $module))) $tmpstr = call_user_func(array($class, $module));
         else
         {
-          $tmpstr = tpl::take('.default', 'tpl');
-          $tmpstr = tpl::parse($tmpstr);
-          if (base::isEmpty($tmpstr))
+          if ($type != 'default') self::$errorCode = 404;
+          else
           {
-            $adjunctDefault = self::getPara('adjunct_default');
-            $adjunctDefaultModule = 'module' . ucfirst($adjunctDefault);
-            if (!is_callable(array($class, $adjunctDefaultModule))) self::$errorCode = 404;
-            else $tmpstr = call_user_func(array($class, $adjunctDefaultModule));
+            $tmpstr = tpl::take('.default', 'tpl');
+            $tmpstr = tpl::parse($tmpstr);
+            if (base::isEmpty($tmpstr))
+            {
+              $adjunctDefault = self::getPara('adjunct_default');
+              $adjunctDefaultModule = 'module' . ucfirst($adjunctDefault);
+              if (!is_callable(array($class, $adjunctDefaultModule))) self::$errorCode = 404;
+              else $tmpstr = call_user_func(array($class, $adjunctDefaultModule));
+            }
           }
         }
       }

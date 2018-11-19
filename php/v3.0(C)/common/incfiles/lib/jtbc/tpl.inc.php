@@ -140,7 +140,7 @@ namespace jtbc {
       {
         if ($key == 'language') $tmpstr = LANGUAGE;
         else if ($key == 'template') $tmpstr = TEMPLATE;
-        $cookieValue = base::getString(@$_COOKIE[APPNAME . 'config'][$key]);
+        $cookieValue = base::getString(request::getCookie('config', $key));
         if (!base::isEmpty($cookieValue)) $tmpstr = $cookieValue;
       }
       return $tmpstr;
