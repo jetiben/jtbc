@@ -418,10 +418,18 @@ namespace jtbc {
       return $sql;
     }
 
-    public function limit($argStart = 0, $arglength = 1)
+    public function limit()
     {
-      $start = base::getNum($argStart, 0);
-      $length = base::getNum($arglength, 1);
+      $start = 0;
+      $length = 1;
+      $args = func_get_args();
+      $argsCount = count($args);
+      if ($argsCount == 1) $length = base::getNum($args[0], 1);
+      else if ($argsCount == 2)
+      {
+        $start = base::getNum($args[0], 0);
+        $length = base::getNum($args[1], 1);
+      }
       if ($start < 0) $start = 0;
       if ($length < 1) $length = 1;
       $this -> limitStart = $start;
