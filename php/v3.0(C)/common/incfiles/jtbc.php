@@ -68,14 +68,16 @@ function jtbc_get_pathinfo_result()
 
 spl_autoload_register(function($argClass){
   $class = $argClass;
-  if (substr($class, 0, 4) == 'jtbc')
+  $classPath = str_replace('\\', '/', $class);
+  $firstPath = strstr($classPath, '/', true);
+  if ($firstPath == 'app' || $firstPath == 'jtbc')
   {
-    $file = __DIR__ . '/lib/' . str_replace('\\', '/', $class) . '.inc.php';
+    $file = __DIR__ . '/lib/' . $classPath . '.inc.php';
     if (is_file($file)) require_once($file);
   }
   else
   {
-    $file = __DIR__ . '/vendor/' . str_replace('\\', '/', $class) . '.php';
+    $file = __DIR__ . '/vendor/' . $classPath . '.php';
     if (is_file($file)) require_once($file);
   }
 });
