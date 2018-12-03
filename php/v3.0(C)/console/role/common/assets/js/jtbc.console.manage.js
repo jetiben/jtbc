@@ -105,7 +105,7 @@ jtbc.console.manage = {
             });
             pageObj.find('button.b2').on('click', function(){
               pageObj.find('span.close').trigger('click');
-              tthis.obj.find('.genre_category').val(tthis.parent.lib.getCheckBoxValue(pageObj.find('input[name=\'category\']:checked')));
+              tthis.obj.find('.li-' + genre).find('.genre_category').val(tthis.parent.lib.getCheckBoxValue(pageObj.find('input[name=\'category\']:checked')));
               inputPopedomObj.trigger('update');
             });
           };

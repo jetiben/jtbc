@@ -13,7 +13,7 @@
     <item>
       <name><![CDATA[part-select-popedom]]></name>
       <default><![CDATA[<ul>{@}
-  <li class="l{$-level}"><label class="checkbox genre"><input type="checkbox" name="genre" class="genre" value="{$genre}"{$-checked} /><vicon></vicon><span>{$text}</span></label>{$-category}{$-popedom}{$-child}</li>{@}
+  <li class="l{$-level} li-{$genre}"><label class="checkbox genre"><input type="checkbox" name="genre" class="genre" value="{$genre}"{$-checked} /><vicon></vicon><span>{$text}</span></label>{$-category}{$-popedom}{$-child}</li>{@}
 </ul>]]></default>
     </item>
     <item>
