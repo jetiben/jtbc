@@ -70,15 +70,20 @@ spl_autoload_register(function($argClass){
   $class = $argClass;
   $classPath = str_replace('\\', '/', $class);
   $firstPath = strstr($classPath, '/', true);
-  if ($firstPath == 'app' || $firstPath == 'jtbc')
+  $requireFile = null;
+  if ($firstPath == 'app' || $firstPath == 'jtbc') $requireFile = __DIR__ . '/lib/' . $classPath . '.inc.php';
+  else if ($firstPath == 'web')
   {
-    $file = __DIR__ . '/lib/' . $classPath . '.inc.php';
-    if (is_file($file)) require_once($file);
+    $childPath = ltrim(strstr($classPath, '/'), '/');
+    if (!is_numeric(strpos($childPath, '/'))) $requireFile = __DIR__ . '/lib/' . $childPath . '.inc.php';
+    else
+    {
+      $folder = substr($childPath, 0, strrpos($childPath, '/'));
+      $childFile = ltrim(substr($childPath, strrpos($childPath, '/')), '/');
+      $requireFile = __DIR__ . '/../../' . $folder . '/common/incfiles/lib/' . $childFile . '.inc.php';
+    }
   }
-  else
-  {
-    $file = __DIR__ . '/vendor/' . $classPath . '.php';
-    if (is_file($file)) require_once($file);
-  }
+  else $requireFile = __DIR__ . '/vendor/' . $classPath . '.php';
+  if (!is_null($requireFile) && is_file($requireFile)) require_once($requireFile);
 });
 ?>
