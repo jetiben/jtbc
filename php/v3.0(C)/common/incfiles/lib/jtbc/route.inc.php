@@ -197,12 +197,44 @@ namespace jtbc {
       return $currentFolder;
     }
 
+    public static function getCallerGenre($argBackTrace)
+    {
+      $callerGenre = '';
+      $backTrace = $argBackTrace;
+      if (is_array($backTrace) && !empty($backTrace))
+      {
+        $firstCaller = current($backTrace);
+        if (is_array($firstCaller))
+        {
+          if (array_key_exists('file', $firstCaller)) $callerGenre = self::getCurrentGenreByFile($firstCaller['file']);
+        }
+      }
+      return $callerGenre;
+    }
+
     public static function getCurrentGenre()
     {
       $currentGenre = self::$currentGenre;
       if (is_null($currentGenre))
       {
         $currentGenre = self::$currentGenre = self::getActualGenre(self::getCurrentRoute());
+      }
+      return $currentGenre;
+    }
+
+    public static function getCurrentGenreByFile($argFile)
+    {
+      $currentGenre = '';
+      $file = $argFile;
+      if (!base::isEmpty($file))
+      {
+        $phpPath = 'common/incfiles';
+        $rootPath = realpath(self::getActualRoute('./'));
+        $filePath = base::getLRStr($file, DIRECTORY_SEPARATOR, 'leftr');
+        $fileFolder = base::getLRStr($filePath, $rootPath, 'rightr');
+        $fileFolder = str_replace(DIRECTORY_SEPARATOR, '/', $fileFolder);
+        if (!is_numeric(strpos($fileFolder, $phpPath))) $currentGenre = null;
+        else $currentGenre = ltrim(base::getLRStr($fileFolder, '/' . $phpPath, 'leftr'), '/');
       }
       return $currentGenre;
     }
