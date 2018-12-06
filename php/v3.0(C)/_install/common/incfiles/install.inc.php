@@ -96,7 +96,7 @@ class ui extends page {
                     $completePath = route::getActualRoute('complete.php');
                     $completeContent = '<?php' . chr(10);
                     $completeContent .= 'require_once(\'common/incfiles/jtbc.php\');' . chr(10);
-                    $completeContent .= 'jtbc\\base::removeDir(\'_install\');' . chr(10);
+                    $completeContent .= 'jtbc\\file::removeDir(\'_install\');' . chr(10);
                     $completeContent .= 'unlink(\'complete.php\');' . chr(10);
                     $completeContent .= 'header(\'location: ' . CONSOLEDIR . '\');' . chr(10);
                     $completeContent .= '?>' . chr(10);

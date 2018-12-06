@@ -13,4 +13,4 @@
 基于 MIT(开源软件许可协议)<br /><br />
 
 ### 网站
-http://www.jtbc.cn/
+https://www.jtbc.cn/

@@ -110,6 +110,16 @@ namespace jtbc {
       return $bool;
     }
 
+    public static function isMobileAgent()
+    {
+      $bool = false;
+      $userAgent = strtolower(self::server('HTTP_USER_AGENT'));
+      if (strpos($userAgent, 'android') && strpos($userAgent, 'mobile')) $bool = true;
+      else if (strpos($userAgent, 'iphone')) $bool = true;
+      else if (strpos($userAgent, 'ipod')) $bool = true;
+      return $bool;
+    }
+
     public static function server($argName = null)
     {
       $name = $argName;

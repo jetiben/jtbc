@@ -152,7 +152,7 @@ class ui extends console\page {
     if (is_dir($val))
     {
       $message = $val;
-      $info = base::getFolderInfo($val);
+      $info = file::getFolderInfo($val);
       if (is_array($info)) $message = tpl::take('manage.text-folder-info', 'lng', 0, array('size' => base::formatFileSize($info['size']), 'file' => base::getString($info['file']), 'folder' => base::getString($info['folder'])));
     }
     else if (is_file($val))
@@ -305,7 +305,7 @@ class ui extends console\page {
       }
       else if (is_dir($path))
       {
-        if (base::removeDir($path))
+        if (file::removeDir($path))
         {
           $status = 1;
           $account -> creatCurrentGenreLog('manage.log-delete-1', array('path' => $myPath));

@@ -373,7 +373,7 @@ namespace jtbc {
                 }
               }
             }
-            if ($type == 'tpl' && base::isMobileAgent())
+            if ($type == 'tpl' && request::isMobileAgent())
             {
               if ($nodeDomObj -> hasAttribute('pointer-mobile'))
               {
