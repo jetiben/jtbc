@@ -68,7 +68,7 @@
       <name><![CDATA[fieldformat-radio]]></name>
       <default><![CDATA[<tr>
   <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
-  <td>{$=xmlSelect('{$-fieldRelatedFile}.*', '{${$fieldname}}', 'radio', '{$fieldname}[]')}</td>
+  <td>{$=xmlSelect('{$-fieldRelatedFile}.*', '{${$fieldname}}', 'radio', '{$fieldname}')}</td>
 </tr>]]></default>
     </item>
     <item>

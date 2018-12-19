@@ -32,7 +32,7 @@
     </item>
     <item>
       <name><![CDATA[upload_fileresize_limit_photo]]></name>
-      <zh-cn><![CDATA[{"width":"640","height":"640","scale":"0","quality":"80"}]]></zh-cn>
+      <zh-cn><![CDATA[{"width":"640","height":"640","mode":"cover","quality":"80"}]]></zh-cn>
     </item>
     <item>
       <name><![CDATA[uninstall]]></name>

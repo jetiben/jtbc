@@ -242,9 +242,9 @@ namespace jtbc\universal {
               {
                 $resizeWidth = base::getNum($limitFileResizeAry['width'], 0);
                 $resizeHeight = base::getNum($limitFileResizeAry['height'], 0);
-                $resizeScale = base::getNum($limitFileResizeAry['scale'], 0);
+                $resizeMode = base::getString($limitFileResizeAry['mode']);
                 $resizeQuality = base::getNum($limitFileResizeAry['quality'], 0);
-                image::resizeImage($uploadFullPath, $uploadFullPath, $resizeWidth, $resizeHeight, $resizeScale, 0, $resizeQuality);
+                image::resizeImage($uploadFullPath, $uploadFullPath, $resizeWidth, $resizeHeight, $resizeMode, 0, $resizeQuality);
               }
               $paraArray = array();
               $paraArray['filename'] = $filename;
