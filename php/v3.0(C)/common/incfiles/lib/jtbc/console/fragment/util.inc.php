@@ -15,7 +15,6 @@ namespace jtbc\console\fragment {
       $status = 0;
       $message = '';
       $account = self::account();
-      $class = get_called_class();
       $ids = base::getString(request::get('ids'));
       $batch = base::getString(request::get('batch'));
       $batchAry = self::$batch;
@@ -75,7 +74,6 @@ namespace jtbc\console\fragment {
       $message = '';
       $id = base::getNum(request::get('id'), 0);
       $account = self::account();
-      $class = get_called_class();
       if (!$account -> checkCurrentGenrePopedom('delete'))
       {
         $message = tpl::take('::console.text-tips-error-403', 'lng');

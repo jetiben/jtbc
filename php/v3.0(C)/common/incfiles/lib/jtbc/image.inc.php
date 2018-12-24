@@ -83,7 +83,7 @@ namespace jtbc {
       return $bool;
     }
 
-    public static function watermarkText($argFilePath1, $argFilePath2, $argText, $argTTFFilePath, $argOrigin = 0, $argX = 20, $argY = 20, $argFontSize = 14, $argColorRGBAlpha = null, $argQuality = 100)
+    public static function watermarkText($argFilePath1, $argFilePath2, $argText, $argTTFFilePath, $argOrigin = 0, $argX = null, $argY = null, $argFontSize = 14, $argColorRGBAlpha = null, $argQuality = 100)
     {
       $bool = false;
       $filePath1 = base::getString($argFilePath1);
@@ -91,8 +91,12 @@ namespace jtbc {
       $text = base::getString($argText);
       $TTFFilePath = base::getString($argTTFFilePath);
       $origin = base::getNum($argOrigin, 0);
-      $x = base::getNum($argX, 0);
-      $y = base::getNum($argY, 0);
+      $x = $y = 20;
+      $xAuto = $yAuto = false;
+      if (is_null($argX)) $xAuto = true;
+      else $x = base::getNum($argX, 0);
+      if (is_null($argY)) $yAuto = true;
+      else $y = base::getNum($argY, 0);
       $fontSize = base::getNum($argFontSize, 0);
       $quality = base::getNum($argQuality, 0);
       $colorRGBAlpha = $argColorRGBAlpha;
@@ -127,7 +131,14 @@ namespace jtbc {
           $imageHeight = $imageSize[1];
           $color = imagecolorallocatealpha($img, $colorR, $colorG, $colorB, $alpha);
           $fontBox = imagettfbbox($fontSize, 0, realpath($TTFFilePath), $text);
-          if ($origin == 0)
+          if ($origin == -1)
+          {
+            $currentX = round(($imageWidth / 2) - ($fontBox[4] - $fontBox[6]) / 2);
+            $currentY = round(($imageHeight / 2) - ($fontBox[7] + $fontBox[1]) / 2);
+            if ($xAuto == false) $currentX + $x;
+            if ($yAuto == false) $currentY + $y;
+          }
+          else if ($origin == 0)
           {
             $currentX = $x - $fontBox[6];
             $currentY = $y - $fontBox[7];
@@ -157,15 +168,19 @@ namespace jtbc {
       return $bool;
     }
 
-    public static function watermarkImage($argFilePath1, $argFilePath2, $argImageFilePath, $argOrigin = 0, $argX = 20, $argY = 20, $argOpacity = 100, $argQuality = 100)
+    public static function watermarkImage($argFilePath1, $argFilePath2, $argImageFilePath, $argOrigin = 0, $argX = null, $argY = null, $argOpacity = 100, $argQuality = 100)
     {
       $bool = false;
       $filePath1 = base::getString($argFilePath1);
       $filePath2 = base::getString($argFilePath2);
       $imageFilePath = base::getString($argImageFilePath);
       $origin = base::getNum($argOrigin, 0);
-      $x = base::getNum($argX, 0);
-      $y = base::getNum($argY, 0);
+      $x = $y = 20;
+      $xAuto = $yAuto = false;
+      if (is_null($argX)) $xAuto = true;
+      else $x = base::getNum($argX, 0);
+      if (is_null($argY)) $yAuto = true;
+      else $y = base::getNum($argY, 0);
       $opacity = base::getNum($argOpacity, 0);
       $quality = base::getNum($argQuality, 0);
       if (!base::isEmpty($filePath1) && !base::isEmpty($filePath2) && !base::isEmpty($imageFilePath))
@@ -192,7 +207,14 @@ namespace jtbc {
             $imageFileSize = getimagesize($imageFilePath);
             $imageFileWidth = $imageFileSize[0];
             $imageFileHeight = $imageFileSize[1];
-            if ($origin == 0)
+            if ($origin == -1)
+            {
+              $currentX = round($imageWidth / 2 - $imageFileWidth / 2);
+              $currentY = round($imageHeight / 2 - $imageFileHeight / 2);
+              if ($xAuto == false) $currentX + $x;
+              if ($yAuto == false) $currentY + $y;
+            }
+            else if ($origin == 0)
             {
               $currentX = $x;
               $currentY = $y;
