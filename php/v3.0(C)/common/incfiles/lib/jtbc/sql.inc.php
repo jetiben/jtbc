@@ -10,20 +10,11 @@ namespace jtbc {
     private $prefix;
     private $pocket = array();
     private $orderby = null;
-    private $mode = 'select';
     private $source = array();
     private $additionalSQL = null;
     private $limitStart = null;
     private $limitLength = null;
     public $err = 0;
-
-    public function changeMode($argMode)
-    {
-      $mode = $argMode;
-      $modeList = array('select', 'insert', 'update', 'delete');
-      if (in_array($mode, $modeList)) $this -> mode = $mode;
-      return $this;
-    }
 
     public function changeSource($argSource)
     {
@@ -173,20 +164,7 @@ namespace jtbc {
       return $where;
     }
 
-    public function getSQL($argAutoFilter = true, $argField = null)
-    {
-      $sql = '';
-      $field = $argField;
-      $autoFilter = $argAutoFilter;
-      $mode = $this -> mode;
-      if ($mode == 'select') $sql = $this -> getSelectSQL($argAutoFilter, $argField);
-      else if ($mode == 'insert') $sql = $this -> getInsertSQL();
-      else if ($mode == 'update') $sql = $this -> getUpdateSQL($argAutoFilter);
-      else if ($mode == 'delete') $sql = $this -> getDeleteSQL($argAutoFilter);
-      return $sql;
-    }
-
-    public function getSelectSQL($argAutoFilter = true, $argField = null)
+    public function getSelectSQL($argField = null, $argAutoFilter = true)
     {
       $field = $argField;
       $autoFilter = $argAutoFilter;

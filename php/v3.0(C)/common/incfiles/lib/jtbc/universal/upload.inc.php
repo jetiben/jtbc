@@ -154,7 +154,7 @@ namespace jtbc\universal {
           $bool = true;
           $dal = new dal($table, $prefix);
           $dal -> setIn('id', $ids);
-          $rsa = $dal -> selectAll();
+          $rsa = $dal -> selectAll('*', false);
           foreach ($rsa as $i => $rs)
           {
             $rsGenre = base::getString($dal -> val($rs, 'genre'));

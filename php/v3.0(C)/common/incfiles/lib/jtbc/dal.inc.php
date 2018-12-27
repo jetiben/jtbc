@@ -14,13 +14,14 @@ namespace jtbc {
     public $lastInsertId = null;
     private $lastRs;
 
-    public function getRsCount()
+    public function getRsCount($argAutoFilter = true)
     {
+      $autoFilter = $argAutoFilter;
       $rscount = -1;
       $db = $this -> db;
       if (!is_null($db))
       {
-        $sql = $this -> sql -> getSelectSQL(true, 'count(*)');
+        $sql = $this -> sql -> getSelectSQL('count(*)', $autoFilter);
         if (!base::isEmpty($sql))
         {
           $rs = $db -> fetch($sql);
@@ -89,14 +90,15 @@ namespace jtbc {
       return $result;
     }
 
-    public function select($argField = null)
+    public function select($argField = null, $argAutoFilter = true)
     {
       $result = null;
       $field = $argField;
+      $autoFilter = $argAutoFilter;
       $db = $this -> db;
       if (!is_null($db))
       {
-        $sql = $this -> sql -> getSelectSQL(true, $field);
+        $sql = $this -> sql -> getSelectSQL($field, $autoFilter);
         $sqlErr = $this -> sql -> err;
         if ($sqlErr == 0)
         {
@@ -120,14 +122,15 @@ namespace jtbc {
       return $result;
     }
 
-    public function selectAll($argField = null)
+    public function selectAll($argField = null, $argAutoFilter = true)
     {
       $result = null;
       $field = $argField;
+      $autoFilter = $argAutoFilter;
       $db = $this -> db;
       if (!is_null($db))
       {
-        $sql = $this -> sql -> getSelectSQL(true, $field);
+        $sql = $this -> sql -> getSelectSQL($field, $autoFilter);
         $sqlErr = $this -> sql -> err;
         if ($sqlErr == 0)
         {
