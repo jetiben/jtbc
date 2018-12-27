@@ -138,7 +138,7 @@ class ui extends console\page {
           if (!base::isEmpty($val))
           {
             $guide = json_decode(tpl::take('global.' . $val . ':guide.guide', 'cfg'), true);
-            $ary[$val] = $guide['text'];
+            $ary[$val] = $guide['text'] . ' [' . base::getLRStr($val, '/', 'right') . ']';
           }
         }
       }
