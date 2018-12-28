@@ -200,7 +200,11 @@
     </item>
     <item>
       <name><![CDATA[text-upload-error-4]]></name>
-      <zh-cn><![CDATA[上传文件的类型必须为({$allowfilesize})]]></zh-cn>
+      <zh-cn><![CDATA[上传文件的类型必须为({$filetype})]]></zh-cn>
+    </item>
+    <item>
+      <name><![CDATA[text-upload-error-5]]></name>
+      <zh-cn><![CDATA[上传文件处理异常，请尝试重新上传]]></zh-cn>
     </item>
     <item>
       <name><![CDATA[text-upload-error-others]]></name>

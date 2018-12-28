@@ -6,9 +6,11 @@ namespace jtbc\universal {
   use jtbc\auto;
   use jtbc\base;
   use jtbc\dal;
+  use jtbc\file;
   use jtbc\image;
   use jtbc\route;
   use jtbc\tpl;
+  use jtbc\verify;
   class upload
   {
     public static function getUploadId($argFileInfo, $argGenre)
@@ -178,6 +180,7 @@ namespace jtbc\universal {
       $needUploadId = $argNeedUploadId;
       $genre = $argGenre;
       if (is_null($genre)) $genre = route::getCurrentGenre();
+      $targetFileType = base::getLRStr($targetPath, '.', 'right');
       $limitFileResizeAry = null;
       $upResultArray = array();
       $upResultArray['status'] = 0;
@@ -199,66 +202,118 @@ namespace jtbc\universal {
       }
       if (is_array($file))
       {
-        $filename = $file['name'];
-        $tmp_filename = $file['tmp_name'];
-        $filesize = base::getNum($file['size'], 0);
-        $filetype = strtolower(base::getLRStr($filename, '.', 'right'));
-        if (base::isEmpty($tmp_filename))
+        $fileObject = $file['file'];
+        $fileSize = base::getNum($file['fileSize'], 0);
+        $chunkCount = base::getNum($file['chunkCount'], 0);
+        $chunkCurrentIndex = base::getNum($file['chunkCurrentIndex'], 0);
+        $timeStringRandom = base::getString($file['timeStringRandom']);
+        if (strlen($timeStringRandom) == 28 && verify::isNumber($timeStringRandom))
         {
-          $upResultArray['message'] = tpl::take('::console.text-upload-error-1', 'lng');
-        }
-        else if (!base::checkInstr($allowFiletype, $filetype, ','))
-        {
-          $upResultArray['message'] = str_replace('{$allowfiletype}', $allowFiletype, tpl::take('::console.text-upload-error-2', 'lng'));
-        }
-        else if ($filesize > $allowFilesize)
-        {
-          $upResultArray['message'] = str_replace('{$allowfilesize}', base::formatFileSize($allowFilesize), tpl::take('::console.text-upload-error-3', 'lng'));
-        }
-        else
-        {
-          $canMove = false;
-          if (!base::isEmpty($targetPath))
+          $filename = $fileObject['name'];
+          $tmp_filename = $fileObject['tmp_name'];
+          $filetype = strtolower(base::getLRStr($filename, '.', 'right'));
+          if (base::isEmpty($tmp_filename))
           {
-            if ($filetype != base::getLRStr($targetPath, '.', 'right')) $upResultArray['message'] = str_replace('{$filetype}', $filetype, tpl::take('::console.text-upload-error-4', 'lng'));
-            else
-            {
-              $canMove = true;
-              $uploadFullPath = $targetPath;
-            }
+            $upResultArray['message'] = tpl::take('::console.text-upload-error-1', 'lng');
+          }
+          else if (!base::checkInstr($allowFiletype, $filetype, ','))
+          {
+            $upResultArray['message'] = str_replace('{$allowfiletype}', $allowFiletype, tpl::take('::console.text-upload-error-2', 'lng'));
+          }
+          else if ($fileSize > $allowFilesize)
+          {
+            $upResultArray['message'] = str_replace('{$allowfilesize}', base::formatFileSize($allowFilesize), tpl::take('::console.text-upload-error-3', 'lng'));
+          }
+          else if (!base::isEmpty($targetPath) && $filetype != $targetFileType)
+          {
+            $upResultArray['message'] = str_replace('{$filetype}', $targetFileType, tpl::take('::console.text-upload-error-4', 'lng'));
           }
           else
           {
-            $canMove = true;
-            $uploadPath = $uploadPath . base::formatDate(base::getDateTime(), '-1') . '/' . base::formatDate(base::getDateTime(), '-2') . base::formatDate(base::getDateTime(), '-3') . '/';
-            $uploadFullPath = $uploadPath . base::formatDate(base::getDateTime(), '11') . base::getRandomString(2) . '.' . $filetype;
-            if (!is_dir($uploadPath)) @mkdir($uploadPath, 0777, true);
-          }
-          if ($canMove == true)
-          {
-            if (move_uploaded_file($tmp_filename, $uploadFullPath))
+            $cacheChunkDir = route::getActualRoute(CACHEDIR) . '/' . $timeStringRandom;
+            if (!is_dir($cacheChunkDir)) @mkdir($cacheChunkDir, 0777, true);
+            if (is_dir($cacheChunkDir))
             {
-              if (base::isImage($filetype) && !empty($limitFileResizeAry))
+              $status = 0;
+              $cacheChunkPath = $cacheChunkDir . '/' . $chunkCurrentIndex . '.tmp';
+              if (move_uploaded_file($tmp_filename, $cacheChunkPath))
               {
-                $resizeWidth = base::getNum($limitFileResizeAry['width'], 0);
-                $resizeHeight = base::getNum($limitFileResizeAry['height'], 0);
-                $resizeMode = base::getString($limitFileResizeAry['mode']);
-                $resizeQuality = base::getNum($limitFileResizeAry['quality'], 0);
-                image::resizeImage($uploadFullPath, $uploadFullPath, $resizeWidth, $resizeHeight, $resizeMode, 0, $resizeQuality);
+                $status = -1;
+                if ($chunkCount == $chunkCurrentIndex)
+                {
+                  $uploadFullPath = $targetPath;
+                  if (base::isEmpty($uploadFullPath))
+                  {
+                    $uploadPathDir = $uploadPath . base::formatDate(base::getDateTime(), '-1') . '/' . base::formatDate(base::getDateTime(), '-2') . base::formatDate(base::getDateTime(), '-3') . '/';
+                    if (!is_dir($uploadPathDir)) @mkdir($uploadPathDir, 0777, true);
+                    $uploadFullPath = $uploadPathDir . base::formatDate(base::getDateTime(), '11') . base::getRandomString(2) . '.' . $filetype;
+                  }
+                  $fileMergeBlob = '';
+                  $fileMergeError = false;
+                  for ($i = 0; $i <= $chunkCurrentIndex; $i ++)
+                  {
+                    $currentCacheChunkPath = $cacheChunkDir . '/' . $i . '.tmp';
+                    if (!is_file($currentCacheChunkPath))
+                    {
+                      $fileMergeError = true;
+                      break;
+                    }
+                    else $fileMergeBlob .= file_get_contents($currentCacheChunkPath);
+                  }
+                  if ($fileMergeError == true)
+                  {
+                    $upResultArray['message'] = tpl::take('::console.text-upload-error-5', 'lng');
+                  }
+                  else
+                  {
+                    $fileTempPath = $cacheChunkDir . '/temp.tmp';
+                    $fileSaveBool = @file_put_contents($fileTempPath, $fileMergeBlob);
+                    if ($fileSaveBool == true)
+                    {
+                      $fileTrueSize = filesize($fileTempPath);
+                      if ($fileTrueSize > $allowFilesize)
+                      {
+                        $upResultArray['message'] = str_replace('{$allowfilesize}', base::formatFileSize($allowFilesize), tpl::take('::console.text-upload-error-3', 'lng'));
+                      }
+                      else
+                      {
+                        $renameFile = @rename($fileTempPath, $uploadFullPath);
+                        if ($renameFile == true)
+                        {
+                          $status = 1;
+                          if (base::isImage($filetype) && !empty($limitFileResizeAry))
+                          {
+                            $resizeWidth = base::getNum($limitFileResizeAry['width'], 0);
+                            $resizeHeight = base::getNum($limitFileResizeAry['height'], 0);
+                            $resizeMode = base::getString($limitFileResizeAry['mode']);
+                            $resizeQuality = base::getNum($limitFileResizeAry['quality'], 0);
+                            image::resizeImage($uploadFullPath, $uploadFullPath, $resizeWidth, $resizeHeight, $resizeMode, 0, $resizeQuality);
+                          }
+                          $paraArray = array();
+                          $paraArray['filename'] = $filename;
+                          $paraArray['filesize'] = $fileTrueSize;
+                          $paraArray['filetype'] = $filetype;
+                          $paraArray['filepath'] = $uploadFullPath;
+                          $paraArray['fileurl'] = $uploadFullPath;
+                          $paraArray['filesizetext'] = base::formatFileSize($fileTrueSize);
+                          $uploadid = 0;
+                          if ($needUploadId == true) $uploadid = self::getUploadId($paraArray, $genre);
+                          $paraArray['uploadid'] = $uploadid;
+                          $upResultArray['status'] = $status;
+                          $upResultArray['message'] = 'done';
+                          $upResultArray['para'] = json_encode($paraArray);
+                        }
+                      }
+                    }
+                  }
+                  file::removeDir($cacheChunkDir);
+                }
+                else
+                {
+                  $upResultArray['status'] = $status;
+                  $upResultArray['message'] = 'continue';
+                }
               }
-              $paraArray = array();
-              $paraArray['filename'] = $filename;
-              $paraArray['filesize'] = $filesize;
-              $paraArray['filetype'] = $filetype;
-              $paraArray['filepath'] = $uploadFullPath;
-              $paraArray['fileurl'] = $uploadFullPath;
-              $paraArray['filesizetext'] = base::formatFileSize($filesize);
-              $uploadid = 0;
-              if ($needUploadId == true) $uploadid = self::getUploadId($paraArray, $genre);
-              $paraArray['uploadid'] = $uploadid;
-              $upResultArray['status'] = 1;
-              $upResultArray['message'] = 'done';
-              $upResultArray['para'] = json_encode($paraArray);
             }
           }
         }

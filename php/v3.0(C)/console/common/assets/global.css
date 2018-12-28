@@ -754,7 +754,7 @@ icons icon a.link {
   width: 100%; height: 140px; margin-top: 20px; background: url(icon/exclamation.1.svg) center center no-repeat; background-size: 90px 90px
 }
 .popup_alert div.word {
-  font-size: 2.4rem; text-align: center; line-height: 30px; max-height: 60px; overflow: hidden
+  width: 90%; margin: auto; font-size: 2.4rem; text-align: center; line-height: 30px; max-height: 60px; overflow: hidden; text-overflow: ellipsis
 }
 .popup_alert div.word em {
   display: block; font-size: 1.4rem; font-style: normal
@@ -994,8 +994,14 @@ icons icon a.link {
 .upfile input.i1 {
   padding-right: 70px
 }
-.upfile button.upbtn {
+.upfile div.upbtn {
   height: calc(100% - 2px); position: absolute; top: 1px; right: 1px; z-index: 100
+}
+.upfile div.upbtn button.upbtn {
+  height: 100%
+}
+.upfile div.upbtn span.bar {
+  width: 0%; height: 2px; background: #5cb85c; position: absolute; left: 0px; bottom: 0px; z-index: 100; transition: width .1s linear
 }
 .upload_status {
   display: inline-block; width: 4px; height: 12px; margin-right: 4px; background: #999; vertical-align: middle

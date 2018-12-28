@@ -103,7 +103,7 @@
       <name><![CDATA[fieldformat-upfile]]></name>
       <default><![CDATA[<tr>
   <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
-  <td><div mode="upfile" class="upfile"><input type="hidden" name="{$fieldname}" class="upsource" value="{${$fieldname}}" /><input type="text" name="{$fieldname}-fileurl" class="i1 fileurl" text-preview-title="{$=take('::console.att-preview-title', 'lng')}" text-preview-link="{$=take('::console.att-preview-link', 'lng')}" /><button class="b4 upbtn" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" action="?type=action&amp;action=upload&amp;limit={$fieldname}" /></div></td>
+  <td><div mode="upfile" class="upfile"><input type="hidden" name="{$fieldname}" class="upsource" value="{${$fieldname}}" /><input type="text" name="{$fieldname}-fileurl" class="i1 fileurl" text-preview-title="{$=take('::console.att-preview-title', 'lng')}" text-preview-link="{$=take('::console.att-preview-link', 'lng')}" /><div class="upbtn"><button class="b4 upbtn" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><span class="bar"></span><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" action="?type=action&amp;action=upload&amp;limit={$fieldname}" /></div></div></td>
 </tr>]]></default>
     </item>
     <item>

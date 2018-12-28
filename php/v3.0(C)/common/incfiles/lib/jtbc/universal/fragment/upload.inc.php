@@ -22,7 +22,13 @@ namespace jtbc\universal\fragment {
       }
       else
       {
-        $upResult = universal\upload::up2self(@$_FILES['file'], $limit);
+        $fileArray = array();
+        $fileArray['file'] = request::getFile('file');
+        $fileArray['fileSize'] = request::getPost('fileSize');
+        $fileArray['chunkCount'] = request::getPost('chunkCount');
+        $fileArray['chunkCurrentIndex'] = request::getPost('chunkCurrentIndex');
+        $fileArray['timeStringRandom'] = request::getPost('timeStringRandom');
+        $upResult = universal\upload::up2self($fileArray, $limit);
         $upResultArray = json_decode($upResult, 1);
         if (is_array($upResultArray))
         {

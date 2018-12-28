@@ -545,6 +545,7 @@ jtbc.console.lib = {
   },
   fileUp: function(argObj, argFileUpObj, argFileUpURL, argCallBack, argCallBackItem)
   {
+    var tthis = this;
     var myObj = argObj;
     var fileUpObj = argFileUpObj;
     var fileUpURL = argFileUpURL;
@@ -570,29 +571,21 @@ jtbc.console.lib = {
       uploadNextFile: function()
       {
         var index = this.fileindex;
-        var myFormData = new FormData();
-        myFormData.append('file', this.files[index]);
-        var myXMLHttpRequest = new XMLHttpRequest();
-        myXMLHttpRequest.upload.addEventListener('progress', function(evt){
-          fileUpObj.find('div.item').eq(fileupload.fileindex).find('span.bar').css({'width': Math.round(evt.loaded * 100 / evt.total) + '%'});
-        }, false);
-        myXMLHttpRequest.addEventListener('load', function(evt){
+        tthis.fileUpSingle(this.files[index], fileUpURL, function(result){
           var upSucceed = false;
           var upMessage = '';
-          var resultObj = $(evt.target.responseXML);
-          if (resultObj.find('result').attr('status') == '1') upSucceed = true;
-          else if (resultObj.find('result').attr('status') == '0') upMessage = resultObj.find('result').attr('message');
+          var resultStatus = result.find('result').attr('status');
+          if (resultStatus == '1') upSucceed = true;
+          else if (resultStatus == '0') upMessage = result.find('result').attr('message');
           if (upSucceed == false)
           {
             fileUpObj.find('div.item').eq(fileupload.fileindex).addClass('error').attr('title', upMessage).on('dblclick', function(){ $(this).fadeOut(); });
           };
-          if (typeof(callbackItem) == 'function') callbackItem(upSucceed, resultObj, fileupload.fileindex);
+          if (typeof(callbackItem) == 'function') callbackItem(upSucceed, result, fileupload.fileindex);
           fileupload.fileindex += 1;
           if (fileupload.fileindex < fileupload.filecount) fileupload.uploadNextFile();
           else callback();
-        }, false);
-        myXMLHttpRequest.open('POST', fileUpURL);
-        myXMLHttpRequest.send(myFormData);
+        }, function(percent) { fileUpObj.find('div.item').eq(fileupload.fileindex).find('span.bar').css({'width': percent + '%'}); });
       },
       startUpload: function()
       {
@@ -611,23 +604,51 @@ jtbc.console.lib = {
       fileupload.startUpload();
     };
   },
-  fileUpSingle: function(argObj, argFileUpURL, argCallBack)
+  fileUpSingle: function(argFile, argFileUpURL, argDoneCallBack, argProgressCallBack)
   {
-    var myObj = argObj;
+    var tthis = this;
+    var file = argFile;
     var fileUpURL = argFileUpURL;
-    var callback = argCallBack;
-    if (myObj.files.length == 1)
+    var doneCallback = argDoneCallBack;
+    var progressCallBack = argProgressCallBack;
+    if (typeof file == 'object')
     {
-      var file = myObj.files[0];
-      var myFormData = new FormData();
-      myFormData.append('file', file);
-      var myXMLHttpRequest = new XMLHttpRequest();
-      myXMLHttpRequest.addEventListener('load', function(evt){
-        var dataObj = $(evt.target.responseXML);
-        callback(dataObj);
-      }, false);
-      myXMLHttpRequest.open('POST', fileUpURL);
-      myXMLHttpRequest.send(myFormData);
+      var fileSize = file.size;
+      var chunkSize = 1024 * 1024;
+      var chunkCount = Math.floor(fileSize / chunkSize);
+      var chunkCurrentIndex = 0;
+      var timeStringRandom = tthis.parent.parent.getTimeStringAndRandom();
+      var chunkUpload = function()
+      {
+        if (chunkCurrentIndex <= chunkCount)
+        {
+          var fileStart = chunkCurrentIndex * chunkSize;
+          var fileEnd = Math.min(fileSize, fileStart + chunkSize);
+          var myFormData = new FormData();
+          myFormData.append('file', file.slice(fileStart, fileEnd), file.name);
+          myFormData.append('fileSize', fileSize);
+          myFormData.append('chunkCount', chunkCount);
+          myFormData.append('chunkCurrentIndex', chunkCurrentIndex);
+          myFormData.append('timeStringRandom', timeStringRandom);
+          var myXMLHttpRequest = new XMLHttpRequest();
+          myXMLHttpRequest.upload.addEventListener('progress', function(evt){
+            var requestPercent = Math.round(chunkCurrentIndex / (chunkCount + 1) * 100 + (1 / (chunkCount + 1)) * Math.round(evt.loaded / evt.total) * 100);
+            progressCallBack(requestPercent);
+          }, false);
+          myXMLHttpRequest.addEventListener('load', function(evt){
+            var dataObj = $(evt.target.responseXML);
+            if (dataObj.find('result').attr('status') == '-1')
+            {
+              chunkCurrentIndex += 1;
+              chunkUpload();
+            }
+            else doneCallback(dataObj);
+          }, false);
+          myXMLHttpRequest.open('POST', fileUpURL);
+          myXMLHttpRequest.send(myFormData);
+        };
+      };
+      chunkUpload();
     };
   },
   getCheckBoxValue: function(argObj)
@@ -831,25 +852,29 @@ jtbc.console.lib = {
       {
         thisObj.attr('uploading', 'true');
         btnObj.addClass('lock').html(btnObj.attr('uploading'));
-        tthis.fileUpSingle(this, url, function(result){
-          thisObj.val('').attr('uploading', 'false');
-          btnObj.removeClass('lock').html(btnObj.attr('text'));
-          if (result.find('result').attr('status') == '1')
-          {
-            var upsourceArray = new Object();
-            var para = result.find('result').attr('para');
-            var paraArray = JSON.parse(para);
-            upsourceArray.fileurl = paraArray['fileurl'];
-            upsourceArray.uploadid = paraArray['uploadid'];
-            thisObj.parent().find('input.upsource').val(JSON.stringify(upsourceArray));
-            thisObj.parent().find('input.fileurl').val(paraArray['fileurl']);
-          }
-          else
-          {
-            if (thisObj.attr('alert') == 'mini') tthis.popupMiniAlert(result.find('result').attr('message'));
-            else tthis.popupAlert(result.find('result').attr('message'), thisObj.attr('text-ok'), function(){});
-          };
-        });
+        if (this.files.length == 1)
+        {
+          tthis.fileUpSingle(this.files[0], url, function(result){
+            thisObj.val('').attr('uploading', 'false');
+            btnObj.removeClass('lock').html(btnObj.attr('text'));
+            if (result.find('result').attr('status') == '1')
+            {
+              var upsourceArray = new Object();
+              var para = result.find('result').attr('para');
+              var paraArray = JSON.parse(para);
+              upsourceArray.fileurl = paraArray['fileurl'];
+              upsourceArray.uploadid = paraArray['uploadid'];
+              thisObj.parent().parent().find('input.upsource').val(JSON.stringify(upsourceArray));
+              thisObj.parent().parent().find('input.fileurl').val(paraArray['fileurl']);
+            }
+            else
+            {
+              if (thisObj.attr('alert') == 'mini') tthis.popupMiniAlert(result.find('result').attr('message'));
+              else tthis.popupAlert(result.find('result').attr('message'), thisObj.attr('text-ok'), function(){});
+            };
+            btnObj.parent().find('span.bar').css({'width': '0%'});
+          }, function(percent) { btnObj.parent().find('span.bar').css({'width': percent + '%'}); });
+        };
       };
     });
     myObj.find('input.upsource').each(function(){

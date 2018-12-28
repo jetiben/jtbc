@@ -41,14 +41,17 @@ jtbc.console.manage = {
       {
         thisObj.attr('uploading', 'true');
         btnObj.addClass('lock').html(btnObj.attr('uploading'));
-        tthis.parent.lib.fileUpSingle(this, url, function(result){
-          if (result.find('result').attr('status') == '1') tthis.parent.loadMainURLRefresh();
-          else
-          {
-            btnObj.removeClass('lock').html(btnObj.attr('text'));
-            tthis.parent.lib.popupAlert(result.find('result').attr('message'), thisObj.attr('text-ok'), function(){});
-          };
-        });
+        if (this.files.length == 1)
+        {
+          tthis.parent.lib.fileUpSingle(this.files[0], url, function(result){
+            if (result.find('result').attr('status') == '1') tthis.parent.loadMainURLRefresh();
+            else
+            {
+              btnObj.removeClass('lock').html(btnObj.attr('text'));
+              tthis.parent.lib.popupAlert(result.find('result').attr('message'), thisObj.attr('text-ok'), function(){ thisObj.attr('uploading', 'false'); });
+            };
+          }, function(percent) {});
+        };
       };
     });
   },

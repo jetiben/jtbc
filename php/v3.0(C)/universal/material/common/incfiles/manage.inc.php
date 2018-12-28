@@ -64,7 +64,13 @@ class ui extends console\page {
     }
     else
     {
-      $upResult = universal\upload::up2self(@$_FILES['file'], '', '', false);
+      $fileArray = array();
+      $fileArray['file'] = request::getFile('file');
+      $fileArray['fileSize'] = request::getPost('fileSize');
+      $fileArray['chunkCount'] = request::getPost('chunkCount');
+      $fileArray['chunkCurrentIndex'] = request::getPost('chunkCurrentIndex');
+      $fileArray['timeStringRandom'] = request::getPost('timeStringRandom');
+      $upResult = universal\upload::up2self($fileArray, '', '', false);
       $upResultArray = json_decode($upResult, 1);
       if (is_array($upResultArray))
       {
@@ -116,8 +122,14 @@ class ui extends console\page {
       $rs = $dal -> select();
       if (is_array($rs))
       {
+        $fileArray = array();
+        $fileArray['file'] = request::getFile('file');
+        $fileArray['fileSize'] = request::getPost('fileSize');
+        $fileArray['chunkCount'] = request::getPost('chunkCount');
+        $fileArray['chunkCurrentIndex'] = request::getPost('chunkCurrentIndex');
+        $fileArray['timeStringRandom'] = request::getPost('timeStringRandom');
         $rsFilePath = base::getString($dal -> val('filepath'));
-        $upResult = universal\upload::up2self(@$_FILES['file'], '', $rsFilePath, false);
+        $upResult = universal\upload::up2self($fileArray, '', $rsFilePath, false);
         $upResultArray = json_decode($upResult, 1);
         if (is_array($upResultArray))
         {

@@ -48,7 +48,7 @@
     </item>
     <item>
       <name><![CDATA[upload_filesize]]></name>
-      <zh-cn><![CDATA[1048576]]></zh-cn>
+      <zh-cn><![CDATA[2097152]]></zh-cn>
     </item>
   </item_list>
 </xml>

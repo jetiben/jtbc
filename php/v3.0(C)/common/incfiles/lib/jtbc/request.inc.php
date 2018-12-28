@@ -41,6 +41,15 @@ namespace jtbc {
       return $result;
     }
 
+    public static function getFile($argName)
+    {
+      $result = null;
+      $name = $argName;
+      $filesArray = $_FILES;
+      if (array_key_exists($name, $filesArray)) $result = $filesArray[$name];
+      return $result;
+    }
+
     public static function getForeLang()
     {
       $language = LANGUAGE;
