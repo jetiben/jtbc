@@ -206,14 +206,61 @@ class ui extends console\page {
     {
       if (is_dir($path))
       {
-        $myPath = base::getLRStr($path, $pathRoot, 'rightr');
-        $filename = @$_FILES['file']['name'];
-        $tmp_filename = @$_FILES['file']['tmp_name'];
-        $newfilepath = $path . self::ppSetFolderAndFileName($filename);
-        if (move_uploaded_file($tmp_filename, $newfilepath))
+        $file = request::getFile('file');
+        if (array_key_exists('name', $file) && array_key_exists('tmp_name', $file))
         {
-          $status = 1;
-          $account -> creatCurrentGenreLog('manage.log-addfile-1', array('path' => $myPath . $filename));
+          $myPath = base::getLRStr($path, $pathRoot, 'rightr');
+          $filename = base::getString($file['name']);
+          $filetmpname = base::getString($file['tmp_name']);
+          $filetype = strtolower(base::getLRStr($filename, '.', 'right'));
+          $fileSize = base::getNum(request::getPost('fileSize'), 0);
+          $chunkCount = base::getNum(request::getPost('chunkCount'), 0);
+          $chunkCurrentIndex = base::getNum(request::getPost('chunkCurrentIndex'), 0);
+          $timeStringRandom = base::getString(request::getPost('timeStringRandom'));
+          $newfilepath = $path . self::ppSetFolderAndFileName($filename);
+          if (strlen($timeStringRandom) == 28 && verify::isNumber($timeStringRandom))
+          {
+            $cacheChunkDir = route::getActualRoute(CACHEDIR) . '/' . $timeStringRandom;
+            if (!is_dir($cacheChunkDir)) @mkdir($cacheChunkDir, 0777, true);
+            if (is_dir($cacheChunkDir))
+            {
+              $cacheChunkPath = $cacheChunkDir . '/' . $chunkCurrentIndex . '.tmp';
+              if (move_uploaded_file($filetmpname, $cacheChunkPath))
+              {
+                $status = -1;
+                if ($chunkCount == $chunkCurrentIndex)
+                {
+                  $fileMergeBlob = '';
+                  $fileMergeError = false;
+                  for ($i = 0; $i <= $chunkCurrentIndex; $i ++)
+                  {
+                    $currentCacheChunkPath = $cacheChunkDir . '/' . $i . '.tmp';
+                    if (!is_file($currentCacheChunkPath))
+                    {
+                      $fileMergeError = true;
+                      break;
+                    }
+                    else $fileMergeBlob .= file_get_contents($currentCacheChunkPath);
+                  }
+                  if ($fileMergeError == false)
+                  {
+                    $fileTempPath = $cacheChunkDir . '/temp.tmp';
+                    $fileSaveBool = @file_put_contents($fileTempPath, $fileMergeBlob);
+                    if ($fileSaveBool == true)
+                    {
+                      $renameFile = @rename($fileTempPath, $newfilepath);
+                      if ($renameFile == true)
+                      {
+                        $status = 1;
+                        $account -> creatCurrentGenreLog('manage.log-addfile-1', array('path' => $myPath . $filename));
+                      }
+                    }
+                  }
+                  file::removeDir($cacheChunkDir);
+                }
+              }
+            }
+          }
         }
       }
     }

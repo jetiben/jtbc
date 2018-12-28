@@ -616,7 +616,7 @@ icons icon a.link {
   display: block; width: 0%; height: 100%; background: #d1f1c0; border-radius: 5px; position: absolute; top: 0px; left: 0px; z-index: 100; transition: width .3s linear
 }
 .fileup div.item.error span.bar {
-  background-color: #ff9893
+  width: 100% !important; background-color: #ff9893
 }
 .filetype {
   display: inline-block; vertical-align: middle; margin-right: 10px; padding: 0px 5px; background: #000; opacity: 0.8; font-size: 1.4rem; color: #fff; line-height: 22px; border-radius: 6px; font-style: normal; text-transform: uppercase
