@@ -34,7 +34,7 @@
           </tr>
           <tr>
             <th valign="top"><t>{$=take('global.config.image', 'lng')}</t></th>
-            <td><div mode="upfile" class="upfile"><input type="hidden" name="image" class="upsource" /><input type="text" name="image-fileurl" class="i1 fileurl" text-preview-title="{$=take('::console.att-preview-title', 'lng')}" text-preview-link="{$=take('::console.att-preview-link', 'lng')}" /><button class="b4 upbtn" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" action="?type=action&amp;action=upload" /></div></td>
+            <td><div mode="upfile" class="upfile"><input type="hidden" name="image" class="upsource" /><input type="text" name="image-fileurl" class="i1 fileurl" text-preview-title="{$=take('::console.att-preview-title', 'lng')}" text-preview-link="{$=take('::console.att-preview-link', 'lng')}" /><div class="upbtn"><button class="b4 upbtn" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><span class="bar"></span><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" action="?type=action&amp;action=upload" /></div></div></td>
           </tr>
           <tr>
             <th valign="top"><t>{$=take('global.config.url', 'lng')}<r>*</r></t></th>
@@ -77,7 +77,7 @@
           </tr>
           <tr>
             <th valign="top"><t>{$=take('global.config.image', 'lng')}</t></th>
-            <td><div mode="upfile" class="upfile"><input type="hidden" name="image" value="{$image}" class="upsource" /><input type="text" name="image-fileurl" class="i1 fileurl" text-preview-title="{$=take('::console.att-preview-title', 'lng')}" text-preview-link="{$=take('::console.att-preview-link', 'lng')}" /><button class="b4 upbtn" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" action="?type=action&amp;action=upload" /></div></td>
+            <td><div mode="upfile" class="upfile"><input type="hidden" name="image" value="{$image}" class="upsource" /><input type="text" name="image-fileurl" class="i1 fileurl" text-preview-title="{$=take('::console.att-preview-title', 'lng')}" text-preview-link="{$=take('::console.att-preview-link', 'lng')}" /><div class="upbtn"><button class="b4 upbtn" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><span class="bar"></span><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" action="?type=action&amp;action=upload" /></div></div></td>
           </tr>
           <tr>
             <th valign="top"><t>{$=take('global.config.url', 'lng')}<r>*</r></t></th>
