@@ -230,7 +230,8 @@ class ui extends console\page {
                 $status = -1;
                 if ($chunkCount == $chunkCurrentIndex)
                 {
-                  $fileMergeBlob = '';
+                  $fileTempPath = $cacheChunkDir . '/temp.tmp';
+                  $fpTemp = fopen($fileTempPath, 'ab');
                   $fileMergeError = false;
                   for ($i = 0; $i <= $chunkCurrentIndex; $i ++)
                   {
@@ -240,20 +241,20 @@ class ui extends console\page {
                       $fileMergeError = true;
                       break;
                     }
-                    else $fileMergeBlob .= file_get_contents($currentCacheChunkPath);
+                    else
+                    {
+                      $chunkHandle = fopen($currentCacheChunkPath, 'r');
+                      fwrite($fpTemp, fread($chunkHandle, filesize($currentCacheChunkPath)));
+                      fclose($chunkHandle);
+                    }
                   }
                   if ($fileMergeError == false)
                   {
-                    $fileTempPath = $cacheChunkDir . '/temp.tmp';
-                    $fileSaveBool = @file_put_contents($fileTempPath, $fileMergeBlob);
-                    if ($fileSaveBool == true)
+                    $renameFile = @rename($fileTempPath, $newfilepath);
+                    if ($renameFile == true)
                     {
-                      $renameFile = @rename($fileTempPath, $newfilepath);
-                      if ($renameFile == true)
-                      {
-                        $status = 1;
-                        $account -> creatCurrentGenreLog('manage.log-addfile-1', array('path' => $myPath . $filename));
-                      }
+                      $status = 1;
+                      $account -> creatCurrentGenreLog('manage.log-addfile-1', array('path' => $myPath . $filename));
                     }
                   }
                   file::removeDir($cacheChunkDir);
