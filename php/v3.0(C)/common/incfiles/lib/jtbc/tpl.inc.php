@@ -12,7 +12,7 @@ namespace jtbc {
     public $tplRString = '';
     private $tplCString = '<!--JTBC_CINFO-->';
     public static $counter = 0;
-    public static $para = array();
+    public static $param = array();
 
     public function assign()
     {
@@ -484,7 +484,7 @@ namespace jtbc {
               if ($function == 'transfer')
               {
                 self::$counter += 1;
-                self::$para['jtbctag' . self::$counter] = '{@}' . $regArys[1][$i] . '{@}';
+                self::$param['jtbctag' . self::$counter] = '{@}' . $regArys[1][$i] . '{@}';
                 $evalfunction = $function . '(\'' . $parameter . ';jtbctag=jtbctag' . self::$counter . '\')';
                 $tmpstr = str_replace($tagtext, self::getEvalValue($evalfunction, 1), $tmpstr);
               }

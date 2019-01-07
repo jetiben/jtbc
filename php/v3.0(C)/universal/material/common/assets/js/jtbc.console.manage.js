@@ -1,7 +1,7 @@
 jtbc.console.manage = {
   obj: null,
   parent: jtbc.console,
-  para: [],
+  param: [],
   initList: function()
   {
     var tthis = this;
@@ -17,7 +17,7 @@ jtbc.console.manage = {
     });
     tthis.obj.find('.upload').on('change', function(){
       var thisObj = $(this);
-      var url = tthis.para['fileurl'] + '?type=action&action=add';
+      var url = tthis.param['fileurl'] + '?type=action&action=add';
       if (thisObj.attr('uploading') != 'true')
       {
         thisObj.attr('uploading', 'true');
@@ -36,7 +36,7 @@ jtbc.console.manage = {
     tthis.obj.find('.upload').on('change', function(){
       var thisObj = $(this);
       var btnObj = tthis.obj.find('button.replace');
-      var url = tthis.para['fileurl'] + '?type=action&action=replace&id=' + thisObj.attr('rsid');
+      var url = tthis.param['fileurl'] + '?type=action&action=replace&id=' + thisObj.attr('rsid');
       if (thisObj.attr('uploading') != 'true')
       {
         thisObj.attr('uploading', 'true');

@@ -1,7 +1,7 @@
 jtbc.console.manage = {
   obj: null,
   parent: jtbc.console,
-  para: [],
+  param: [],
   ready: function()
   {
     var tthis = this;

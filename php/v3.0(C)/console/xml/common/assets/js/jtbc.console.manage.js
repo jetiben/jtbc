@@ -1,7 +1,7 @@
 jtbc.console.manage = {
   obj: null,
   parent: jtbc.console,
-  para: [],
+  param: [],
   initList: function()
   {
     var tthis = this;
@@ -9,7 +9,7 @@ jtbc.console.manage = {
     if (tthis.obj.find('.CodeMirrorContent').length == 1)
     {
       var currentSymbol = tthis.obj.find('btn.fileselect').attr('symbol');
-      tthis.para['codemirror-timeout'] = setTimeout(function(){
+      tthis.param['codemirror-timeout'] = setTimeout(function(){
         var codemirrorOption = {
           mode: 'htmlmixed',
           lineNumbers: true,
@@ -20,7 +20,7 @@ jtbc.console.manage = {
         };
         if (typeof Promise !== 'undefined')
         {
-          var currentHintBase = ['breadcrumb', 'createURL', 'encodeText', 'encodeTextArea', 'formatDate', 'formatFileSize', 'formatLine', 'get', 'getActualRoute', 'getDateTime', 'getJsonPara', 'getLeft', 'getLeftB', 'getLRStr', 'getNum', 'getPagePara', 'getPageTitle', 'getPara', 'getParameter', 'getRandomString', 'getRemortIP', 'getRepeatedString', 'getRight', 'getSwapString', 'htmlEncode', 'pagi', 'replaceQuerystring', 'take', 'takeAndFormat', 'takeByNode', 'transfer', 'xmlSelect'];
+          var currentHintBase = ['breadcrumb', 'createURL', 'encodeText', 'encodeTextArea', 'formatDate', 'formatFileSize', 'formatLine', 'get', 'getActualRoute', 'getDateTime', 'getJsonParam', 'getLeft', 'getLeftB', 'getLRStr', 'getNum', 'getPageParam', 'getPageTitle', 'getParam', 'getParameter', 'getRandomString', 'getRemortIP', 'getRepeatedString', 'getRight', 'getSwapString', 'htmlEncode', 'pagi', 'replaceQuerystring', 'take', 'takeAndFormat', 'takeByNode', 'transfer', 'xmlSelect'];
           currentHintBase.push('$address', '$author', '$att', '$category', '$color', '$content', '$date', '$description', '$email', '$file', '$group', '$height', '$keyword', '$keywords', '$intro', '$id', '$image', '$language', '$leader', '$length', '$linkurl', '$mobile', '$name', '$phone', '$photo', '$position', '$rank', '$size', '$source', '$subtitle', '$status', '$template', '$title', '$topic', '$time', '$type', '$url', '$upload', '$userip', '$width');
           var currentHintFunction = function(cm, option) {
             return new Promise(function(accept)
@@ -51,16 +51,16 @@ jtbc.console.manage = {
           };
           if (currentSymbol.indexOf('.tpl.') != -1) codemirrorOption.hintOptions = {hint: currentHintFunction};
         };
-        tthis.para['codemirror'] = CodeMirror.fromTextArea(document.getElementById('codemirror'), codemirrorOption);
+        tthis.param['codemirror'] = CodeMirror.fromTextArea(document.getElementById('codemirror'), codemirrorOption);
         if (typeof codemirrorOption.hintOptions == 'object')
         {
-          tthis.para['codemirror'].on('keypress', function() { tthis.para['codemirror'].showHint(); });
+          tthis.param['codemirror'].on('keypress', function() { tthis.param['codemirror'].showHint(); });
         };
       }, 50);
     };
     tthis.obj.find('rightarea').find('select[name=\'node\']').on('change', function(){
       var thisObj = $(this);
-      var url = tthis.para['fileurl'] + thisObj.attr('action') + '&node=' + encodeURIComponent(thisObj.val());
+      var url = tthis.param['fileurl'] + thisObj.attr('action') + '&node=' + encodeURIComponent(thisObj.val());
       tthis.parent.loadMainURL(url);
     });
     tthis.obj.find('span.nodeadd').click(function(){
@@ -68,7 +68,7 @@ jtbc.console.manage = {
       if (thisObj.attr('loading') != 'true')
       {
         thisObj.attr('loading', 'true');
-        var url = tthis.para['fileurl'] + '?type=add&symbol=' + encodeURIComponent(thisObj.attr('symbol'));
+        var url = tthis.param['fileurl'] + '?type=add&symbol=' + encodeURIComponent(thisObj.attr('symbol'));
         $.get(url, function(data){
           var dataObj = $(data);
           if (dataObj.find('result').attr('status') == '1')
@@ -77,7 +77,7 @@ jtbc.console.manage = {
             pageObj.find('.tinyform').find('button.submit').attr('message', 'custom').on('message', function(){
               pageObj.find('span.tips').addClass('h').html($(this).attr('msg').split('|')[0]);
             }).attr('done', 'custom').on('done', function(){
-              tthis.parent.loadMainURL(tthis.para['fileurl'] + '?type=list&symbol=' + encodeURIComponent(thisObj.attr('symbol')) + '&node=' + encodeURIComponent(pageObj.find('input[name=\'nodename\']').val()));
+              tthis.parent.loadMainURL(tthis.param['fileurl'] + '?type=list&symbol=' + encodeURIComponent(thisObj.attr('symbol')) + '&node=' + encodeURIComponent(pageObj.find('input[name=\'nodename\']').val()));
               pageObj.find('span.close').trigger('click');
             });
           };
@@ -95,7 +95,7 @@ jtbc.console.manage = {
         var currentGenre = olObj.find('select[name=\'genre\']').val();
         var currentChildGenreObj = olObj.find('select[name=\'child-genre\']');
         if (currentChildGenreObj.length >= 1) currentGenre = currentChildGenreObj.last().attr('parent') + currentChildGenreObj.last().val();
-        var loadFileURL = tthis.para['fileurl'] + '?type=fileSelectFile&genre=' + encodeURIComponent(currentGenre) + '&mold=' + encodeURIComponent(olObj.find('select[name=\'mold\']').val());
+        var loadFileURL = tthis.param['fileurl'] + '?type=fileSelectFile&genre=' + encodeURIComponent(currentGenre) + '&mold=' + encodeURIComponent(olObj.find('select[name=\'mold\']').val());
         $.get(loadFileURL, function(data){
           var dataObj = $(data);
           var hasFile = false;
@@ -126,8 +126,8 @@ jtbc.console.manage = {
         var hasChild = false;
         var genre = argGenre;
         var obj = argObj;
-        var genreAry = tthis.para['genreAry'];
-        var symbolP1Ary = tthis.para['symbolP1Ary'];
+        var genreAry = tthis.param['genreAry'];
+        var symbolP1Ary = tthis.param['symbolP1Ary'];
         var childAry = [];
         for (var i in genreAry)
         {
@@ -185,7 +185,7 @@ jtbc.console.manage = {
       if (thisObj.attr('loading') != 'true')
       {
         thisObj.attr('loading', 'true');
-        var url = tthis.para['fileurl'] + '?type=fileSelect&symbol=' + encodeURIComponent(thisObj.attr('symbol'));
+        var url = tthis.param['fileurl'] + '?type=fileSelect&symbol=' + encodeURIComponent(thisObj.attr('symbol'));
         $.get(url, function(data){
           var dataObj = $(data);
           if (dataObj.find('result').attr('status') == '1')
@@ -213,14 +213,14 @@ jtbc.console.manage = {
                 tthis.obj.find('.searchbox').find('input.search').trigger('click');
               };
             });
-            var fileSelectGenreURL = tthis.para['fileurl'] + '?type=fileSelectGenre';
+            var fileSelectGenreURL = tthis.param['fileurl'] + '?type=fileSelectGenre';
             genreSelectHTML += '<select class="s1 full" name="genre"><option value="">/</option>';
             $.get(fileSelectGenreURL, function(data){
               var dataObj = $(data);
               if (dataObj.find('result').attr('status') == '1')
               {
                 var genreAry = JSON.parse(dataObj.find('result').text());
-                tthis.para['genreAry'] = genreAry;
+                tthis.param['genreAry'] = genreAry;
                 for (var i in genreAry)
                 {
                   var currentGenre = genreAry[i];
@@ -239,8 +239,8 @@ jtbc.console.manage = {
                 var symbolP1 = pageObj.find('ol').attr('symbol-p1');
                 if (symbolP1 != '')
                 {
-                  tthis.para['symbolP1Ary'] = symbolP1.split('/');
-                  var symbolP1Ary = tthis.para['symbolP1Ary'];
+                  tthis.param['symbolP1Ary'] = symbolP1.split('/');
+                  var symbolP1Ary = tthis.param['symbolP1Ary'];
                   if (symbolP1Ary.length >= 1) pageObj.find('span.select-genre').find('select').val(symbolP1Ary[0]).trigger('change');
                 };
                 loadFileList(pageObj.find('span.select-genre').find('select'));
@@ -256,9 +256,9 @@ jtbc.console.manage = {
       if (!thisObj.hasClass('lock'))
       {
         thisObj.addClass('lock');
-        if (tthis.para['codemirror']) tthis.obj.find('#codemirror').val(tthis.para['codemirror'].getValue());
+        if (tthis.param['codemirror']) tthis.obj.find('#codemirror').val(tthis.param['codemirror'].getValue());
         var formObj = tthis.obj.find('form.nodeedit');
-        var url = tthis.para['fileurl'] + formObj.attr('action');
+        var url = tthis.param['fileurl'] + formObj.attr('action');
         $.post(url, formObj.serialize(), function(data){
           var dataObj = $(data);
           thisObj.removeClass('lock');
@@ -273,7 +273,7 @@ jtbc.console.manage = {
         var pageObj = tthis.parent.lib.popupConfirm(thisObj.attr('confirm_text'), thisObj.attr('confirm_b2'), thisObj.attr('confirm_b3'), function(argObj){
           var btnObj = argObj;
           var postData = 'symbol=' + encodeURIComponent(thisObj.attr('symbol')) + '&nodename=' + encodeURIComponent(thisObj.attr('nodename'));
-          var url = tthis.para['fileurl'] + '?type=action&action=delete';
+          var url = tthis.param['fileurl'] + '?type=action&action=delete';
           thisObj.attr('loading', 'true');
           $.post(url, postData, function(data){
             var dataObj = $(data);

@@ -160,14 +160,14 @@ namespace jtbc {
       $myAry = array();
       if (!base::isEmpty($urs))
       {
-        $paraAry = explode('&', $urs);
-        foreach ($paraAry as $key => $val)
+        $paramAry = explode('&', $urs);
+        foreach ($paramAry as $key => $val)
         {
-          $paraItem = trim($val);
-          if (!base::isEmpty($paraItem))
+          $paramItem = trim($val);
+          if (!base::isEmpty($paramItem))
           {
-            $paraItemAry = explode('=', $paraItem);
-            if (count($paraItemAry) == 2) $myAry[$paraItemAry[0]] = $paraItemAry[1];
+            $paramItemAry = explode('=', $paramItem);
+            if (count($paramItemAry) == 2) $myAry[$paramItemAry[0]] = $paramItemAry[1];
           }
         }
       }

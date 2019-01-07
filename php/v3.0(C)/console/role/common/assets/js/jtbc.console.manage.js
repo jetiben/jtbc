@@ -1,7 +1,7 @@
 jtbc.console.manage = {
   obj: null,
   parent: jtbc.console,
-  para: [],
+  param: [],
   bindSelectPopedomEvents: function()
   {
     var tthis = this;
@@ -79,7 +79,7 @@ jtbc.console.manage = {
       if (thisObj.attr('loading') != 'true')
       {
         thisObj.attr('loading', 'true');
-        var url = tthis.para['fileurl'] + '?type=category&genre=' + encodeURIComponent(genre);
+        var url = tthis.param['fileurl'] + '?type=category&genre=' + encodeURIComponent(genre);
         $.get(url, function(data){
           var dataObj = $(data);
           if (dataObj.find('result').attr('status') == '1')

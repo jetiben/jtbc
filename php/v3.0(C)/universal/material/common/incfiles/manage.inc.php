@@ -56,7 +56,7 @@ class ui extends console\page {
   {
     $status = 0;
     $message = '';
-    $para = '';
+    $param = '';
     $account = self::account();
     if (!($account -> checkCurrentGenrePopedom('add')))
     {
@@ -76,32 +76,32 @@ class ui extends console\page {
       {
         $status = $upResultArray['status'];
         $message = $upResultArray['message'];
-        $para = $upResultArray['para'];
+        $param = $upResultArray['param'];
         if ($status == 1)
         {
-          $paraArray = json_decode($para, 1);
-          if (is_array($paraArray))
+          $paramArray = json_decode($param, 1);
+          if (is_array($paramArray))
           {
             $preset = array();
-            $preset['topic'] = $paraArray['filename'];
-            $preset['filepath'] = $paraArray['filepath'];
-            $preset['fileurl'] = $paraArray['fileurl'];
-            $preset['filetype'] = $paraArray['filetype'];
-            $preset['filesize'] = $paraArray['filesize'];
-            $preset['filegroup'] = base::getFileGroup($paraArray['filetype']);
+            $preset['topic'] = $paramArray['filename'];
+            $preset['filepath'] = $paramArray['filepath'];
+            $preset['fileurl'] = $paramArray['fileurl'];
+            $preset['filetype'] = $paramArray['filetype'];
+            $preset['filesize'] = $paramArray['filesize'];
+            $preset['filegroup'] = base::getFileGroup($paramArray['filetype']);
             $preset['lang'] = $account -> getLang();
             $preset['time'] = base::getDateTime();
             $re = auto::autoInsertByVars($preset);
             if (is_numeric($re))
             {
               $id = auto::$lastInsertId;
-              $account -> creatCurrentGenreLog('manage.log-add-1', array('id' => $id, 'filepath' => $paraArray['filepath']));
+              $account -> creatCurrentGenreLog('manage.log-add-1', array('id' => $id, 'filepath' => $paramArray['filepath']));
             }
           }
         }
       }
     }
-    $tmpstr = self::formatMsgResult($status, $message, $para);
+    $tmpstr = self::formatMsgResult($status, $message, $param);
     return $tmpstr;
   }
 
@@ -135,15 +135,15 @@ class ui extends console\page {
         {
           $status = $upResultArray['status'];
           $message = $upResultArray['message'];
-          $para = $upResultArray['para'];
+          $param = $upResultArray['param'];
           if ($status == 1)
           {
-            $paraArray = json_decode($para, 1);
-            if (is_array($paraArray))
+            $paramArray = json_decode($param, 1);
+            if (is_array($paramArray))
             {
               $preset = array();
-              $preset['topic'] = $paraArray['filename'];
-              $preset['filesize'] = $paraArray['filesize'];
+              $preset['topic'] = $paramArray['filename'];
+              $preset['filesize'] = $paramArray['filesize'];
               $re = auto::autoUpdateByVars($id, $preset);
               if (is_numeric($re))
               {

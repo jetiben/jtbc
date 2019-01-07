@@ -1,7 +1,7 @@
 jtbc.console.managerapi = {
   obj: null,
   parent: jtbc.console,
-  para: [],
+  param: [],
   initList: function()
   {
     var tthis = this;
@@ -9,13 +9,13 @@ jtbc.console.managerapi = {
     var hotAdd = function(argId)
     {
       var id = argId;
-      var url = tthis.parent.para['root'] + substanceObj.attr('genre') + '/' + substanceObj.attr('filename') + '?type=action&action=hot&id=' + encodeURIComponent(id);
+      var url = tthis.parent.param['root'] + substanceObj.attr('genre') + '/' + substanceObj.attr('filename') + '?type=action&action=hot&id=' + encodeURIComponent(id);
       $.get(url, function(data){});
     };
     var reloadContent = function()
     {
-      var getPara = 'filegroup=' + encodeURIComponent(substanceObj.find('.option').attr('val')) + '&sort=' + encodeURIComponent(substanceObj.find('.sortselect').attr('sort')) + '&keyword=' + encodeURIComponent(substanceObj.find('input.keyword').val());
-      substanceObj.attr('reloadpara', getPara).trigger('reload');
+      var getParam = 'filegroup=' + encodeURIComponent(substanceObj.find('.option').attr('val')) + '&sort=' + encodeURIComponent(substanceObj.find('.sortselect').attr('sort')) + '&keyword=' + encodeURIComponent(substanceObj.find('input.keyword').val());
+      substanceObj.attr('reloadparam', getParam).trigger('reload');
     };
     substanceObj.find('input[name=\'material\']').on('update', function(){
       var thisObj = $(this);

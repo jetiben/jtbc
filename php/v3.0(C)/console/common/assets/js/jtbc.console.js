@@ -1,7 +1,7 @@
 var jtbc = window.jtbc || {};
 jtbc.console = {
   obj: null,
-  para: [],
+  param: [],
   parent: jtbc,
   root: null,
   manageURL: 'manage.php',
@@ -28,7 +28,7 @@ jtbc.console = {
               try {
                 var myEditorObj = $(this);
                 var myCurrentEditorIndex = myEditorObj.attr('editor-index');
-                var myEditor = tthis.para['editor-instance-' + myCurrentEditorIndex];
+                var myEditor = tthis.param['editor-instance-' + myCurrentEditorIndex];
                 myEditorObj.val(tthis.parent.editor.getHTML(myEditor, myEditorObj.attr('name')));
               } catch(e){};
             });
@@ -36,7 +36,7 @@ jtbc.console = {
             {
               btnObj.addClass('lock');
               btnObj.trigger('before');
-              var url = tthis.para['current-main-fileurl'] + thisObj.attr('action');
+              var url = tthis.param['current-main-fileurl'] + thisObj.attr('action');
               $.post(url, thisObj.serialize(), function(data){
                 var dataObj = $(data);
                 btnObj.attr('msg', dataObj.find('result').attr('message')).removeClass('lock');
@@ -70,7 +70,7 @@ jtbc.console = {
             if (myEditorObj.length == 1)
             {
               var myCurrentEditorIndex = myEditorObj.attr('editor-index');
-              var myEditor = tthis.para['editor-instance-' + myCurrentEditorIndex];
+              var myEditor = tthis.param['editor-instance-' + myCurrentEditorIndex];
               tthis.lib.initAttEvents(myObj, function(argContent){ tthis.parent.editor.insertHTML(myEditor, myEditorString.substring(myEditorString.indexOf('.') + 1), argContent); });
             }
             else tthis.lib.initAttEvents(myObj);
@@ -87,7 +87,7 @@ jtbc.console = {
             var myObj = $(this);
             tthis.lib.popupConfirm(myObj.attr('confirm_text'), myObj.attr('confirm_b2'), myObj.attr('confirm_b3'), function(argObj){
               var btnObj = argObj;
-              var url = tthis.para['current-main-fileurl'] + myObj.attr('urlexec');
+              var url = tthis.param['current-main-fileurl'] + myObj.attr('urlexec');
               $.get(url, function(data){ tthis.loadMainURLRefresh(); btnObj.parent().find('button.b3').click(); });
             });
           });
@@ -98,12 +98,12 @@ jtbc.console = {
         }
         else if (thisObj.attr('mode') == 'editor')
         {
-          var myEditorIndex = tthis.para['editor-index'];
+          var myEditorIndex = tthis.param['editor-index'];
           if (isNaN(myEditorIndex)) myEditorIndex = 0;
           var myCurrentEditorIndex = myEditorIndex + 1;
           thisObj.attr('editor-index', myCurrentEditorIndex);
-          tthis.para['editor-index'] = myCurrentEditorIndex;
-          tthis.para['editor-instance-' + myCurrentEditorIndex] = tthis.parent.editor.replace(thisObj.get(0));
+          tthis.param['editor-index'] = myCurrentEditorIndex;
+          tthis.param['editor-instance-' + myCurrentEditorIndex] = tthis.parent.editor.replace(thisObj.get(0));
         }
         else if (thisObj.attr('mode') == 'highlightline')
         {
@@ -139,7 +139,7 @@ jtbc.console = {
             var myObj = $(this);
             var baseLink = myObj.attr('baselink');
             var myLink = baseLink.replace(/(\[\~page\])/g, myObj.parent().find('input.pagenum').val());
-            tthis.loadMainURL(tthis.para['current-main-fileurl'] + myLink);
+            tthis.loadMainURL(tthis.param['current-main-fileurl'] + myLink);
           });
         }
         else if (thisObj.attr('mode') == 'pitchon')
@@ -206,15 +206,15 @@ jtbc.console = {
       {
         if (myObj.attr('once') == 'true')
         {
-          if (tthis.para['dfn-once-' + myObj.attr('onceid')] != 'done')
+          if (tthis.param['dfn-once-' + myObj.attr('onceid')] != 'done')
           {
-            tthis.para['dfn-once-' + myObj.attr('onceid')] = 'done';
-            tthis.root.prepend('<script type="text/javascript" src="' + tthis.para['root'] + myObj.attr('url') + '"></script>');
+            tthis.param['dfn-once-' + myObj.attr('onceid')] = 'done';
+            tthis.root.prepend('<script type="text/javascript" src="' + tthis.param['root'] + myObj.attr('url') + '"></script>');
           };
         }
-        else obj.append('<script type="text/javascript" src="' + tthis.para['root'] + myObj.attr('url') + '"></script>');
+        else obj.append('<script type="text/javascript" src="' + tthis.param['root'] + myObj.attr('url') + '"></script>');
       }
-      else if (myObj.attr('cssurl')) obj.append('<link rel="stylesheet" href="' + tthis.para['root'] + myObj.attr('cssurl') + '" />');
+      else if (myObj.attr('cssurl')) obj.append('<link rel="stylesheet" href="' + tthis.param['root'] + myObj.attr('cssurl') + '" />');
       else if (myObj.attr('call')) eval(myObj.attr('call'));
     });
     tthis.bindEventsByMode(obj);
@@ -247,13 +247,13 @@ jtbc.console = {
         if (myLink)
         {
           if (myGenre == '|self|') tthis.loadMainURL(myLink);
-          else tthis.loadMainURL(tthis.para['root'] + thisObj.attr('genre') + '/' + thisObj.attr('link'));
+          else tthis.loadMainURL(tthis.param['root'] + thisObj.attr('genre') + '/' + thisObj.attr('link'));
         };
       });
       mainObj.find('a.link').on('click', function(){
         var thisObj = $(this);
         var managerObj = mainObj.find('.manager');
-        if (thisObj.attr('link')) tthis.loadMainURL(tthis.para['current-main-fileurl'] + thisObj.attr('link'));
+        if (thisObj.attr('link')) tthis.loadMainURL(tthis.param['current-main-fileurl'] + thisObj.attr('link'));
       });
       tthis.obj.find('nav').on('selectleftmenu', function(){
         var thisObj = $(this);
@@ -274,10 +274,10 @@ jtbc.console = {
         };
       }).trigger('selectleftmenu');
     };
-    if (tthis.para['load-main-url-lock'] != true)
+    if (tthis.param['load-main-url-lock'] != true)
     {
-      tthis.para['load-main-url-lock'] = true;
-      tthis.para['load-main-url-waiting'] = setTimeout(function(){
+      tthis.param['load-main-url-lock'] = true;
+      tthis.param['load-main-url-waiting'] = setTimeout(function(){
         mainObj.parent().find('.waiting').addClass('on');
       }, 500);
       $.ajax({
@@ -289,14 +289,14 @@ jtbc.console = {
           if (dataObj.find('result').attr('status') == '1')
           {
             var showURL = myURL;
-            var rootPath = tthis.para['root'];
+            var rootPath = tthis.param['root'];
             if (showURL.substr(0, rootPath.length) == rootPath) showURL = '/' + showURL.substr(rootPath.length);
-            tthis.para['load-main-url'] = myURL;
+            tthis.param['load-main-url'] = myURL;
             location.href = '#' + showURL;
             tthis.insertHTML(mainObj, dataObj.find('result').text());
             loadedCallBack();
-            tthis.para['load-main-url-lock'] = false;
-            clearTimeout(tthis.para['load-main-url-waiting']);
+            tthis.param['load-main-url-lock'] = false;
+            clearTimeout(tthis.param['load-main-url-waiting']);
             mainObj.parent().find('.waiting').removeClass('on');
           }
           else this.error();
@@ -304,9 +304,9 @@ jtbc.console = {
         error: function()
         {
           var errorURL = this.url;
-          tthis.para['load-main-url-lock'] = false;
+          tthis.param['load-main-url-lock'] = false;
           tthis.lib.popupAlert(mainObj.attr('urlerror') + '<em><a href="' + tthis.parent.htmlEncode(errorURL) + '" target="_blank">' + tthis.parent.htmlEncode(errorURL) + '</a></em>', mainObj.attr('ikown'), function(){
-            clearTimeout(tthis.para['load-main-url-waiting']);
+            clearTimeout(tthis.param['load-main-url-waiting']);
             mainObj.parent().find('.waiting').removeClass('on');
           });
         }
@@ -316,7 +316,7 @@ jtbc.console = {
   loadMainURLRefresh: function()
   {
     var tthis = this;
-    tthis.loadMainURL(tthis.para['load-main-url']);
+    tthis.loadMainURL(tthis.param['load-main-url']);
   },
   initConsole: function()
   {
@@ -417,7 +417,7 @@ jtbc.console = {
           thisObj.next().addClass('open');
         };
       };
-      if (thisObj.attr('link')) tthis.loadMainURL(tthis.para['root'] + thisObj.attr('genre') + '/' + thisObj.attr('link'));
+      if (thisObj.attr('link')) tthis.loadMainURL(tthis.param['root'] + thisObj.attr('genre') + '/' + thisObj.attr('link'));
     });
     var defURL = tthis.obj.find('.container').find('.main').attr('def');
     var getLocURL = function()
@@ -426,7 +426,7 @@ jtbc.console = {
       if (location.href.indexOf('#') != -1)
       {
         locURL = location.href.substr(location.href.indexOf('#') + 1);
-        if (locURL.substr(0, 1) == '/') locURL = tthis.para['root'] + locURL.substr(1);
+        if (locURL.substr(0, 1) == '/') locURL = tthis.param['root'] + locURL.substr(1);
       };
       return locURL;
     };
@@ -435,7 +435,7 @@ jtbc.console = {
     $(window).on('resize', function(){ tthis.rsetWidthAndHeight(); });
     $(window).on('hashchange', function(){
       var locURL = getLocURL();
-      if (locURL != '' && locURL != tthis.para['load-main-url']) tthis.loadMainURL(locURL);
+      if (locURL != '' && locURL != tthis.param['load-main-url']) tthis.loadMainURL(locURL);
     });
   },
   initLogin: function()
@@ -468,13 +468,13 @@ jtbc.console = {
   {
     var tthis = this;
     tthis.root = $('#console');
-    tthis.para['root'] = tthis.root.attr('root');
+    tthis.param['root'] = tthis.root.attr('root');
     tthis.loadHTML();
   }
 };
 
 jtbc.console.lib = {
-  para: [],
+  param: [],
   parent: jtbc.console,
   dragSort: function(argObj, argChild, argDragName, argCallBack, argCallBackDone)
   {
@@ -526,12 +526,12 @@ jtbc.console.lib = {
       mouseover: function()
       {
         var thisObj = $(this);
-        clearTimeout(tthis.para[thisObj.attr('ds')]);
+        clearTimeout(tthis.param[thisObj.attr('ds')]);
       },
       mouseout: function()
       {
         var thisObj = $(this);
-        tthis.para[thisObj.attr('ds')] = setTimeout(function(){ thisObj.trigger('mouseup'); }, 100);
+        tthis.param[thisObj.attr('ds')] = setTimeout(function(){ thisObj.trigger('mouseup'); }, 100);
       }
     });
     myObj.on('mousedown', myChild + ' ' + myDragName, function(){
@@ -675,18 +675,18 @@ jtbc.console.lib = {
         var thisObj = $(this);
         if (!thisObj.hasClass('del'))
         {
-          attArray[attArray.length] = thisObj.attr('para');
+          attArray[attArray.length] = thisObj.attr('param');
         };
       });
       attValObj.val(JSON.stringify(attArray));
     };
-    var appendNewAttLi = function(argPara)
+    var appendNewAttLi = function(argParam)
     {
-      var para = argPara;
-      var paraArray = JSON.parse(para);
+      var param = argParam;
+      var paramArray = JSON.parse(param);
       var ulObj = attObj.find('ul');
       ulObj.find('li.null').remove();
-      ulObj.append('<li para="' + tthis.parent.parent.htmlEncode(para) + '"><em class="filetype move ' + tthis.parent.parent.htmlEncode(paraArray['filetype']) + '">' + tthis.parent.parent.htmlEncode(paraArray['filetype']) + '</em><span class="tit">' + tthis.parent.parent.htmlEncode(paraArray['filename']) + '</span><span class="size">' + tthis.parent.parent.htmlEncode(paraArray['filesizetext']) + '</span><icons><icon class="insert" title="' + ulObj.attr('text-insert') + '"></icon><icon class="delete" title="' + ulObj.attr('text-delete') + '"></icon></icons></li>');
+      ulObj.append('<li param="' + tthis.parent.parent.htmlEncode(param) + '"><em class="filetype move ' + tthis.parent.parent.htmlEncode(paramArray['filetype']) + '">' + tthis.parent.parent.htmlEncode(paramArray['filetype']) + '</em><span class="tit">' + tthis.parent.parent.htmlEncode(paramArray['filename']) + '</span><span class="size">' + tthis.parent.parent.htmlEncode(paramArray['filesizetext']) + '</span><icons><icon class="insert" title="' + ulObj.attr('text-insert') + '"></icon><icon class="delete" title="' + ulObj.attr('text-delete') + '"></icon></icons></li>');
       if (canInsert == false) ulObj.find('icon.insert').remove();
       resetAttInputVal();
     };
@@ -702,34 +702,34 @@ jtbc.console.lib = {
     attObj.find('ul').on('click', 'li span.tit', function(){
       var thisObj = $(this);
       var liObj = thisObj.parent();
-      var paraArray = JSON.parse(liObj.attr('para'));
-      var filetype = paraArray['filetype'];
-      var fileURL = paraArray['fileurl'];
+      var paramArray = JSON.parse(liObj.attr('param'));
+      var filetype = paramArray['filetype'];
+      var fileURL = paramArray['fileurl'];
       if (!tthis.parent.parent.isAbsoluteURL(fileURL)) fileURL = attObj.attr('folder') + fileURL;
-      var pageObj = tthis.previewAtt(filetype, paraArray['filename'], fileURL, liObj.parent().attr('text-preview-link'), '1');
+      var pageObj = tthis.previewAtt(filetype, paramArray['filename'], fileURL, liObj.parent().attr('text-preview-link'), '1');
       pageObj.find('input.title').on('input', function(){
-        paraArray['filename'] = $(this).val();
-        thisObj.html(tthis.parent.parent.htmlEncode(paraArray['filename']));
-        liObj.attr('para', JSON.stringify(paraArray));
+        paramArray['filename'] = $(this).val();
+        thisObj.html(tthis.parent.parent.htmlEncode(paramArray['filename']));
+        liObj.attr('param', JSON.stringify(paramArray));
         resetAttInputVal();
       });
     });
     attObj.find('ul').on('click', 'li icon.insert', function(){
       var thisObj = $(this);
       var liObj = thisObj.parent().parent();
-      var paraArray = JSON.parse(liObj.attr('para'));
-      var filetype = paraArray['filetype'];
+      var paramArray = JSON.parse(liObj.attr('param'));
+      var filetype = paramArray['filetype'];
       if (filetype == 'jpg' || filetype == 'gif' || filetype == 'png')
       {
-        insertFun('<img src="' + tthis.parent.parent.htmlEncode(paraArray['fileurl']) + '" alt="" />');
+        insertFun('<img src="' + tthis.parent.parent.htmlEncode(paramArray['fileurl']) + '" alt="" />');
       }
       else if (filetype == 'mp4')
       {
-        insertFun('<video controls="controls" width="480" height="270"><source src="' + tthis.parent.parent.htmlEncode(paraArray['fileurl']) + '" type="video/mp4" /></video>');
+        insertFun('<video controls="controls" width="480" height="270"><source src="' + tthis.parent.parent.htmlEncode(paramArray['fileurl']) + '" type="video/mp4" /></video>');
       }
       else
       {
-        insertFun('<a href="' + tthis.parent.parent.htmlEncode(paraArray['fileurl']) + '" target="_blank">' + tthis.parent.parent.htmlEncode(paraArray['filename']) + '</a>');
+        insertFun('<a href="' + tthis.parent.parent.htmlEncode(paramArray['fileurl']) + '" target="_blank">' + tthis.parent.parent.htmlEncode(paramArray['filename']) + '</a>');
       };
     });
     attObj.find('ul').on('click', 'li icon.delete', function(){
@@ -759,7 +759,7 @@ jtbc.console.lib = {
     });
     attObj.find('input.upload').on('change', function(){
       var thisObj = $(this);
-      var url = tthis.parent.para['current-main-fileurl'] + thisObj.attr('action');
+      var url = tthis.parent.param['current-main-fileurl'] + thisObj.attr('action');
       if (thisObj.attr('uploading') != 'true')
       {
         thisObj.attr('uploading', 'true');
@@ -774,9 +774,9 @@ jtbc.console.lib = {
           var fileIndex = argFileIndex;
           if (upSucceed == true)
           {
-            var para = upResult.find('result').attr('para');
+            var param = upResult.find('result').attr('param');
             myObj.find('.fileup').find('.item').eq(fileIndex).fadeOut();
-            appendNewAttLi(para);
+            appendNewAttLi(param);
           };
         });
       };
@@ -794,7 +794,7 @@ jtbc.console.lib = {
         tthis.popupConfirm(thisObj.attr('confirm_text'), thisObj.attr('confirm_b2'), thisObj.attr('confirm_b3'), function(argObj){
           var btnObj = argObj;
           var ids = tthis.getCheckBoxValue(myObj.parent().parent().find('input.id:checked'));
-          var url = tthis.parent.para['current-main-fileurl'] + '?type=action&action=batch';
+          var url = tthis.parent.param['current-main-fileurl'] + '?type=action&action=batch';
           url += '&batch=' + encodeURIComponent(batch) + '&ids=' + encodeURIComponent(ids);
           $.get(url, function(data){ tthis.parent.loadMainURLRefresh(); btnObj.parent().find('button.b3').click(); });
         });
@@ -810,7 +810,7 @@ jtbc.console.lib = {
       if (thisObj.attr('loading') != 'true')
       {
         thisObj.attr('loading', 'true');
-        var url = tthis.parent.para['current-main-fileurl'] + thisObj.attr('url') + '&fid=' + encodeURIComponent(thisObj.attr('fid'));
+        var url = tthis.parent.param['current-main-fileurl'] + thisObj.attr('url') + '&fid=' + encodeURIComponent(thisObj.attr('fid'));
         $.get(url, function(data){
           var dataObj = $(data);
           if (dataObj.find('result').attr('status') == '1')
@@ -820,7 +820,7 @@ jtbc.console.lib = {
             pageObj.find('ul.list').find('li:not(.alonetips)').on('click', function(){
               var thisObj = $(this);
               pageObj.find('span.close').trigger('click');
-              tthis.parent.loadMainURL(tthis.parent.para['current-main-fileurl'] + thisObj.attr('link'));
+              tthis.parent.loadMainURL(tthis.parent.param['current-main-fileurl'] + thisObj.attr('link'));
             });
           };
         });
@@ -840,14 +840,14 @@ jtbc.console.lib = {
       var currentFileURL = thisObj.val();
       if (currentFileURL && thisObj.attr('text-preview-title'))
       {
-        if (!tthis.parent.parent.isAbsoluteURL(currentFileURL)) currentFileURL = tthis.parent.para['current-main-path'] + currentFileURL;
+        if (!tthis.parent.parent.isAbsoluteURL(currentFileURL)) currentFileURL = tthis.parent.param['current-main-path'] + currentFileURL;
         tthis.previewAtt(null, thisObj.attr('text-preview-title'), currentFileURL, thisObj.attr('text-preview-link'), '0');
       };
     });
     myObj.find('input.upfiles').on('change', function(){
       var thisObj = $(this);
       var btnObj = thisObj.parent().find('button.upbtn');
-      var url = tthis.parent.para['current-main-fileurl'] + thisObj.attr('action');
+      var url = tthis.parent.param['current-main-fileurl'] + thisObj.attr('action');
       if (thisObj.attr('uploading') != 'true')
       {
         thisObj.attr('uploading', 'true');
@@ -860,12 +860,12 @@ jtbc.console.lib = {
             if (result.find('result').attr('status') == '1')
             {
               var upsourceArray = new Object();
-              var para = result.find('result').attr('para');
-              var paraArray = JSON.parse(para);
-              upsourceArray.fileurl = paraArray['fileurl'];
-              upsourceArray.uploadid = paraArray['uploadid'];
+              var param = result.find('result').attr('param');
+              var paramArray = JSON.parse(param);
+              upsourceArray.fileurl = paramArray['fileurl'];
+              upsourceArray.uploadid = paramArray['uploadid'];
               thisObj.parent().parent().find('input.upsource').val(JSON.stringify(upsourceArray));
-              thisObj.parent().parent().find('input.fileurl').val(paraArray['fileurl']);
+              thisObj.parent().parent().find('input.fileurl').val(paramArray['fileurl']);
             }
             else
             {
@@ -881,8 +881,8 @@ jtbc.console.lib = {
       var thisObj = $(this);
       if (thisObj.val())
       {
-        var paraArray = JSON.parse(thisObj.val());
-        thisObj.parent().find('input.fileurl').val(paraArray['fileurl']);
+        var paramArray = JSON.parse(thisObj.val());
+        thisObj.parent().find('input.fileurl').val(paramArray['fileurl']);
       };
     });
   },
@@ -894,7 +894,7 @@ jtbc.console.lib = {
       var thisObj = $(this);
       var parmname = thisObj.attr('parmname') || 'keyword';
       var keyword = thisObj.parent().find('input.keyword').val();
-      var url = tthis.parent.para['current-main-fileurl'] + thisObj.parent().attr('action') + '&' + parmname + '=' + encodeURIComponent(keyword);
+      var url = tthis.parent.param['current-main-fileurl'] + thisObj.parent().attr('action') + '&' + parmname + '=' + encodeURIComponent(keyword);
       tthis.parent.loadMainURL(url);
     });
   },
@@ -903,8 +903,8 @@ jtbc.console.lib = {
     var myObj = argObj;
     myObj.obj = myObj.parent.obj.find('.manager');
     try { myObj.parent.parent.editor.baseHref = myObj.obj.attr('folder'); } catch(e){};
-    myObj.parent.para['current-main-path'] = myObj.parent.para['root'] + myObj.obj.attr('genre') + '/';
-    myObj.parent.para['current-main-fileurl'] = myObj.para['fileurl'] = myObj.parent.para['current-main-path'] + myObj.obj.attr('filename');
+    myObj.parent.param['current-main-path'] = myObj.parent.param['root'] + myObj.obj.attr('genre') + '/';
+    myObj.parent.param['current-main-fileurl'] = myObj.param['fileurl'] = myObj.parent.param['current-main-path'] + myObj.obj.attr('filename');
     var myModule = myObj.obj.attr('module');
     var myModuleInit = 'init' + myModule.substring(0, 1).toUpperCase() + myModule.substring(1);
     if (myObj.hasOwnProperty(myModuleInit)) eval('myObj.' + myModuleInit + '();');
@@ -914,10 +914,10 @@ jtbc.console.lib = {
     var tthis = this;
     var mode = argMode;
     var callback = argCallBack;
-    var url = tthis.parent.para['root'] + tthis.parent.materialFolder + tthis.parent.managerapiURL + '?type=list&mode=' + encodeURIComponent(mode);
-    if (tthis.para['select-material-loading'] != true)
+    var url = tthis.parent.param['root'] + tthis.parent.materialFolder + tthis.parent.managerapiURL + '?type=list&mode=' + encodeURIComponent(mode);
+    if (tthis.param['select-material-loading'] != true)
     {
-      tthis.para['select-material-loading'] = true;
+      tthis.param['select-material-loading'] = true;
       $.get(url, function(data){
         var dataObj = $(data);
         if (dataObj.find('result').attr('status') == '1')
@@ -926,16 +926,16 @@ jtbc.console.lib = {
           tthis.parent.insertHTML(pageObj.find('.content'), dataObj.find('result').text());
           pageObj.on('reload', '.substance', function(){
             var thisObj = $(this);
-            if (tthis.para['select-material-loading'] != true)
+            if (tthis.param['select-material-loading'] != true)
             {
-              tthis.para['select-material-loading'] = true;
-              var reloadURL = url + '&get=reload&' + thisObj.attr('reloadpara');
+              tthis.param['select-material-loading'] = true;
+              var reloadURL = url + '&get=reload&' + thisObj.attr('reloadparam');
               $.get(reloadURL, function(data){
                 var dataObj = $(data);
                 if (dataObj.find('result').attr('status') == '1')
                 {
                   tthis.parent.insertHTML(pageObj.find('.content'), dataObj.find('result').text());
-                  tthis.para['select-material-loading'] = false;
+                  tthis.param['select-material-loading'] = false;
                 };
               });
             };
@@ -944,7 +944,7 @@ jtbc.console.lib = {
             pageObj.find('span.close').trigger('click');
             callback(pageObj.find('input[name=\'material\']').val());
           });
-          tthis.para['select-material-loading'] = false;
+          tthis.param['select-material-loading'] = false;
         };
       });
     };
@@ -994,7 +994,7 @@ jtbc.console.lib = {
       maskObj.removeClass('on');
       alertObj.removeClass('on');
     });
-    tthis.para['popup-alert-timeout'] = setTimeout(function(){
+    tthis.param['popup-alert-timeout'] = setTimeout(function(){
       maskObj.addClass('on');
       alertObj.addClass('on');
     }, 100);
@@ -1009,12 +1009,12 @@ jtbc.console.lib = {
     rootObj.append('<div class="popup_minialert"><div class="word"></div></div>');
     var minialertObj = rootObj.find('.popup_minialert');
     minialertObj.find('.word').html(word);
-    clearTimeout(tthis.para['popup-minialert-timeout']);
-    clearTimeout(tthis.para['popup-minialert-disappear-timeout']);
-    tthis.para['popup-minialert-timeout'] = setTimeout(function(){
+    clearTimeout(tthis.param['popup-minialert-timeout']);
+    clearTimeout(tthis.param['popup-minialert-disappear-timeout']);
+    tthis.param['popup-minialert-timeout'] = setTimeout(function(){
       minialertObj.addClass('on');
     }, 100);
-    tthis.para['popup-minialert-disappear-timeout'] = setTimeout(function(){
+    tthis.param['popup-minialert-disappear-timeout'] = setTimeout(function(){
       minialertObj.removeClass('on');
     }, 2000);
     return minialertObj;
@@ -1045,7 +1045,7 @@ jtbc.console.lib = {
       maskObj.removeClass('on');
       confirmObj.removeClass('on');
     });
-    tthis.para['popup-confirm-timeout'] = setTimeout(function(){
+    tthis.param['popup-confirm-timeout'] = setTimeout(function(){
       maskObj.addClass('on');
       confirmObj.addClass('on');
     }, 100);
@@ -1077,7 +1077,7 @@ jtbc.console.lib = {
       if (myWidth != 0 && myHeight != 0) pageObj.css({'min-width': myWidth + 'px', 'min-height': myHeight + 'px'});
       requestAnimationFrame(checkPopupSize);
     };
-    tthis.para['popup-page-timeout'] = setTimeout(function(){
+    tthis.param['popup-page-timeout'] = setTimeout(function(){
       maskObj.addClass('on');
       pageObj.addClass('on');
     }, 100);

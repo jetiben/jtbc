@@ -1,7 +1,7 @@
 jtbc.console.manage = {
   obj: null,
   parent: jtbc.console,
-  para: [],
+  param: [],
   initList: function()
   {
     var tthis = this;
@@ -12,7 +12,7 @@ jtbc.console.manage = {
       trObj.find('span.mainlink').find('label').removeClass('hide');
       if (thisObj.val() != thisObj.attr('rsvalue'))
       {
-        var url = tthis.para['fileurl'] + '?type=action&action=addfolder&name=' + encodeURIComponent(thisObj.val()) + '&path=' + encodeURIComponent(thisObj.attr('rspath'));
+        var url = tthis.param['fileurl'] + '?type=action&action=addfolder&name=' + encodeURIComponent(thisObj.val()) + '&path=' + encodeURIComponent(thisObj.attr('rspath'));
         $.get(url, function(data){ tthis.parent.loadMainURLRefresh(); });
       };
     });
@@ -24,7 +24,7 @@ jtbc.console.manage = {
       trObj.find('span.mainlink').find('a.link').addClass('block');
       if (thisObj.val() != thisObj.attr('rsvalue'))
       {
-        var url = tthis.para['fileurl'] + '?type=action&action=rename&name=' + encodeURIComponent(thisObj.val()) + '&path=' + encodeURIComponent(thisObj.attr('rspath'));
+        var url = tthis.param['fileurl'] + '?type=action&action=rename&name=' + encodeURIComponent(thisObj.val()) + '&path=' + encodeURIComponent(thisObj.attr('rspath'));
         $.get(url, function(data){ tthis.parent.loadMainURLRefresh(); });
       };
     });
@@ -33,7 +33,7 @@ jtbc.console.manage = {
       if (thisObj.attr('titleloading') != 'true')
       {
         thisObj.attr('titleloading', 'true');
-        var url = tthis.para['fileurl'] + '?type=getinfo&val=' + thisObj.attr('val');
+        var url = tthis.param['fileurl'] + '?type=getinfo&val=' + thisObj.attr('val');
         $.get(url, function(data){ thisObj.attr('title', $(data).find('result').attr('message')); });
       };
     });
@@ -48,7 +48,7 @@ jtbc.console.manage = {
       var thisObj = $(this);
       tthis.parent.lib.popupConfirm(thisObj.attr('confirm_text'), thisObj.attr('confirm_b2'), thisObj.attr('confirm_b3'), function(argObj){
         var myObj = argObj;
-        var url = tthis.para['fileurl'] + '?type=action&action=delete&path=' + encodeURIComponent(thisObj.attr('rspath'));
+        var url = tthis.param['fileurl'] + '?type=action&action=delete&path=' + encodeURIComponent(thisObj.attr('rspath'));
         $.get(url, function(data){ tthis.parent.loadMainURLRefresh(); myObj.parent().find('button.b3').click(); });
       });
     });
@@ -62,7 +62,7 @@ jtbc.console.manage = {
     });
     tthis.obj.find('.upload').on('change', function(){
       var thisObj = $(this);
-      var url = tthis.para['fileurl'] + '?type=action&action=addfile&path=' + encodeURIComponent(thisObj.attr('rspath'));
+      var url = tthis.param['fileurl'] + '?type=action&action=addfile&path=' + encodeURIComponent(thisObj.attr('rspath'));
       if (thisObj.attr('uploading') != 'true')
       {
         thisObj.attr('uploading', 'true');
@@ -82,8 +82,8 @@ jtbc.console.manage = {
   initEdit: function()
   {
     var tthis = this;
-    tthis.para['codemirror-timeout'] = setTimeout(function(){
-      tthis.para['codemirror'] = CodeMirror.fromTextArea(document.getElementById('codemirror'), {mode: tthis.obj.attr('filemode'), lineNumbers: true, lineWrapping: true, styleActiveLine: true, theme: 'monokai', extraKeys: { 'F11': function(cm) { cm.setOption('fullScreen', !cm.getOption('fullScreen')); }, 'Esc': function(cm) { if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false); }}});
+    tthis.param['codemirror-timeout'] = setTimeout(function(){
+      tthis.param['codemirror'] = CodeMirror.fromTextArea(document.getElementById('codemirror'), {mode: tthis.obj.attr('filemode'), lineNumbers: true, lineWrapping: true, styleActiveLine: true, theme: 'monokai', extraKeys: { 'F11': function(cm) { cm.setOption('fullScreen', !cm.getOption('fullScreen')); }, 'Esc': function(cm) { if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false); }}});
     }, 50);
     tthis.obj.find('button.savefile').click(function(){
       var thisObj = $(this);
@@ -91,9 +91,9 @@ jtbc.console.manage = {
       {
         thisObj.addClass('lock');
         var fileContent = tthis.obj.find('#codemirror').val();
-        if (tthis.para['codemirror']) fileContent = tthis.para['codemirror'].getValue();
+        if (tthis.param['codemirror']) fileContent = tthis.param['codemirror'].getValue();
         var formObj = tthis.obj.find('form.savefile');
-        var url = tthis.para['fileurl'] + formObj.attr('action');
+        var url = tthis.param['fileurl'] + formObj.attr('action');
         $.post(url, 'content=' + encodeURIComponent(fileContent), function(data){
           var dataObj = $(data);
           thisObj.removeClass('lock');

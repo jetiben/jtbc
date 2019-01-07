@@ -1,6 +1,6 @@
 var jtbc = window.jtbc || {};
 jtbc.frontend = {
-  para: [],
+  param: [],
   bindEventsByMode: function(argObj)
   {
     var tthis = this;

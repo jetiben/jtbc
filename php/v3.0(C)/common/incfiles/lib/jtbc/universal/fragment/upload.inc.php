@@ -34,7 +34,7 @@ namespace jtbc\universal\fragment {
         {
           $status = $upResultArray['status'];
           $message = $upResultArray['message'];
-          $para = $upResultArray['para'];
+          $para = $upResultArray['param'];
           if ($status == 1)
           {
             $paraArray = json_decode($para, 1);

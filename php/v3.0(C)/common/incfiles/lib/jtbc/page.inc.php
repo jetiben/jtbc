@@ -7,7 +7,7 @@ namespace jtbc {
   {
     public static $errorCode = 0;
     public static $init = false;
-    public static $para = array();
+    public static $param = array();
     private static $title = array();
 
     public static function formatResult($argStatus, $argResult)
@@ -58,34 +58,34 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    public static function formatMsgResult($argStatus, $argMessage, $argPara = '')
+    public static function formatMsgResult($argStatus, $argMessage, $argParam = '')
     {
       $status = $argStatus;
       $message = $argMessage;
-      $para = $argPara;
-      $tmpstr = '<?xml version="1.0" encoding="' . CHARSET . '"?><result status="' . base::getNum($status, 0) . '" message="' . base::htmlEncode($message) . '" para="' . base::htmlEncode($para) . '"></result>';
+      $param = $argParam;
+      $tmpstr = '<?xml version="1.0" encoding="' . CHARSET . '"?><result status="' . base::getNum($status, 0) . '" message="' . base::htmlEncode($message) . '" param="' . base::htmlEncode($param) . '"></result>';
       return $tmpstr;
     }
 
     public static function getParam($argName)
     {
-      $para = null;
+      $param = null;
       $name = $argName;
       if (self::$init == false)
       {
         self::$init = true;
         self::init();
       }
-      if (array_key_exists($name, self::$para)) $para = self::$para[$name];
-      return $para;
+      if (array_key_exists($name, self::$param)) $param = self::$param[$name];
+      return $param;
     }
 
     public static function getPageParam($argName)
     {
       $name = $argName;
-      $para = self::getParam($name);
-      if (base::isEmpty($para)) $para = tpl::take('global.public.' . $name, 'lng');
-      return $para;
+      $param = self::getParam($name);
+      if (base::isEmpty($param)) $param = tpl::take('global.public.' . $name, 'lng');
+      return $param;
     }
 
     public static function getPageTitle()
@@ -190,7 +190,7 @@ namespace jtbc {
     {
       $name = $argName;
       $value = $argValue;
-      self::$para[$name] = $value;
+      self::$param[$name] = $value;
       return $value;
     }
 
@@ -210,21 +210,21 @@ namespace jtbc {
 
     public static function init()
     {
-      self::$para['http'] = request::isHTTPS() ? 'https://' : 'http://';
-      self::$para['http_host'] = request::server('HTTP_HOST');
-      self::$para['route'] = route::getRoute();
-      self::$para['genre'] = route::getCurrentGenre();
-      self::$para['assetspath'] = ASSETSPATH;
-      self::$para['global.assetspath'] = route::getActualRoute(ASSETSPATH);
-      self::$para['folder'] = route::getCurrentFolder();
-      self::$para['filename'] = route::getCurrentFilename();
-      self::$para['lang'] = request::getForeLang();
-      self::$para['referer'] = request::server('HTTP_REFERER');
-      self::$para['uri'] = route::getScriptName();
-      self::$para['urs'] = request::server('QUERY_STRING');
-      self::$para['url'] = base::isEmpty(self::$para['urs'])? self::$para['uri']: self::$para['uri'] . '?' . self::$para['urs'];
-      self::$para['urlpre'] = self::$para['http'] . self::$para['http_host'];
-      self::$para['fullurl'] = self::$para['urlpre'] . self::$para['url'];
+      self::$param['http'] = request::isHTTPS() ? 'https://' : 'http://';
+      self::$param['http_host'] = request::server('HTTP_HOST');
+      self::$param['route'] = route::getRoute();
+      self::$param['genre'] = route::getCurrentGenre();
+      self::$param['assetspath'] = ASSETSPATH;
+      self::$param['global.assetspath'] = route::getActualRoute(ASSETSPATH);
+      self::$param['folder'] = route::getCurrentFolder();
+      self::$param['filename'] = route::getCurrentFilename();
+      self::$param['lang'] = request::getForeLang();
+      self::$param['referer'] = request::server('HTTP_REFERER');
+      self::$param['uri'] = route::getScriptName();
+      self::$param['urs'] = request::server('QUERY_STRING');
+      self::$param['url'] = base::isEmpty(self::$param['urs'])? self::$param['uri']: self::$param['uri'] . '?' . self::$param['urs'];
+      self::$param['urlpre'] = self::$param['http'] . self::$param['http_host'];
+      self::$param['fullurl'] = self::$param['urlpre'] . self::$param['url'];
     }
   }
 }

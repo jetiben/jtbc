@@ -185,7 +185,7 @@ namespace jtbc\universal {
       $upResultArray = array();
       $upResultArray['status'] = 0;
       $upResultArray['message'] = tpl::take('::console.text-upload-error-others', 'lng');
-      $upResultArray['para'] = '';
+      $upResultArray['param'] = '';
       $uploadPath = tpl::take('config.upload_path', 'cfg');
       $allowFiletype = tpl::take('config.upload_filetype', 'cfg');
       $allowFilesize = base::getNum(tpl::take('config.upload_filesize', 'cfg'), 0);
@@ -303,7 +303,7 @@ namespace jtbc\universal {
                         $paraArray['uploadid'] = $uploadid;
                         $upResultArray['status'] = $status;
                         $upResultArray['message'] = 'done';
-                        $upResultArray['para'] = json_encode($paraArray);
+                        $upResultArray['param'] = json_encode($paraArray);
                       }
                     }
                   }

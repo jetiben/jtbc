@@ -5,55 +5,55 @@
 namespace jtbc {
   class transfer
   {
-    public static function transfer($argPara, $argOthers = null)
+    public static function transfer($argParam, $argOthers = null)
     {
       $tmpstr = '';
-      $para = $argPara;
+      $param = $argParam;
       $others = $argOthers;
-      $paraMethod = base::getParameter($para, 'method');
-      if ($paraMethod == 'json') $tmpstr = self::transferJson($para, $others);
-      else if ($paraMethod == 'sql') $tmpstr = self::transferSQL($para, $others);
-      else if ($paraMethod == 'multigenre') $tmpstr = self::transferMultiGenre($para, $others);
-      else $tmpstr = self::transferStandard($para, $others);
+      $paramMethod = base::getParameter($param, 'method');
+      if ($paramMethod == 'json') $tmpstr = self::transferJson($param, $others);
+      else if ($paramMethod == 'sql') $tmpstr = self::transferSQL($param, $others);
+      else if ($paramMethod == 'multigenre') $tmpstr = self::transferMultiGenre($param, $others);
+      else $tmpstr = self::transferStandard($param, $others);
       return $tmpstr;
     }
 
-    public static function transferJson($argPara, $argJson)
+    public static function transferJson($argParam, $argJson)
     {
       $tmpstr = '';
-      $para = $argPara;
+      $param = $argParam;
       $json = $argJson;
-      $paraTpl = base::getParameter($para, 'tpl');
-      $paraRowFilter = base::getParameter($para, 'rowfilter');
-      $paraCache = base::getParameter($para, 'cache');
-      $paraCacheTimeout = base::getNum(base::getParameter($para, 'cachetimeout'), 300);
-      $paraVars = base::getParameter($para, 'vars');
-      $paraLimit = base::getNum(base::getParameter($para, 'limit'), 0);
-      $paraTransferID = base::getNum(base::getParameter($para, 'transferid'), 0);
-      if ($paraLimit == 0) $paraLimit = 10;
+      $paramTpl = base::getParameter($param, 'tpl');
+      $paramRowFilter = base::getParameter($param, 'rowfilter');
+      $paramCache = base::getParameter($param, 'cache');
+      $paramCacheTimeout = base::getNum(base::getParameter($param, 'cachetimeout'), 300);
+      $paramVars = base::getParameter($param, 'vars');
+      $paramLimit = base::getNum(base::getParameter($param, 'limit'), 0);
+      $paramTransferID = base::getNum(base::getParameter($param, 'transferid'), 0);
+      if ($paramLimit == 0) $paramLimit = 10;
       $cacheAry = null;
-      if (!base::isEmpty($paraCache))
+      if (!base::isEmpty($paramCache))
       {
-        $cacheData = cache::get($paraCache);
+        $cacheData = cache::get($paramCache);
         if (is_array($cacheData))
         {
           if (count($cacheData) == 2)
           {
             $cacheAry = $cacheData[1];
             $cacheTimeStamp = $cacheData[0];
-            if ((time() - $cacheTimeStamp) >= $paraCacheTimeout) cache::remove($paraCache);
+            if ((time() - $cacheTimeStamp) >= $paramCacheTimeout) cache::remove($paramCache);
           }
         }
       }
-      if (!base::isEmpty($paraTpl))
+      if (!base::isEmpty($paramTpl))
       {
-        if (strpos($paraTpl, '.')) $tmpstr = tpl::take($paraTpl, 'tpl');
-        else $tmpstr = tpl::take('global.transfer.' . $paraTpl, 'tpl');
+        if (strpos($paramTpl, '.')) $tmpstr = tpl::take($paramTpl, 'tpl');
+        else $tmpstr = tpl::take('global.transfer.' . $paramTpl, 'tpl');
       }
-      if (!base::isEmpty($paraVars))
+      if (!base::isEmpty($paramVars))
       {
-        $paraVarsAry = explode('|', $paraVars);
-        foreach ($paraVarsAry as $key => $val)
+        $paramVarsAry = explode('|', $paramVars);
+        foreach ($paramVarsAry as $key => $val)
         {
           if (!base::isEmpty($val))
           {
@@ -66,12 +66,12 @@ namespace jtbc {
       if (!is_array($myAry))
       {
         $myAry = json_decode($json, true);
-        if (!base::isEmpty($paraCache))
+        if (!base::isEmpty($paramCache))
         {
           $cacheData = array();
           $cacheData[0] = time();
           $cacheData[1] = $myAry;
-          @cache::put($paraCache, $cacheData);
+          @cache::put($paramCache, $cacheData);
         }
       }
       if (is_array($myAry) && !empty($myAry))
@@ -83,12 +83,12 @@ namespace jtbc {
         {
           $rowAry = $myVal;
           if (!is_array($rowAry)) $rowAry = json_decode($myVal, true);
-          if ($paraLimit >= $rsindex)
+          if ($paramLimit >= $rsindex)
           {
-            if (base::isEmpty($paraRowFilter) || !base::checkInstr($paraRowFilter, $rsindex))
+            if (base::isEmpty($paramRowFilter) || !base::checkInstr($paramRowFilter, $rsindex))
             {
               $loopLineString = $loopString;
-              $loopLineString = tpl::replaceTagByAry($loopLineString, $rowAry, 21, $paraTransferID);
+              $loopLineString = tpl::replaceTagByAry($loopLineString, $rowAry, 21, $paramTransferID);
               $loopLineString = tpl::replaceTagByAry($loopLineString, array('-i' => $rsindex));
               $tpl -> insertLoopLine(tpl::parse($loopLineString));
             }
@@ -102,41 +102,41 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    public static function transferSQL($argPara, $argSQL)
+    public static function transferSQL($argParam, $argSQL)
     {
       $tmpstr = '';
       $db = conn::db();
-      $para = $argPara;
+      $param = $argParam;
       $sql = $argSQL;
-      $paraTpl = base::getParameter($para, 'tpl');
-      $paraRowFilter = base::getParameter($para, 'rowfilter');
-      $paraCache = base::getParameter($para, 'cache');
-      $paraCacheTimeout = base::getNum(base::getParameter($para, 'cachetimeout'), 300);
-      $paraVars = base::getParameter($para, 'vars');
-      $paraTransferID = base::getNum(base::getParameter($para, 'transferid'), 0);
+      $paramTpl = base::getParameter($param, 'tpl');
+      $paramRowFilter = base::getParameter($param, 'rowfilter');
+      $paramCache = base::getParameter($param, 'cache');
+      $paramCacheTimeout = base::getNum(base::getParameter($param, 'cachetimeout'), 300);
+      $paramVars = base::getParameter($param, 'vars');
+      $paramTransferID = base::getNum(base::getParameter($param, 'transferid'), 0);
       $cacheAry = null;
-      if (!base::isEmpty($paraCache))
+      if (!base::isEmpty($paramCache))
       {
-        $cacheData = cache::get($paraCache);
+        $cacheData = cache::get($paramCache);
         if (is_array($cacheData))
         {
           if (count($cacheData) == 2)
           {
             $cacheAry = $cacheData[1];
             $cacheTimeStamp = $cacheData[0];
-            if ((time() - $cacheTimeStamp) >= $paraCacheTimeout) cache::remove($paraCache);
+            if ((time() - $cacheTimeStamp) >= $paramCacheTimeout) cache::remove($paramCache);
           }
         }
       }
-      if (!base::isEmpty($paraTpl))
+      if (!base::isEmpty($paramTpl))
       {
-        if (strpos($paraTpl, '.')) $tmpstr = tpl::take($paraTpl, 'tpl');
-        else $tmpstr = tpl::take('global.transfer.' . $paraTpl, 'tpl');
+        if (strpos($paramTpl, '.')) $tmpstr = tpl::take($paramTpl, 'tpl');
+        else $tmpstr = tpl::take('global.transfer.' . $paramTpl, 'tpl');
       }
-      if (!base::isEmpty($paraVars))
+      if (!base::isEmpty($paramVars))
       {
-        $paraVarsAry = explode('|', $paraVars);
-        foreach ($paraVarsAry as $key => $val)
+        $paramVarsAry = explode('|', $paramVars);
+        foreach ($paramVarsAry as $key => $val)
         {
           if (!base::isEmpty($val))
           {
@@ -151,12 +151,12 @@ namespace jtbc {
         if (!is_null($db))
         {
           $myAry = $db -> fetchAll($sql);
-          if (!base::isEmpty($paraCache))
+          if (!base::isEmpty($paramCache))
           {
             $cacheData = array();
             $cacheData[0] = time();
             $cacheData[1] = $myAry;
-            @cache::put($paraCache, $cacheData);
+            @cache::put($paramCache, $cacheData);
           }
         }
       }
@@ -167,10 +167,10 @@ namespace jtbc {
         $loopString = $tpl -> getLoopString('{@}');
         foreach ($myAry as $myKey => $myVal)
         {
-          if (base::isEmpty($paraRowFilter) || !base::checkInstr($paraRowFilter, $rsindex))
+          if (base::isEmpty($paramRowFilter) || !base::checkInstr($paramRowFilter, $rsindex))
           {
             $loopLineString = $loopString;
-            $loopLineString = tpl::replaceTagByAry($loopLineString, $myVal, 11, $paraTransferID);
+            $loopLineString = tpl::replaceTagByAry($loopLineString, $myVal, 11, $paramTransferID);
             $loopLineString = tpl::replaceTagByAry($loopLineString, array('-i' => $rsindex));
             $tpl -> insertLoopLine(tpl::parse($loopLineString, 1));
           }
@@ -183,64 +183,64 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    public static function transferMultiGenre($argPara, $argOSQLAry = null)
+    public static function transferMultiGenre($argParam, $argOSQLAry = null)
     {
       $tmpstr = '';
       $db = conn::db();
       $lang = request::getForeLang();
-      $para = $argPara;
+      $param = $argParam;
       $osqlAry = $argOSQLAry;
-      $paraTpl = base::getParameter($para, 'tpl');
-      $paraJTBCTag = base::getParameter($para, 'jtbctag');
-      $paraType = base::getParameter($para, 'type');
-      $paraGenre = base::getParameter($para, 'genre');
-      $paraField = base::getParameter($para, 'field');
-      $paraOSQL = base::getParameter($para, 'osql');
-      $paraOSQLOrder = base::getParameter($para, 'osqlorder');
-      $paraRowFilter = base::getParameter($para, 'rowfilter');
-      $paraBaseURL = base::getParameter($para, 'baseurl');
-      $paraCache = base::getParameter($para, 'cache');
-      $paraCacheTimeout = base::getNum(base::getParameter($para, 'cachetimeout'), 300);
-      $paraVars = base::getParameter($para, 'vars');
-      $paraLimit = base::getNum(base::getParameter($para, 'limit'), 0);
-      $paraLang = base::getNum(base::getParameter($para, 'lang'), -100);
-      $paraTransferID = base::getNum(base::getParameter($para, 'transferid'), 0);
-      if ($paraLimit == 0) $paraLimit = 10;
-      if ($paraLang == -100) $paraLang = $lang;
+      $paramTpl = base::getParameter($param, 'tpl');
+      $paramJTBCTag = base::getParameter($param, 'jtbctag');
+      $paramType = base::getParameter($param, 'type');
+      $paramGenre = base::getParameter($param, 'genre');
+      $paramField = base::getParameter($param, 'field');
+      $paramOSQL = base::getParameter($param, 'osql');
+      $paramOSQLOrder = base::getParameter($param, 'osqlorder');
+      $paramRowFilter = base::getParameter($param, 'rowfilter');
+      $paramBaseURL = base::getParameter($param, 'baseurl');
+      $paramCache = base::getParameter($param, 'cache');
+      $paramCacheTimeout = base::getNum(base::getParameter($param, 'cachetimeout'), 300);
+      $paramVars = base::getParameter($param, 'vars');
+      $paramLimit = base::getNum(base::getParameter($param, 'limit'), 0);
+      $paramLang = base::getNum(base::getParameter($param, 'lang'), -100);
+      $paramTransferID = base::getNum(base::getParameter($param, 'transferid'), 0);
+      if ($paramLimit == 0) $paramLimit = 10;
+      if ($paramLang == -100) $paramLang = $lang;
       $ns = __NAMESPACE__;
       $cacheAry = null;
-      if (!base::isEmpty($paraCache))
+      if (!base::isEmpty($paramCache))
       {
-        $cacheData = cache::get($paraCache);
+        $cacheData = cache::get($paramCache);
         if (is_array($cacheData))
         {
           if (count($cacheData) == 2)
           {
             $cacheAry = $cacheData[1];
             $cacheTimeStamp = $cacheData[0];
-            if ((time() - $cacheTimeStamp) >= $paraCacheTimeout) cache::remove($paraCache);
+            if ((time() - $cacheTimeStamp) >= $paramCacheTimeout) cache::remove($paramCache);
           }
         }
       }
-      if (!base::isEmpty($paraGenre))
+      if (!base::isEmpty($paramGenre))
       {
-        $paraGenreAry = explode('&', $paraGenre);
-        $paraFieldAry = explode('&', $paraField);
+        $paramGenreAry = explode('&', $paramGenre);
+        $paramFieldAry = explode('&', $paramField);
         $sqlstr = "select * from (";
         $sqlorderstr = '';
-        foreach($paraGenreAry as $key => $val)
+        foreach($paramGenreAry as $key => $val)
         {
           if (!base::isEmpty($val))
           {
             $table = tpl::take('global.' . $val . ':config.db_table', 'cfg');
             $prefix = tpl::take('global.' . $val . ':config.db_prefix', 'cfg');
             $sqlstr .= "select " . $prefix . "id as un_id, ";
-            foreach($paraFieldAry as $keyF => $valF)
+            foreach($paramFieldAry as $keyF => $valF)
             {
               $sqlstr .= $prefix . $valF . " as un_" . $valF . ", ";
             }
             $sqlstr .= $prefix . "time as un_time, '" . addslashes($val) . "' as un_genre from " . $table;
-            switch($paraType)
+            switch($paramType)
             {
               case 'new':
                 $sqlstr .= " where " . $prefix . "delete=0 and " . $prefix . "publish=1";
@@ -271,14 +271,14 @@ namespace jtbc {
                 $sqlorderstr = " order by un_id desc";
                 break;
             }
-            if ($paraLang != -1) $sqlstr .= " and " . $prefix . "lang=" . $paraLang;
+            if ($paramLang != -1) $sqlstr .= " and " . $prefix . "lang=" . $paramLang;
             $sqlstr .= " union all ";
           }
         }
         $sqlstr = base::getLRStr($sqlstr, ' union all ', 'leftr');
         $sqlstr .= ") jtbc where 1=1";
-        if (!base::isEmpty($paraOSQL)) $sqlstr .= $paraOSQL;
-        if (!base::isEmpty($paraOSQLOrder)) $sqlorderstr = $paraOSQLOrder;
+        if (!base::isEmpty($paramOSQL)) $sqlstr .= $paramOSQL;
+        if (!base::isEmpty($paramOSQLOrder)) $sqlorderstr = $paramOSQLOrder;
         if (is_array($osqlAry))
         {
           foreach ($osqlAry as $key => $val)
@@ -289,20 +289,20 @@ namespace jtbc {
           }
         }
         $sqlstr .= $sqlorderstr;
-        $sqlstr .= ' limit 0,' . $paraLimit;
-        if (!base::isEmpty($paraTpl))
+        $sqlstr .= ' limit 0,' . $paramLimit;
+        if (!base::isEmpty($paramTpl))
         {
-          if (strpos($paraTpl, '.')) $tmpstr = tpl::take($paraTpl, 'tpl');
-          else $tmpstr = tpl::take('global.transfer.' . $paraTpl, 'tpl');
+          if (strpos($paramTpl, '.')) $tmpstr = tpl::take($paramTpl, 'tpl');
+          else $tmpstr = tpl::take('global.transfer.' . $paramTpl, 'tpl');
         }
-        else if (!base::isEmpty($paraJTBCTag))
+        else if (!base::isEmpty($paramJTBCTag))
         {
-          if (array_key_exists($paraJTBCTag, tpl::$para)) $tmpstr = tpl::$para[$paraJTBCTag];
+          if (array_key_exists($paramJTBCTag, tpl::$param)) $tmpstr = tpl::$param[$paramJTBCTag];
         }
-        if (!base::isEmpty($paraVars))
+        if (!base::isEmpty($paramVars))
         {
-          $paraVarsAry = explode('|', $paraVars);
-          foreach ($paraVarsAry as $key => $val)
+          $paramVarsAry = explode('|', $paramVars);
+          foreach ($paramVarsAry as $key => $val)
           {
             if (!base::isEmpty($val))
             {
@@ -317,12 +317,12 @@ namespace jtbc {
           if (!is_null($db))
           {
             $myAry = $db -> fetchAll($sqlstr);
-            if (!base::isEmpty($paraCache))
+            if (!base::isEmpty($paramCache))
             {
               $cacheData = array();
               $cacheData[0] = time();
               $cacheData[1] = $myAry;
-              @cache::put($paraCache, $cacheData);
+              @cache::put($paramCache, $cacheData);
             }
           }
         }
@@ -333,17 +333,17 @@ namespace jtbc {
           $loopString = $tpl -> getLoopString('{@}');
           foreach ($myAry as $myKey => $myVal)
           {
-            if (base::isEmpty($paraRowFilter) || !base::checkInstr($paraRowFilter, $rsindex))
+            if (base::isEmpty($paramRowFilter) || !base::checkInstr($paramRowFilter, $rsindex))
             {
               $loopLineString = $loopString;
-              $loopLineString = tpl::replaceTagByAry($loopLineString, $myVal, 11, $paraTransferID);
-              $loopLineString = tpl::replaceTagByAry($loopLineString, array('-i' => $rsindex, '-lang' => $paraLang, '-baseurl' => $paraBaseURL));
+              $loopLineString = tpl::replaceTagByAry($loopLineString, $myVal, 11, $paramTransferID);
+              $loopLineString = tpl::replaceTagByAry($loopLineString, array('-i' => $rsindex, '-lang' => $paramLang, '-baseurl' => $paramBaseURL));
               $tpl -> insertLoopLine(tpl::parse($loopLineString, 1));
             }
             $rsindex += 1;
           }
           $tmpstr = $tpl -> getTpl();
-          $tmpstr = tpl::replaceTagByAry($tmpstr, array('-lang' => $paraLang, '-baseurl' => $paraBaseURL));
+          $tmpstr = tpl::replaceTagByAry($tmpstr, array('-lang' => $paramLang, '-baseurl' => $paramBaseURL));
           $tmpstr = tpl::parse($tmpstr);
         }
         else $tmpstr = '';
@@ -351,155 +351,155 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    public static function transferStandard($argPara, $argOSQLAry = null)
+    public static function transferStandard($argParam, $argOSQLAry = null)
     {
       $tmpstr = '';
       $db = conn::db();
       $genre = route::getCurrentGenre();
       $lang = request::getForeLang();
-      $para = $argPara;
+      $param = $argParam;
       $osqlAry = $argOSQLAry;
-      $paraTpl = base::getParameter($para, 'tpl');
-      $paraJTBCTag = base::getParameter($para, 'jtbctag');
-      $paraType = base::getParameter($para, 'type');
-      $paraGenre = base::getParameter($para, 'genre');
-      $paraSubTable = base::getParameter($para, 'subtable');
-      $paraDBTable = base::getParameter($para, 'db_table');
-      $paraDBPrefix = base::getParameter($para, 'db_prefix');
-      $paraOSQL = base::getParameter($para, 'osql');
-      $paraOSQLOrder = base::getParameter($para, 'osqlorder');
-      $paraRowFilter = base::getParameter($para, 'rowfilter');
-      $paraBaseURL = base::getParameter($para, 'baseurl');
-      $paraCache = base::getParameter($para, 'cache');
-      $paraCacheTimeout = base::getNum(base::getParameter($para, 'cachetimeout'), 300);
-      $paraVars = base::getParameter($para, 'vars');
-      $paraLimit = base::getNum(base::getParameter($para, 'limit'), 0);
-      $paraCategory = base::getNum(base::getParameter($para, 'category'), 0);
-      $paraGroup = base::getNum(base::getParameter($para, 'group'), 0);
-      $paraLang = base::getNum(base::getParameter($para, 'lang'), -100);
-      $paraTransferID = base::getNum(base::getParameter($para, 'transferid'), 0);
-      if ($paraLimit == 0) $paraLimit = 10;
-      if ($paraLang == -100) $paraLang = $lang;
+      $paramTpl = base::getParameter($param, 'tpl');
+      $paramJTBCTag = base::getParameter($param, 'jtbctag');
+      $paramType = base::getParameter($param, 'type');
+      $paramGenre = base::getParameter($param, 'genre');
+      $paramSubTable = base::getParameter($param, 'subtable');
+      $paramDBTable = base::getParameter($param, 'db_table');
+      $paramDBPrefix = base::getParameter($param, 'db_prefix');
+      $paramOSQL = base::getParameter($param, 'osql');
+      $paramOSQLOrder = base::getParameter($param, 'osqlorder');
+      $paramRowFilter = base::getParameter($param, 'rowfilter');
+      $paramBaseURL = base::getParameter($param, 'baseurl');
+      $paramCache = base::getParameter($param, 'cache');
+      $paramCacheTimeout = base::getNum(base::getParameter($param, 'cachetimeout'), 300);
+      $paramVars = base::getParameter($param, 'vars');
+      $paramLimit = base::getNum(base::getParameter($param, 'limit'), 0);
+      $paramCategory = base::getNum(base::getParameter($param, 'category'), 0);
+      $paramGroup = base::getNum(base::getParameter($param, 'group'), 0);
+      $paramLang = base::getNum(base::getParameter($param, 'lang'), -100);
+      $paramTransferID = base::getNum(base::getParameter($param, 'transferid'), 0);
+      if ($paramLimit == 0) $paramLimit = 10;
+      if ($paramLang == -100) $paramLang = $lang;
       $ns = __NAMESPACE__;
       $cacheAry = null;
-      if (!base::isEmpty($paraCache))
+      if (!base::isEmpty($paramCache))
       {
-        $cacheData = cache::get($paraCache);
+        $cacheData = cache::get($paramCache);
         if (is_array($cacheData))
         {
           if (count($cacheData) == 2)
           {
             $cacheAry = $cacheData[1];
             $cacheTimeStamp = $cacheData[0];
-            if ((time() - $cacheTimeStamp) >= $paraCacheTimeout) cache::remove($paraCache);
+            if ((time() - $cacheTimeStamp) >= $paramCacheTimeout) cache::remove($paramCache);
           }
         }
       }
-      if (base::isEmpty($paraBaseURL))
+      if (base::isEmpty($paramBaseURL))
       {
-        if (!base::isEmpty($paraGenre) && $paraGenre != $genre)
+        if (!base::isEmpty($paramGenre) && $paramGenre != $genre)
         {
-          $paraBaseURL = route::getActualRoute($paraGenre);
-          if (base::getRight($paraBaseURL, 1) != '/') $paraBaseURL .= '/';
+          $paramBaseURL = route::getActualRoute($paramGenre);
+          if (base::getRight($paramBaseURL, 1) != '/') $paramBaseURL .= '/';
         }
       }
-      if (base::isEmpty($paraGenre)) $paraGenre = $genre;
-      if (base::isEmpty($paraDBTable))
+      if (base::isEmpty($paramGenre)) $paramGenre = $genre;
+      if (base::isEmpty($paramDBTable))
       {
-        if (base::isEmpty($paraSubTable)) $paraDBTable = tpl::take('global.' . $paraGenre . ':config.db_table', 'cfg');
-        else $paraDBTable = tpl::take('global.' . $paraGenre . ':config.db_table_' . $paraSubTable, 'cfg');
+        if (base::isEmpty($paramSubTable)) $paramDBTable = tpl::take('global.' . $paramGenre . ':config.db_table', 'cfg');
+        else $paramDBTable = tpl::take('global.' . $paramGenre . ':config.db_table_' . $paramSubTable, 'cfg');
       }
-      if (base::isEmpty($paraDBPrefix))
+      if (base::isEmpty($paramDBPrefix))
       {
-        if (base::isEmpty($paraSubTable)) $paraDBPrefix = tpl::take('global.' . $paraGenre . ':config.db_prefix', 'cfg');
-        else $paraDBPrefix = tpl::take('global.' . $paraGenre . ':config.db_prefix_' . $paraSubTable, 'cfg');
+        if (base::isEmpty($paramSubTable)) $paramDBPrefix = tpl::take('global.' . $paramGenre . ':config.db_prefix', 'cfg');
+        else $paramDBPrefix = tpl::take('global.' . $paramGenre . ':config.db_prefix_' . $paramSubTable, 'cfg');
       }
-      if (!base::isEmpty($paraDBTable))
+      if (!base::isEmpty($paramDBTable))
       {
         $sqlstr = '';
         $sqlorderstr = '';
-        switch($paraType)
+        switch($paramType)
         {
           case 'count':
-            $sqlstr = "select count(*) as rscount from " . $paraDBTable . " where " . $paraDBPrefix . "delete=0 and " . $paraDBPrefix . "publish=1";
-            $sqlorderstr = " order by " . $paraDBPrefix . "id desc";
+            $sqlstr = "select count(*) as rscount from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0 and " . $paramDBPrefix . "publish=1";
+            $sqlorderstr = " order by " . $paramDBPrefix . "id desc";
             break;
           case '@count':
-            $sqlstr = "select count(*) as rscount from " . $paraDBTable . " where " . $paraDBPrefix . "delete=0";
-            $sqlorderstr = " order by " . $paraDBPrefix . "id desc";
+            $sqlstr = "select count(*) as rscount from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0";
+            $sqlorderstr = " order by " . $paramDBPrefix . "id desc";
             break;
           case 'new':
-            $sqlstr = "select * from " . $paraDBTable . " where " . $paraDBPrefix . "delete=0 and " . $paraDBPrefix . "publish=1";
-            $sqlorderstr = " order by " . $paraDBPrefix . "time desc";
+            $sqlstr = "select * from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0 and " . $paramDBPrefix . "publish=1";
+            $sqlorderstr = " order by " . $paramDBPrefix . "time desc";
             break;
           case '@new':
-            $sqlstr = "select * from " . $paraDBTable . " where " . $paraDBPrefix . "delete=0";
-            $sqlorderstr = " order by " . $paraDBPrefix . "time desc";
+            $sqlstr = "select * from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0";
+            $sqlorderstr = " order by " . $paramDBPrefix . "time desc";
             break;
           case 'top':
-            $sqlstr = "select * from " . $paraDBTable . " where " . $paraDBPrefix . "delete=0 and " . $paraDBPrefix . "publish=1";
-            $sqlorderstr = " order by " . $paraDBPrefix . "id desc";
+            $sqlstr = "select * from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0 and " . $paramDBPrefix . "publish=1";
+            $sqlorderstr = " order by " . $paramDBPrefix . "id desc";
             break;
           case '@top':
-            $sqlstr = "select * from " . $paraDBTable . " where " . $paraDBPrefix . "delete=0";
-            $sqlorderstr = " order by " . $paraDBPrefix . "id desc";
+            $sqlstr = "select * from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0";
+            $sqlorderstr = " order by " . $paramDBPrefix . "id desc";
             break;
           case 'commendatory':
-            $sqlstr = "select * from " . $paraDBTable . " where " . $paraDBPrefix . "delete=0 and " . $paraDBPrefix . "publish=1 and " . $paraDBPrefix . "commendatory=1";
-            $sqlorderstr = " order by " . $paraDBPrefix . "time desc";
+            $sqlstr = "select * from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0 and " . $paramDBPrefix . "publish=1 and " . $paramDBPrefix . "commendatory=1";
+            $sqlorderstr = " order by " . $paramDBPrefix . "time desc";
             break;
           case '@commendatory':
-            $sqlstr = "select * from " . $paraDBTable . " where " . $paraDBPrefix . "delete=0 and " . $paraDBPrefix . "commendatory=1";
-            $sqlorderstr = " order by " . $paraDBPrefix . "time desc";
+            $sqlstr = "select * from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0 and " . $paramDBPrefix . "commendatory=1";
+            $sqlorderstr = " order by " . $paramDBPrefix . "time desc";
             break;
           case 'order':
-            $sqlstr = "select * from " . $paraDBTable . " where " . $paraDBPrefix . "delete=0 and " . $paraDBPrefix . "publish=1";
-            $sqlorderstr = " order by " . $paraDBPrefix . "order asc";
+            $sqlstr = "select * from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0 and " . $paramDBPrefix . "publish=1";
+            $sqlorderstr = " order by " . $paramDBPrefix . "order asc";
             break;
           case '@order':
-            $sqlstr = "select * from " . $paraDBTable . " where " . $paraDBPrefix . "delete=0";
-            $sqlorderstr = " order by " . $paraDBPrefix . "order asc";
+            $sqlstr = "select * from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0";
+            $sqlorderstr = " order by " . $paramDBPrefix . "order asc";
             break;
           default:
-            $sqlstr = "select * from " . $paraDBTable . " where " . $paraDBPrefix . "delete=0";
-            $sqlorderstr = " order by " . $paraDBPrefix . "id desc";
+            $sqlstr = "select * from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0";
+            $sqlorderstr = " order by " . $paramDBPrefix . "id desc";
             break;
         }
-        if ($paraLang != -1) $sqlstr .= " and " . $paraDBPrefix . "lang=" . $paraLang;
-        if ($paraCategory != 0)
+        if ($paramLang != -1) $sqlstr .= " and " . $paramDBPrefix . "lang=" . $paramLang;
+        if ($paramCategory != 0)
         {
           if (method_exists($ns . '\\universal\\category', 'getCategoryChildID'))
           {
-            $sqlstr .= " and " . $paraDBPrefix . "category in (" . base::mergeIdAry($paraCategory, universal\category::getCategoryChildID($paraGenre, $paraLang, $paraCategory)) . ")";
+            $sqlstr .= " and " . $paramDBPrefix . "category in (" . base::mergeIdAry($paramCategory, universal\category::getCategoryChildID($paramGenre, $paramLang, $paramCategory)) . ")";
           }
         }
-        if ($paraGroup != 0) $sqlstr .= " and " . $paraDBPrefix . "group=" . $paraGroup;
-        if (!base::isEmpty($paraOSQL)) $sqlstr .= $paraOSQL;
-        if (!base::isEmpty($paraOSQLOrder)) $sqlorderstr = $paraOSQLOrder;
+        if ($paramGroup != 0) $sqlstr .= " and " . $paramDBPrefix . "group=" . $paramGroup;
+        if (!base::isEmpty($paramOSQL)) $sqlstr .= $paramOSQL;
+        if (!base::isEmpty($paramOSQLOrder)) $sqlorderstr = $paramOSQLOrder;
         if (is_array($osqlAry))
         {
           foreach ($osqlAry as $key => $val)
           {
             $valType = gettype($val);
-            if ($valType == 'integer' || $valType == 'double') $sqlstr .= " and " . $paraDBPrefix . $key . "=" . base::getNum($val, 0);
-            else if ($valType == 'string') $sqlstr .= " and " . $paraDBPrefix . $key . "='" . addslashes($val) . "'";
+            if ($valType == 'integer' || $valType == 'double') $sqlstr .= " and " . $paramDBPrefix . $key . "=" . base::getNum($val, 0);
+            else if ($valType == 'string') $sqlstr .= " and " . $paramDBPrefix . $key . "='" . addslashes($val) . "'";
           }
         }
         $sqlstr .= $sqlorderstr;
-        $sqlstr .= ' limit 0,' . $paraLimit;
-        if (!base::isEmpty($paraTpl))
+        $sqlstr .= ' limit 0,' . $paramLimit;
+        if (!base::isEmpty($paramTpl))
         {
-          if (strpos($paraTpl, '.')) $tmpstr = tpl::take($paraTpl, 'tpl');
-          else $tmpstr = tpl::take('global.transfer.' . $paraTpl, 'tpl');
+          if (strpos($paramTpl, '.')) $tmpstr = tpl::take($paramTpl, 'tpl');
+          else $tmpstr = tpl::take('global.transfer.' . $paramTpl, 'tpl');
         }
-        else if (!base::isEmpty($paraJTBCTag))
+        else if (!base::isEmpty($paramJTBCTag))
         {
-          if (array_key_exists($paraJTBCTag, tpl::$para)) $tmpstr = tpl::$para[$paraJTBCTag];
+          if (array_key_exists($paramJTBCTag, tpl::$param)) $tmpstr = tpl::$param[$paramJTBCTag];
         }
-        if (!base::isEmpty($paraVars))
+        if (!base::isEmpty($paramVars))
         {
-          $paraVarsAry = explode('|', $paraVars);
-          foreach ($paraVarsAry as $key => $val)
+          $paramVarsAry = explode('|', $paramVars);
+          foreach ($paramVarsAry as $key => $val)
           {
             if (!base::isEmpty($val))
             {
@@ -514,12 +514,12 @@ namespace jtbc {
           if (!is_null($db))
           {
             $myAry = $db -> fetchAll($sqlstr);
-            if (!base::isEmpty($paraCache))
+            if (!base::isEmpty($paramCache))
             {
               $cacheData = array();
               $cacheData[0] = time();
               $cacheData[1] = $myAry;
-              @cache::put($paraCache, $cacheData);
+              @cache::put($paramCache, $cacheData);
             }
           }
         }
@@ -530,17 +530,17 @@ namespace jtbc {
           $loopString = $tpl -> getLoopString('{@}');
           foreach ($myAry as $myKey => $myVal)
           {
-            if (base::isEmpty($paraRowFilter) || !base::checkInstr($paraRowFilter, $rsindex))
+            if (base::isEmpty($paramRowFilter) || !base::checkInstr($paramRowFilter, $rsindex))
             {
               $loopLineString = $loopString;
-              $loopLineString = tpl::replaceTagByAry($loopLineString, $myVal, 11, $paraTransferID);
-              $loopLineString = tpl::replaceTagByAry($loopLineString, array('-i' => $rsindex, '-genre' => $paraGenre, '-lang' => $paraLang, '-baseurl' => $paraBaseURL));
+              $loopLineString = tpl::replaceTagByAry($loopLineString, $myVal, 11, $paramTransferID);
+              $loopLineString = tpl::replaceTagByAry($loopLineString, array('-i' => $rsindex, '-genre' => $paramGenre, '-lang' => $paramLang, '-baseurl' => $paramBaseURL));
               $tpl -> insertLoopLine(tpl::parse($loopLineString, 1));
             }
             $rsindex += 1;
           }
           $tmpstr = $tpl -> getTpl();
-          $tmpstr = tpl::replaceTagByAry($tmpstr, array('-genre' => $paraGenre, '-lang' => $paraLang, '-baseurl' => $paraBaseURL));
+          $tmpstr = tpl::replaceTagByAry($tmpstr, array('-genre' => $paramGenre, '-lang' => $paramLang, '-baseurl' => $paramBaseURL));
           $tmpstr = tpl::parse($tmpstr);
         }
         else $tmpstr = '';
