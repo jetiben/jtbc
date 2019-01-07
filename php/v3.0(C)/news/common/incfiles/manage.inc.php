@@ -67,7 +67,7 @@ class ui extends console\page {
     $pagesize = base::getNum(tpl::take('config.pagesize', 'cfg'), 0);
     $account = self::account();
     $myCategory = $account -> getCurrentGenrePopedom('category');
-    self::setPara('-keyword', $keyword);
+    self::setParam('-keyword', $keyword);
     $batchAry = $account -> getCurrentGenreMySegmentAry(self::$batch);
     $variable['-batch-list'] = implode(',', $batchAry);
     $variable['-batch-show'] = empty($batchAry) ? 0 : 1;
@@ -79,7 +79,7 @@ class ui extends console\page {
     if ($publish != -1) $dal -> publish = $publish;
     $dal -> orderBy('time', 'desc');
     if (!base::isEmpty($myCategory) && base::checkIDAry($myCategory)) $dal -> setIn('category', $myCategory);
-    if ($category != 0) $dal -> setIn('category', universal\category::getCategoryFamilyID(self::getPara('genre'), $account -> getLang(), $category));
+    if ($category != 0) $dal -> setIn('category', universal\category::getCategoryFamilyID(self::getParam('genre'), $account -> getLang(), $category));
     if (!base::isEmpty($keyword)) $dal -> setFuzzyLike('topic', $keyword);
     $pagi = new pagi($dal);
     $rsAry = $pagi -> getDataAry($page, $pagesize);
@@ -116,7 +116,7 @@ class ui extends console\page {
         {
           $status = 1;
           $id = auto::$lastInsertId;
-          universal\upload::statusAutoUpdate(self::getPara('genre'), $id);
+          universal\upload::statusAutoUpdate(self::getParam('genre'), $id);
           $account -> creatCurrentGenreLog('manage.log-add-1', array('id' => $id));
         }
         else array_push($error, tpl::take('::console.text-tips-error-others', 'lng'));
@@ -152,7 +152,7 @@ class ui extends console\page {
         if (is_numeric($re))
         {
           $status = 1;
-          universal\upload::statusAutoUpdate(self::getPara('genre'), $id);
+          universal\upload::statusAutoUpdate(self::getParam('genre'), $id);
           $message = tpl::take('manage.text-tips-edit-done', 'lng');
           $account -> creatCurrentGenreLog('manage.log-edit-1', array('id' => $id));
         }

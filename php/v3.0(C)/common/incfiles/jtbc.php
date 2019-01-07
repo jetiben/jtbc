@@ -19,7 +19,7 @@ function jtbc_get_result($argFile)
     if ($errorCode != 0) print(ui::getErrorResult($errorCode));
     else
     {
-      $resultType = ui::getPara('resultType');
+      $resultType = ui::getParam('resultType');
       if ($resultType == 'url') header('location: ' . $result);
       else print($result);
     }

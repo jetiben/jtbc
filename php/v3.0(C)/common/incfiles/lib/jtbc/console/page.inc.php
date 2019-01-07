@@ -11,15 +11,15 @@ namespace jtbc\console {
 
     public static function start()
     {
-      self::setPara('noCache', true);
-      self::setPara('contentType', 'text/xml');
+      self::setParam('noCache', true);
+      self::setParam('contentType', 'text/xml');
     }
 
     public static function account()
     {
       $account = null;
       if (!is_null(self::$account)) $account = self::$account;
-      else $account = self::$account = new account(self::getPara('genre'));
+      else $account = self::$account = new account(self::getParam('genre'));
       return $account;
     }
 

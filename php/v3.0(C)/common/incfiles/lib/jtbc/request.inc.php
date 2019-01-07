@@ -9,7 +9,7 @@ namespace jtbc {
     {
       $name = $argName;
       if (is_null($name)) $result = $_GET;
-      else $result = self::getHTTPPara($name, 'get');
+      else $result = self::getHTTPParam($name, 'get');
       return $result;
     }
 
@@ -63,15 +63,22 @@ namespace jtbc {
       return $lang;
     }
 
-    public static function getHTTPPara($argName, $argType = 'auto')
+    public static function getHeaderParam($argName)
+    {
+      $name = $argName;
+      $result = self::server('HTTP_' . strtoupper($name));
+      return $result;
+    }
+
+    public static function getHTTPParam($argName, $argType = 'auto')
     {
       $result = '';
       $name = $argName;
       $type = $argType;
       if ($type == 'auto')
       {
-        $result = self::getHTTPPara($name, 'post');
-        if (base::isEmpty($result)) $result = self::getHTTPPara($name, 'get');
+        $result = self::getHTTPParam($name, 'post');
+        if (base::isEmpty($result)) $result = self::getHTTPParam($name, 'get');
       }
       else if ($type == 'post')
       {
@@ -108,7 +115,7 @@ namespace jtbc {
     {
       $name = $argName;
       if (is_null($name)) $result = $_POST;
-      else $result = self::getHTTPPara($name, 'post');
+      else $result = self::getHTTPParam($name, 'post');
       return $result;
     }
 

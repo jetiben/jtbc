@@ -3,8 +3,8 @@ namespace jtbc;
 class ui extends page {
   public static function start()
   {
-    self::setPara('noCache', true);
-    self::setPara('resultType', 'url');
+    self::setParam('noCache', true);
+    self::setParam('resultType', 'url');
   }
 
   public static function moduleDefault()

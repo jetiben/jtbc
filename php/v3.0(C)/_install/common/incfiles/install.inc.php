@@ -3,8 +3,8 @@ namespace jtbc;
 class ui extends page {
   public static function start()
   {
-    self::setPara('noCache', true);
-    self::setPara('contentType', 'text/xml');
+    self::setParam('noCache', true);
+    self::setParam('contentType', 'text/xml');
   }
 
   public static function moduleActionInstall()

@@ -35,7 +35,7 @@ class ui extends console\page {
     $filegroup = base::getNum(request::get('filegroup'), -1);
     if ($mode == 'multiple') $selectmode = 'multiple';
     $account = self::account();
-    self::setPara('-keyword', $keyword);
+    self::setParam('-keyword', $keyword);
     $variable['-selectmode'] = $selectmode;
     $variable['-filegroup'] = $filegroup;
     $variable['-sort'] = $sort;

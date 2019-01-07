@@ -13,7 +13,7 @@
     <div class="cupboard">
       <div class="full synopsis clear_float">{@}
         <div class="item">
-          <p class="photo"><img src="{$=htmlEncode($getJsonPara(#photo, 'fileurl'))}" alt="" /></p>
+          <p class="photo"><img src="{$=htmlEncode($getJsonParam(#photo, 'fileurl'))}" alt="" /></p>
           <p class="topic">{$name} <em>({$position})</em></p>
           <p class="intro">{$=encodeTextArea(#intro)}</p>
           <p class="clear"></p>

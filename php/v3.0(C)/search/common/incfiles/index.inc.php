@@ -3,7 +3,7 @@ namespace jtbc;
 class ui extends page {
   public static function start()
   {
-    self::setPara('adjunct_default', 'list');
+    self::setParam('adjunct_default', 'list');
     self::setPageTitle(tpl::take('index.title', 'lng'));
   }
 
@@ -12,7 +12,7 @@ class ui extends page {
     $page = base::getNum(request::get('page'), 0);
     $keyword = base::getString(request::get('keyword'));
     $pagesize = base::getNum(tpl::take('config.pagesize', 'cfg'), 0);
-    self::setPara('-keyword', $keyword);
+    self::setParam('-keyword', $keyword);
     $sqlstr = "select * from (";
     $folder = route::getFolderByGuide('search');
     $folderAry = explode('|+|', $folder);
@@ -25,7 +25,7 @@ class ui extends page {
         {
           $table = tpl::take('global.' . $val . ':config.db_table', 'cfg');
           $prefix = tpl::take('global.' . $val . ':config.db_prefix', 'cfg');
-          $sqlstr .= "select " . $prefix . "id as un_id, " . $prefix . "topic as un_topic, " . $prefix . "time as un_time, '" . addslashes($val) . "' as un_genre from " . $table . " where " . $prefix . "delete=0 and " . $prefix . "publish=1 and " . $prefix . "lang=" . base::getNum(self::getPara('lang'), 0) . " union all ";
+          $sqlstr .= "select " . $prefix . "id as un_id, " . $prefix . "topic as un_topic, " . $prefix . "time as un_time, '" . addslashes($val) . "' as un_genre from " . $table . " where " . $prefix . "delete=0 and " . $prefix . "publish=1 and " . $prefix . "lang=" . base::getNum(self::getParam('lang'), 0) . " union all ";
         }
       }
     }

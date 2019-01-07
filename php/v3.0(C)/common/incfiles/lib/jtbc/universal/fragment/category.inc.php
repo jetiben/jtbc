@@ -19,7 +19,7 @@ namespace jtbc\universal\fragment {
       {
         $prefix = universal\category::getPrefix();
         $myCategory = $account -> getCurrentGenrePopedom('category');
-        $categoryAry = universal\category::getCategoryAryByGenre(self::getPara('genre'), $account -> getLang());
+        $categoryAry = universal\category::getCategoryAryByGenre(self::getParam('genre'), $account -> getLang());
         $tmpstr = tpl::take('manage.category', 'tpl');
         $tpl = new tpl($tmpstr);
         $loopString = $tpl -> getLoopString('{@}');

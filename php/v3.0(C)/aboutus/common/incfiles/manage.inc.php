@@ -93,7 +93,7 @@ class ui extends console\page {
         {
           $status = 1;
           $id = auto::$lastInsertId;
-          universal\upload::statusAutoUpdate(self::getPara('genre'), $id);
+          universal\upload::statusAutoUpdate(self::getParam('genre'), $id);
           $account -> creatCurrentGenreLog('manage.log-add-1', array('id' => $id));
         }
         else array_push($error, tpl::take('::console.text-tips-error-others', 'lng'));
@@ -128,7 +128,7 @@ class ui extends console\page {
         if (is_numeric($re))
         {
           $status = 1;
-          universal\upload::statusAutoUpdate(self::getPara('genre'), $id);
+          universal\upload::statusAutoUpdate(self::getParam('genre'), $id);
           $message = tpl::take('manage.text-tips-edit-done', 'lng');
           $account -> creatCurrentGenreLog('manage.log-edit-1', array('id' => $id));
         }

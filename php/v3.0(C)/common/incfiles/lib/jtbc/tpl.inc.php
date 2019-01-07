@@ -218,7 +218,7 @@ namespace jtbc {
           if (class_exists($ns . '\\page'))
           {
             $string = substr($string, 1, strlen($string) - 1);
-            $tstr = page::getPara($string);
+            $tstr = page::getParam($string);
           }
         }
         else if (substr($string, 0, 1) == '#')

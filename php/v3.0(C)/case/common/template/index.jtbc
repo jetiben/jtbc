@@ -15,7 +15,7 @@
       <div class="full pictures clear_float">{@}
         <div class="item">
           <a href="{$=htmlEncode($createURL('detail', '{$id}'))}">
-            <p class="image"><img src="{$=htmlEncode($getJsonPara(#image, 'fileurl'))}" alt="" /></p>
+            <p class="image"><img src="{$=htmlEncode($getJsonParam(#image, 'fileurl'))}" alt="" /></p>
             <p class="topic">{$topic}</p>
           </a>
         </div>{@}

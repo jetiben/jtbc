@@ -214,7 +214,7 @@ namespace jtbc {
       return $filegroup;
     }
 
-    public static function getJsonPara($argJson, $argName)
+    public static function getJsonParam($argJson, $argName)
     {
       $tmpstr = '';
       $json = $argJson;

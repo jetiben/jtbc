@@ -3,7 +3,7 @@ namespace jtbc;
 class ui extends page {
   public static function start()
   {
-    self::setPara('adjunct_default', 'detail');
+    self::setParam('adjunct_default', 'detail');
     self::setPageTitle(tpl::take('index.title', 'lng'));
   }
 
@@ -13,7 +13,7 @@ class ui extends page {
     $id = base::getNum(request::get('id'), 0);
     $dal = new dal();
     $dal -> publish = 1;
-    $dal -> lang = self::getPara('lang');
+    $dal -> lang = self::getParam('lang');
     if ($id != 0) $dal -> id = $id;
     $dal -> orderBy('time', 'desc');
     $rs = $dal -> select();

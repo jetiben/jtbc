@@ -3,7 +3,7 @@ namespace jtbc;
 class ui extends page {
   public static function start()
   {
-    self::setPara('adjunct_default', 'list');
+    self::setParam('adjunct_default', 'list');
     self::setPageTitle(tpl::take('index.title', 'lng'));
   }
 
@@ -31,11 +31,11 @@ class ui extends page {
     $variable['-category'] = $category;
     $dal = new dal();
     $dal -> publish = 1;
-    $dal -> lang = self::getPara('lang');
+    $dal -> lang = self::getParam('lang');
     if ($category != 0)
     {
-      self::setPageTitle(universal\category::getCategoryTopicByID(self::getPara('genre'), self::getPara('lang'), $category));
-      $dal -> setIn('category', universal\category::getCategoryFamilyID(self::getPara('genre'), self::getPara('lang'), $category));
+      self::setPageTitle(universal\category::getCategoryTopicByID(self::getParam('genre'), self::getParam('lang'), $category));
+      $dal -> setIn('category', universal\category::getCategoryFamilyID(self::getParam('genre'), self::getParam('lang'), $category));
     }
     $dal -> orderBy('time', 'desc');
     $pagi = new pagi($dal);

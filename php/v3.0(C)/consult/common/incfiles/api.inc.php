@@ -3,8 +3,8 @@ namespace jtbc;
 class ui extends page {
   public static function start()
   {
-    self::setPara('noCache', true);
-    self::setPara('contentType', 'text/xml');
+    self::setParam('noCache', true);
+    self::setParam('contentType', 'text/xml');
   }
 
   public static function moduleActionAdd()
@@ -26,7 +26,7 @@ class ui extends page {
       $preset = array();
       $preset['dispose'] = 0;
       $preset['userip'] = request::getRemortIP();
-      $preset['lang'] = self::getPara('lang');
+      $preset['lang'] = self::getParam('lang');
       $preset['time'] = base::getDateTime();
       $re = auto::autoInsertByRequest($preset);
       if (is_numeric($re))

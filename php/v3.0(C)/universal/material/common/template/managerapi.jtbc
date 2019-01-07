@@ -14,7 +14,7 @@
     <div class="tab">
       <div class="option" val="{$-filegroup}"><label val="-1">{$=take('managerapi.text-menu-1', 'lng')}</label><label val="1">{$=take('managerapi.text-menu-2', 'lng')}</label><label val="2">{$=take('managerapi.text-menu-3', 'lng')}</label><label val="3">{$=take('managerapi.text-menu-4', 'lng')}</label><label val="0">{$=take('managerapi.text-menu-100', 'lng')}</label><input type="hidden" name="material" /><div class="searchbox"><form onsubmit="return false"><input type="text" name="keyword" class="keyword" placeholder="{$=take('global.config.keyword', 'lng')}" value="{$-keyword}" /><input type="submit" class="search" value="" /></form></div><div class="sortselect" sort="{$-sort}"><span class="tit">{$=take('managerapi.text-sort-{$-sort}', 'lng')}<em></em></span><ul><li sort="1">{$=take('managerapi.text-sort-1', 'lng')}</li><li sort="2">{$=take('managerapi.text-sort-2', 'lng')}</li></ul></div></div>
       <div class="item_list material_list">{@}
-        <div class="item" rsid="{$id}" filejson="{$-filejson}"><span class="topic"><em class="filetype {$filetype}">{$filetype}</em>{$=replaceKeyWordHighlight($htmlEncode($replaceKeyWordHighlight(#topic, $getPara('-keyword'))))}</span><span class="size">{$=formatFileSize('{$filesize}')}</span></div>{@}
+        <div class="item" rsid="{$id}" filejson="{$-filejson}"><span class="topic"><em class="filetype {$filetype}">{$filetype}</em>{$=replaceKeyWordHighlight($htmlEncode($replaceKeyWordHighlight(#topic, $getParam('-keyword'))))}</span><span class="size">{$=formatFileSize('{$filesize}')}</span></div>{@}
         <div class="alonetips tips hide">{$=take('managerapi.text-tips-list-null', 'lng')}</div>
       </div>
     </div>

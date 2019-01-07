@@ -67,7 +67,7 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    public static function getPara($argName)
+    public static function getParam($argName)
     {
       $para = null;
       $name = $argName;
@@ -80,10 +80,10 @@ namespace jtbc {
       return $para;
     }
 
-    public static function getPagePara($argName)
+    public static function getPageParam($argName)
     {
       $name = $argName;
-      $para = self::getPara($name);
+      $para = self::getParam($name);
       if (base::isEmpty($para)) $para = tpl::take('global.public.' . $name, 'lng');
       return $para;
     }
@@ -135,7 +135,7 @@ namespace jtbc {
             $tmpstr = tpl::parse($tmpstr);
             if (base::isEmpty($tmpstr))
             {
-              $adjunctDefault = self::getPara('adjunct_default');
+              $adjunctDefault = self::getParam('adjunct_default');
               $adjunctDefaultModule = 'module' . ucfirst($adjunctDefault);
               if (!is_callable(array($class, $adjunctDefaultModule))) self::$errorCode = 404;
               else $tmpstr = call_user_func(array($class, $adjunctDefaultModule));
@@ -144,8 +144,8 @@ namespace jtbc {
         }
       }
       self::setHeader();
-      self::setPara('processtime', (microtime(true) - STARTTIME));
-      //$tmpstr .= '<!--Processed in ' . base::formatSecond(self::getPara('processtime')) . '-->';
+      self::setParam('processtime', (microtime(true) - STARTTIME));
+      //$tmpstr .= '<!--Processed in ' . base::formatSecond(self::getParam('processtime')) . '-->';
       return $tmpstr;
     }
 
@@ -168,8 +168,8 @@ namespace jtbc {
 
     public static function setHeader()
     {
-      $noCache = self::getPara('noCache');
-      $contentType = self::getPara('contentType');
+      $noCache = self::getParam('noCache');
+      $contentType = self::getParam('contentType');
       if (base::isEmpty($contentType)) $contentType = 'text/html';
       if ($noCache === true)
       {
@@ -186,7 +186,7 @@ namespace jtbc {
       }
     }
 
-    public static function setPara($argName, $argValue)
+    public static function setParam($argName, $argValue)
     {
       $name = $argName;
       $value = $argValue;
@@ -194,11 +194,11 @@ namespace jtbc {
       return $value;
     }
 
-    public static function setPagePara($argName, $argValue)
+    public static function setPageParam($argName, $argValue)
     {
       $name = $argName;
       $value = $argValue;
-      return self::setPara($name, $value);
+      return self::setParam($name, $value);
     }
 
     public static function setPageTitle($argTitle)

@@ -12,7 +12,7 @@
     </item>
     <item>
       <name><![CDATA[add]]></name>
-      <default><![CDATA[<nav genre="{$=$genre}"><span>{$-account-nav}{$=universal\category::getCategoryNavByID($getPara('genre'), '{$-lang}', '{$-nav-category}')}</span></nav>
+      <default><![CDATA[<nav genre="{$=$genre}"><span>{$-account-nav}{$=universal\category::getCategoryNavByID($getParam('genre'), '{$-lang}', '{$-nav-category}')}</span></nav>
 <div class="manager" module="add" genre="{$=$genre}" folder="{$=$folder}" filename="{$=$filename}">
   <toplink mode="pitchon" pitchon=".mid-add" upitchon="{$=htmlEncode($get('mid'))}">{$=take('{$>this}.part-toplink', 'tpl', '1')}</toplink>
   <div class="table">
@@ -31,7 +31,7 @@
     </item>
     <item>
       <name><![CDATA[edit]]></name>
-      <default><![CDATA[<nav genre="{$=$genre}"><span>{$-account-nav}{$=universal\category::getCategoryNavByID($getPara('genre'), '{$-lang}', '{$-nav-category}')}</span></nav>
+      <default><![CDATA[<nav genre="{$=$genre}"><span>{$-account-nav}{$=universal\category::getCategoryNavByID($getParam('genre'), '{$-lang}', '{$-nav-category}')}</span></nav>
 <div class="manager" module="edit" genre="{$=$genre}" folder="{$=$folder}" filename="{$=$filename}">
   <toplink mode="pitchon" upitchon="{$=htmlEncode($get('mid'))}">{$=take('{$>this}.part-toplink', 'tpl', '1')}</toplink>
   <div class="table">
@@ -50,7 +50,7 @@
     </item>
     <item>
       <name><![CDATA[list]]></name>
-      <default><![CDATA[<nav genre="{$=$genre}"><span>{$-account-nav}{$=universal\category::getCategoryNavByID($getPara('genre'), '{$-lang}', '{$-nav-category}')}</span></nav>
+      <default><![CDATA[<nav genre="{$=$genre}"><span>{$-account-nav}{$=universal\category::getCategoryNavByID($getParam('genre'), '{$-lang}', '{$-nav-category}')}</span></nav>
 <div class="manager" module="list" genre="{$=$genre}" filename="{$=$filename}">
   <toplink mode="pitchon" pitchon=".mid-list-1" upitchon="{$=htmlEncode($get('mid'))}">{$=take('{$>this}.part-toplink', 'tpl', '1')}</toplink>
   <div class="table">
@@ -72,8 +72,8 @@
         <tr>
           <td class="center"><label class="checkbox"><input type="checkbox" class="id" name="id" value="{$id}" mode="highlightline" /><vicon></vicon></label></td>
           <td class="id center">{$id}</td>
-          <td><span class="mainlink" mode="shortcut" parent="2" shortcut="icon.edit>a.link">{$=replaceKeyWordHighlight($htmlEncode($replaceKeyWordHighlight(#topic, $getPara('-keyword'))))}</span></td>
-          <td>{$=universal\category::getCategoryTopicByID($getPara('genre'), '{$-lang}', '{$category}')}</td>
+          <td><span class="mainlink" mode="shortcut" parent="2" shortcut="icon.edit>a.link">{$=replaceKeyWordHighlight($htmlEncode($replaceKeyWordHighlight(#topic, $getParam('-keyword'))))}</span></td>
+          <td>{$=universal\category::getCategoryTopicByID($getParam('genre'), '{$-lang}', '{$category}')}</td>
           <td>{$time}</td>
           <td class="center"><span class="status status-{$publish}"></span></td>
           <td><icons mode="icontips" text-null="{$=take('::console.nopermission', 'lng')}"><icon class="edit show-{$-account-popedom-edit}" title="{$=take('global.config.edit', 'lng')}"><a class="link" link="{$=replaceQuerystring(array('type' => 'edit', 'mid' => null, 'publish' => null, 'id' => '{$id}'))}"></a></icon><icon class="delete show-{$-account-popedom-delete}" title="{$=take('global.config.delete', 'lng')}" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-delete-id', 'lng')}[{$id}]{$=take('::console.q', 'lng')}" mode="confirmurlexec" urlexec="?type=action&action=delete&id={$id}"></icon></icons></td>
