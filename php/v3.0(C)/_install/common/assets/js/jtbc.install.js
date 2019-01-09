@@ -34,12 +34,12 @@ jtbc.install = {
           if (dataObj.find('result').attr('status') == '0')
           {
             thisObj.removeClass('lock');
-            gotoStep(dataObj.find('result').attr('para'));
+            gotoStep(dataObj.find('result').attr('param'));
             obj.find('div.msg').text(dataObj.find('result').attr('message'));
           }
           else if (dataObj.find('result').attr('status') == '1')
           {
-            location.href = dataObj.find('result').attr('para');
+            location.href = dataObj.find('result').attr('param');
           };
         });
       };
