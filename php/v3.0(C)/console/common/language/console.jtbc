@@ -207,6 +207,10 @@
       <zh-cn><![CDATA[上传文件处理异常，请尝试重新上传]]></zh-cn>
     </item>
     <item>
+      <name><![CDATA[text-upload-error-6]]></name>
+      <zh-cn><![CDATA[上传文件移动异常，请确认上传目录权限或有没有其他进程将文件锁定]]></zh-cn>
+    </item>
+    <item>
       <name><![CDATA[text-upload-error-others]]></name>
       <zh-cn><![CDATA[上传文件异常，请检查服务器设置]]></zh-cn>
     </item>

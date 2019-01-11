@@ -305,6 +305,7 @@ namespace jtbc\universal {
                         $upResultArray['message'] = 'done';
                         $upResultArray['param'] = json_encode($paraArray);
                       }
+                      else $upResultArray['message'] = tpl::take('::console.text-upload-error-6', 'lng');
                     }
                   }
                   file::removeDir($cacheChunkDir);
