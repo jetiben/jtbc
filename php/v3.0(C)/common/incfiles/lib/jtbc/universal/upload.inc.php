@@ -179,13 +179,12 @@ namespace jtbc\universal {
       $targetPath = $argTargetPath;
       $needUploadId = $argNeedUploadId;
       $genre = $argGenre;
+      $status = 0;
+      $message = tpl::take('::console.text-upload-error-others', 'lng');
+      $param = '';
       if (is_null($genre)) $genre = route::getCurrentGenre();
       $targetFileType = base::getLRStr($targetPath, '.', 'right');
       $limitFileResizeAry = null;
-      $upResultArray = array();
-      $upResultArray['status'] = 0;
-      $upResultArray['message'] = tpl::take('::console.text-upload-error-others', 'lng');
-      $upResultArray['param'] = '';
       $uploadPath = tpl::take('config.upload_path', 'cfg');
       $allowFiletype = tpl::take('config.upload_filetype', 'cfg');
       $allowFilesize = base::getNum(tpl::take('config.upload_filesize', 'cfg'), 0);
@@ -214,19 +213,19 @@ namespace jtbc\universal {
           $filetype = strtolower(base::getLRStr($filename, '.', 'right'));
           if (base::isEmpty($tmp_filename))
           {
-            $upResultArray['message'] = tpl::take('::console.text-upload-error-1', 'lng');
+            $message = tpl::take('::console.text-upload-error-1', 'lng');
           }
           else if (!base::checkInstr($allowFiletype, $filetype, ','))
           {
-            $upResultArray['message'] = str_replace('{$allowfiletype}', $allowFiletype, tpl::take('::console.text-upload-error-2', 'lng'));
+            $message = str_replace('{$allowfiletype}', $allowFiletype, tpl::take('::console.text-upload-error-2', 'lng'));
           }
           else if ($fileSize > $allowFilesize)
           {
-            $upResultArray['message'] = str_replace('{$allowfilesize}', base::formatFileSize($allowFilesize), tpl::take('::console.text-upload-error-3', 'lng'));
+            $message = str_replace('{$allowfilesize}', base::formatFileSize($allowFilesize), tpl::take('::console.text-upload-error-3', 'lng'));
           }
           else if (!base::isEmpty($targetPath) && $filetype != $targetFileType)
           {
-            $upResultArray['message'] = str_replace('{$filetype}', $targetFileType, tpl::take('::console.text-upload-error-4', 'lng'));
+            $message = str_replace('{$filetype}', $targetFileType, tpl::take('::console.text-upload-error-4', 'lng'));
           }
           else
           {
@@ -234,11 +233,9 @@ namespace jtbc\universal {
             if (!is_dir($cacheChunkDir)) @mkdir($cacheChunkDir, 0777, true);
             if (is_dir($cacheChunkDir))
             {
-              $status = 0;
               $cacheChunkPath = $cacheChunkDir . '/' . $chunkCurrentIndex . '.tmp';
               if (move_uploaded_file($tmp_filename, $cacheChunkPath))
               {
-                $status = -1;
                 if ($chunkCount == $chunkCurrentIndex)
                 {
                   $uploadFullPath = $targetPath;
@@ -268,21 +265,20 @@ namespace jtbc\universal {
                   }
                   if ($fileMergeError == true)
                   {
-                    $upResultArray['message'] = tpl::take('::console.text-upload-error-5', 'lng');
+                    $message = tpl::take('::console.text-upload-error-5', 'lng');
                   }
                   else
                   {
                     $fileTrueSize = filesize($fileTempPath);
                     if ($fileTrueSize > $allowFilesize)
                     {
-                      $upResultArray['message'] = str_replace('{$allowfilesize}', base::formatFileSize($allowFilesize), tpl::take('::console.text-upload-error-3', 'lng'));
+                      $message = str_replace('{$allowfilesize}', base::formatFileSize($allowFilesize), tpl::take('::console.text-upload-error-3', 'lng'));
                     }
                     else
                     {
                       $renameFile = @rename($fileTempPath, $uploadFullPath);
                       if ($renameFile == true)
                       {
-                        $status = 1;
                         if (base::isImage($filetype) && !empty($limitFileResizeAry))
                         {
                           $resizeWidth = base::getNum($limitFileResizeAry['width'], 0);
@@ -291,36 +287,36 @@ namespace jtbc\universal {
                           $resizeQuality = base::getNum($limitFileResizeAry['quality'], 0);
                           image::resizeImage($uploadFullPath, $uploadFullPath, $resizeWidth, $resizeHeight, $resizeMode, 0, $resizeQuality);
                         }
-                        $paraArray = array();
-                        $paraArray['filename'] = $filename;
-                        $paraArray['filesize'] = $fileTrueSize;
-                        $paraArray['filetype'] = $filetype;
-                        $paraArray['filepath'] = $uploadFullPath;
-                        $paraArray['fileurl'] = $uploadFullPath;
-                        $paraArray['filesizetext'] = base::formatFileSize($fileTrueSize);
+                        $paramArray = array();
+                        $paramArray['filename'] = $filename;
+                        $paramArray['filesize'] = $fileTrueSize;
+                        $paramArray['filetype'] = $filetype;
+                        $paramArray['filepath'] = $uploadFullPath;
+                        $paramArray['fileurl'] = $uploadFullPath;
+                        $paramArray['filesizetext'] = base::formatFileSize($fileTrueSize);
                         $uploadid = 0;
-                        if ($needUploadId == true) $uploadid = self::getUploadId($paraArray, $genre);
-                        $paraArray['uploadid'] = $uploadid;
-                        $upResultArray['status'] = $status;
-                        $upResultArray['message'] = 'done';
-                        $upResultArray['param'] = json_encode($paraArray);
+                        if ($needUploadId == true) $uploadid = self::getUploadId($paramArray, $genre);
+                        $paramArray['uploadid'] = $uploadid;
+                        $status = 1;
+                        $message = 'done';
+                        $param = json_encode($paramArray);
                       }
-                      else $upResultArray['message'] = tpl::take('::console.text-upload-error-6', 'lng');
+                      else $message = tpl::take('::console.text-upload-error-6', 'lng');
                     }
                   }
                   file::removeDir($cacheChunkDir);
                 }
                 else
                 {
-                  $upResultArray['status'] = $status;
-                  $upResultArray['message'] = 'continue';
+                  $status = -1;
+                  $message = 'continue';
                 }
               }
             }
           }
         }
       }
-      $tmpstr = json_encode($upResultArray);
+      $tmpstr = json_encode(array('status' => $status, 'message' => $message, 'param' => $param));
       return $tmpstr;
     }
   }

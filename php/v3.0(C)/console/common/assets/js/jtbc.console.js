@@ -617,6 +617,7 @@ jtbc.console.lib = {
       var chunkSize = 1024 * 1024;
       var chunkCount = Math.floor(fileSize / chunkSize);
       var chunkCurrentIndex = 0;
+      var chunkParam = '';
       var timeStringRandom = tthis.parent.parent.getTimeStringAndRandom();
       var chunkUpload = function()
       {
@@ -629,6 +630,7 @@ jtbc.console.lib = {
           myFormData.append('fileSize', fileSize);
           myFormData.append('chunkCount', chunkCount);
           myFormData.append('chunkCurrentIndex', chunkCurrentIndex);
+          myFormData.append('chunkParam', chunkParam);
           myFormData.append('timeStringRandom', timeStringRandom);
           var myXMLHttpRequest = new XMLHttpRequest();
           myXMLHttpRequest.upload.addEventListener('progress', function(evt){
@@ -640,6 +642,7 @@ jtbc.console.lib = {
             if (dataObj.find('result').attr('status') == '-1')
             {
               chunkCurrentIndex += 1;
+              chunkParam = dataObj.find('result').attr('param');
               chunkUpload();
             }
             else doneCallback(dataObj);

@@ -85,6 +85,7 @@ class ui extends page {
                   $constContent = str_replace('{$db_username}', $db_username, $constContent);
                   $constContent = str_replace('{$db_password}', $db_password, $constContent);
                   $constContent = str_replace('{$db_database}', $db_database, $constContent);
+                  $constContent = str_replace('{$webkey}', base::getRandomString(), $constContent);
                   $constContent = str_replace('define(\'SITESTATUS\', 0)', 'define(\'SITESTATUS\', 100)', $constContent);
                   $constContentSave = file_put_contents($constPath, $constContent);
                   if ($constContentSave)

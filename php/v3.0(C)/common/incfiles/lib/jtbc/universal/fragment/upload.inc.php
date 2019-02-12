@@ -13,7 +13,7 @@ namespace jtbc\universal\fragment {
     {
       $status = 0;
       $message = '';
-      $para = '';
+      $param = '';
       $limit = base::getString(request::get('limit'));
       $account = self::account();
       if (!($account -> checkCurrentGenrePopedom('add') || $account -> checkCurrentGenrePopedom('edit')))
@@ -27,6 +27,7 @@ namespace jtbc\universal\fragment {
         $fileArray['fileSize'] = request::getPost('fileSize');
         $fileArray['chunkCount'] = request::getPost('chunkCount');
         $fileArray['chunkCurrentIndex'] = request::getPost('chunkCurrentIndex');
+        $fileArray['chunkParam'] = request::getPost('chunkParam');
         $fileArray['timeStringRandom'] = request::getPost('timeStringRandom');
         $upResult = universal\upload::up2self($fileArray, $limit);
         $upResultArray = json_decode($upResult, 1);
@@ -34,18 +35,18 @@ namespace jtbc\universal\fragment {
         {
           $status = $upResultArray['status'];
           $message = $upResultArray['message'];
-          $para = $upResultArray['param'];
+          $param = $upResultArray['param'];
           if ($status == 1)
           {
-            $paraArray = json_decode($para, 1);
-            if (is_array($paraArray))
+            $paramArray = json_decode($param, 1);
+            if (is_array($paramArray))
             {
-              $account -> creatCurrentGenreLog('manage.log-upload-1', array('filepath' => $paraArray['filepath']));
+              if (array_key_exists('filepath', $paramArray)) $account -> creatCurrentGenreLog('manage.log-upload-1', array('filepath' => $paramArray['filepath']));
             }
           }
         }
       }
-      $tmpstr = self::formatMsgResult($status, $message, $para);
+      $tmpstr = self::formatMsgResult($status, $message, $param);
       return $tmpstr;
     }
   }
