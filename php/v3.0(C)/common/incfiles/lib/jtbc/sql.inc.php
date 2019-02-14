@@ -505,14 +505,6 @@ namespace jtbc {
       return $this;
     }
 
-    public function __get($argName)
-    {
-      $tmpstr = null;
-      $name = $argName;
-      if ($name == 'sql') $tmpstr = $this -> getSQL();
-      return $tmpstr;
-    }
-
     public function __set($argName, $argValue)
     {
       $this -> set($argName, $argValue);
