@@ -15,14 +15,14 @@ namespace jtbc\console {
     public $currentGenre;
     public $cookiesUserName;
     public $cookiesAuthentication;
-    public $sessionInfo;
-    public $sessionRole;
-    public $sessionPopedom;
+    public $myInfo;
+    public $myRole;
+    public $myPopedom;
 
     public function checkLogin()
     {
       $bool = false;
-      if (is_array($this -> sessionInfo) && is_array($this -> sessionRole) && is_array($this -> sessionPopedom)) $bool = true;
+      if (is_array($this -> myInfo) && is_array($this -> myRole) && is_array($this -> myPopedom)) $bool = true;
       else
       {
         $cookiesUserName = $this -> cookiesUserName;
@@ -112,12 +112,9 @@ namespace jtbc\console {
                 $popedom = array('super' => 0);
               }
             }
-            $this -> sessionInfo = $rs;
-            $this -> sessionRole = $rsr;
-            $this -> sessionPopedom = $popedom;
-            $_SESSION[APPNAME . 'console_info'] = $this -> sessionInfo;
-            $_SESSION[APPNAME . 'console_role'] = $this -> sessionRole;
-            $_SESSION[APPNAME . 'console_popedom'] = $this -> sessionPopedom;
+            $this -> myInfo = $rs;
+            $this -> myRole = $rsr;
+            $this -> myPopedom = $popedom;
             $bool = true;
           }
           if (base::isEmpty($authentication))
@@ -141,7 +138,7 @@ namespace jtbc\console {
     public function checkIsSuper()
     {
       $bool = false;
-      $popedom = $this -> sessionPopedom;
+      $popedom = $this -> myPopedom;
       if (base::getNum(@$popedom['super'], 0) == 1) $bool = true;
       return $bool;
     }
@@ -151,7 +148,7 @@ namespace jtbc\console {
       $bool = false;
       $genre = $argGenre;
       $segment = $argSegment;
-      $popedom = $this -> sessionPopedom;
+      $popedom = $this -> myPopedom;
       if (is_array($popedom))
       {
         if ($this -> checkIsSuper()) $bool = true;
@@ -176,7 +173,7 @@ namespace jtbc\console {
       $bool = false;
       $genre = $argGenre;
       $category = base::getNum($argCategory, 0);
-      $popedom = $this -> sessionPopedom;
+      $popedom = $this -> myPopedom;
       if (is_array($popedom))
       {
         if ($this -> checkIsSuper()) $bool = true;
@@ -252,7 +249,7 @@ namespace jtbc\console {
       {
         if (!$this -> checkIsSuper())
         {
-          $popedom = $this -> sessionPopedom;
+          $popedom = $this -> myPopedom;
           $tmpstr = @$popedom[$genre][$item];
         }
       }
@@ -337,8 +334,8 @@ namespace jtbc\console {
       $tmpstr = '';
       $mode = $argMode;
       $field = $argField;
-      $info = $this -> sessionInfo;
-      $role = $this -> sessionRole;
+      $info = $this -> myInfo;
+      $role = $this -> myRole;
       if ($mode == 'info' && is_array($info)) $tmpstr = base::getString(@$info[tpl::take(':/account:config.db_prefix', 'cfg') . $field]);
       else if ($mode == 'role' && is_array($role)) $tmpstr = base::getString(@$role[tpl::take(':/role:config.db_prefix', 'cfg') . $field]);
       return $tmpstr;
@@ -385,9 +382,6 @@ namespace jtbc\console {
 
     public function logout()
     {
-      $_SESSION[APPNAME . 'console_info'] = null;
-      $_SESSION[APPNAME . 'console_role'] = null;
-      $_SESSION[APPNAME . 'console_popedom'] = null;
       setcookie(APPNAME . 'console[username]', '', 0, COOKIESPATH);
       setcookie(APPNAME . 'console[authentication]', '', 0, COOKIESPATH);
     }
@@ -482,9 +476,6 @@ namespace jtbc\console {
     function __construct($argCurrentGenre = null)
     {
       $this -> currentGenre = $argCurrentGenre;
-      $this -> sessionInfo = @$_SESSION[APPNAME . 'console_info'];
-      $this -> sessionRole = @$_SESSION[APPNAME . 'console_role'];
-      $this -> sessionPopedom = @$_SESSION[APPNAME . 'console_popedom'];
       $this -> cookiesUserName = request::getCookie('console', 'username');
       $this -> cookiesAuthentication = request::getCookie('console', 'authentication');
       $this -> lang = base::getNum(request::getCookie('console', 'lang'), 0);
