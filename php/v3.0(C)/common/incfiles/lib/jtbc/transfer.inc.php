@@ -436,6 +436,14 @@ namespace jtbc {
             $sqlstr = "select * from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0";
             $sqlorderstr = " order by " . $paramDBPrefix . "time desc";
             break;
+          case 'std':
+            $sqlstr = "select * from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0 and " . $paramDBPrefix . "publish=1";
+            $sqlorderstr = " order by " . $paramDBPrefix . "time asc";
+            break;
+          case '@std':
+            $sqlstr = "select * from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0";
+            $sqlorderstr = " order by " . $paramDBPrefix . "time asc";
+            break;
           case 'top':
             $sqlstr = "select * from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0 and " . $paramDBPrefix . "publish=1";
             $sqlorderstr = " order by " . $paramDBPrefix . "id desc";
@@ -443,14 +451,6 @@ namespace jtbc {
           case '@top':
             $sqlstr = "select * from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0";
             $sqlorderstr = " order by " . $paramDBPrefix . "id desc";
-            break;
-          case 'commendatory':
-            $sqlstr = "select * from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0 and " . $paramDBPrefix . "publish=1 and " . $paramDBPrefix . "commendatory=1";
-            $sqlorderstr = " order by " . $paramDBPrefix . "time desc";
-            break;
-          case '@commendatory':
-            $sqlstr = "select * from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0 and " . $paramDBPrefix . "commendatory=1";
-            $sqlorderstr = " order by " . $paramDBPrefix . "time desc";
             break;
           case 'order':
             $sqlstr = "select * from " . $paramDBTable . " where " . $paramDBPrefix . "delete=0 and " . $paramDBPrefix . "publish=1";
