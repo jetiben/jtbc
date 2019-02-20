@@ -131,8 +131,8 @@ class ui extends page {
         $status = 1;
         $cookiesExpireTime = 0;
         if ($remember == '1') $cookiesExpireTime = time() + 31536000;
-        setcookie(APPNAME . 'console[username]', $username, $cookiesExpireTime, COOKIESPATH);
-        setcookie(APPNAME . 'console[authentication]', md5(WEBKEY . md5($password)), $cookiesExpireTime, COOKIESPATH);
+        setcookie(APPNAME . 'console[username]', $username, $cookiesExpireTime, COOKIESPATH, null, null, true);
+        setcookie(APPNAME . 'console[authentication]', md5(WEBKEY . md5($password)), $cookiesExpireTime, COOKIESPATH, null, null, true);
         $account -> creatCurrentGenreLog('manage.log-login-1');
       }
       else $message = tpl::take('manage.msg-login-1', 'lng');

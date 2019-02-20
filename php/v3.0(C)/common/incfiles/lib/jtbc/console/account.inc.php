@@ -382,8 +382,8 @@ namespace jtbc\console {
 
     public function logout()
     {
-      setcookie(APPNAME . 'console[username]', '', 0, COOKIESPATH);
-      setcookie(APPNAME . 'console[authentication]', '', 0, COOKIESPATH);
+      setcookie(APPNAME . 'console[username]', '', 0, COOKIESPATH, null, null, true);
+      setcookie(APPNAME . 'console[authentication]', '', 0, COOKIESPATH, null, null, true);
     }
 
     public function modifyPassword($argPassword, $argNewPassword)
@@ -402,7 +402,7 @@ namespace jtbc\console {
         if (is_numeric($re))
         {
           $bool = true;
-          setcookie(APPNAME . 'console[authentication]', md5(WEBKEY . md5($newpassword)), 0, COOKIESPATH);
+          setcookie(APPNAME . 'console[authentication]', md5(WEBKEY . md5($newpassword)), 0, COOKIESPATH, null, null, true);
         }
       }
       return $bool;
@@ -466,7 +466,7 @@ namespace jtbc\console {
         if (!base::isEmpty(tpl::take('::sel_lang.' . $val, 'lng')))
         {
           $this -> lang = $val;
-          setcookie(APPNAME . 'console[lang]', $val, time() + 31536000, COOKIESPATH);
+          setcookie(APPNAME . 'console[lang]', $val, time() + 31536000, COOKIESPATH, null, null, true);
           $bool = true;
         }
       }

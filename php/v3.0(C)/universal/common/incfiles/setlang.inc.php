@@ -15,7 +15,7 @@ class ui extends page {
     $lang = base::getNum(tpl::take('global.config.lang-' . $language, 'cfg'), -1);
     if ($lang != -1)
     {
-      setcookie(APPNAME . 'config[language]', $language, time() + 31536000, COOKIESPATH);
+      setcookie(APPNAME . 'config[language]', $language, time() + 31536000, COOKIESPATH, null, null, true);
     }
     return $backurl;
   }
