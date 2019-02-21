@@ -248,6 +248,7 @@ class ui extends console\page {
                       fclose($chunkHandle);
                     }
                   }
+                  fclose($fpTemp);
                   if ($fileMergeError == false)
                   {
                     $renameFile = @rename($fileTempPath, $newfilepath);

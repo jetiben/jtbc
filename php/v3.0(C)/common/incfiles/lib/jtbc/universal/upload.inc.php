@@ -263,6 +263,7 @@ namespace jtbc\universal {
                       fclose($chunkHandle);
                     }
                   }
+                  fclose($fpTemp);
                   if ($fileMergeError == true)
                   {
                     $message = tpl::take('::console.text-upload-error-5', 'lng');
