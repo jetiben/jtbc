@@ -225,6 +225,7 @@ namespace jtbc {
       self::$param['urs'] = request::server('QUERY_STRING');
       self::$param['url'] = base::isEmpty(self::$param['urs'])? self::$param['uri']: self::$param['uri'] . '?' . self::$param['urs'];
       self::$param['urlpre'] = self::$param['http'] . self::$param['http_host'];
+      self::$param['fulluri'] = self::$param['urlpre'] . self::$param['uri'];
       self::$param['fullurl'] = self::$param['urlpre'] . self::$param['url'];
     }
   }

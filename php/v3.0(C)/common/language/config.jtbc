@@ -31,6 +31,10 @@
       <zh-cn><![CDATA[颜色]]></zh-cn>
     </item>
     <item>
+      <name><![CDATA[contact]]></name>
+      <zh-cn><![CDATA[联系方式]]></zh-cn>
+    </item>
+    <item>
       <name><![CDATA[content]]></name>
       <zh-cn><![CDATA[内容]]></zh-cn>
     </item>

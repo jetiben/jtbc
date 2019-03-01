@@ -249,13 +249,20 @@ namespace jtbc {
               $fieldFormatLine = str_replace('{$fieldname}', base::htmlEncode($simplifiedFieldName), $fieldFormatLine);
               if ($currentFieldType == 'att')
               {
-                $fieldRelatedEditor = base::getString(@$commentAry['fieldRelatedEditor']);
-                if (!base::isEmpty($fieldRelatedEditor)) $fieldRelatedEditor = 'textarea.' . $fieldRelatedEditor;
+                $fieldRelatedEditor = '';
+                if (array_key_exists('fieldRelatedEditor', $commentAry))
+                {
+                  $fieldRelatedEditor = 'textarea.' . base::getString($commentAry['fieldRelatedEditor']);
+                }
                 $fieldFormatLine = str_replace('{$-fieldRelatedEditor}', $fieldRelatedEditor, $fieldFormatLine);
               }
               else if ($currentFieldType == 'checkbox' || $currentFieldType == 'radio' || $currentFieldType == 'select')
               {
-                $fieldRelatedFile = base::getString(@$commentAry['fieldRelatedFile']);
+                $fieldRelatedFile = '';
+                if (array_key_exists('fieldRelatedFile', $commentAry))
+                {
+                  $fieldRelatedFile = base::getString($commentAry['fieldRelatedFile']);
+                }
                 $fieldFormatLine = str_replace('{$-fieldRelatedFile}', $fieldRelatedFile, $fieldFormatLine);
               }
               if (array_key_exists('fieldHasTips', $commentAry))
@@ -307,7 +314,11 @@ namespace jtbc {
                   $fieldFormatLine = str_replace('{$' . $simplifiedFieldName . '}', base::htmlEncode($fieldDefault), $fieldFormatLine);
                 }
               }
-              $currentFieldHideMode = base::getNum(@$commentAry['fieldHideMode'], -1);
+              $currentFieldHideMode = -1;
+              if (array_key_exists('fieldHideMode', $commentAry))
+              {
+                $currentFieldHideMode = base::getNum($commentAry['fieldHideMode'], 0);
+              }
               if ($currentFieldHideMode != $mode) $tmpstr .= $fieldFormatLine;
             }
           }
