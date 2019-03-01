@@ -14,7 +14,7 @@
       <name><![CDATA[add]]></name>
       <default><![CDATA[<div class="title">{$=take('manage.text-tit-add', 'lng')}</div>
 <div class="tinyform">
-  <form mode="ajaxpost" action="?type=action&amp;action=add" onsubmit="return false;">
+  <form mode="ajaxPost" action="?type=action&amp;action=add" onsubmit="return false;">
     <ol>
       <li><input type="hidden" name="symbol" value="{$-symbol}" /><input name="nodename" type="text" class="i1" placeholder="{$=take('manage.text-nodename', 'lng')}" /></li>
     </ol>
@@ -29,7 +29,7 @@
   <toplink mode="pitchon" upitchon="{$=htmlEncode($get('mid'))}">{$=take('{$>this}.part-toplink', 'tpl', '1')}</toplink>
   <div class="table">
     <h3><span class="hand nodeadd show-{$-account-popedom-add}" symbol="{$-symbol}">+ </span>{$=take('manage.text-tit-node', 'lng')} [ {$-current-key} ]</h3>
-    <rightarea><span class="text">{$=take('manage.text-select-node', 'lng')}</span>&nbsp;&nbsp;<select mode="selectoption" name="node" class="s1" val="{$-current-key}" action="{$=htmlEncode($replaceQuerystring('node', null))}">{@}<option value="{$key}">{$key}</option>{@}</select>&nbsp;&nbsp;&nbsp;<icons><btn symbol="{$-symbol}" class="b1 fileselect" title="{$=take('manage.text-tips-fileselect', 'lng')}"></btn></icons>&nbsp;&nbsp;&nbsp;<div class="searchbox"><form action="?type=list" onsubmit="return false"><input type="text" name="keyword" class="keyword" placeholder="{$=take('manage.text-symbol', 'lng')}" value="{$-symbol}" /><input type="submit" class="search" value="" parmname="symbol" /></form></div></rightarea>
+    <rightarea><span class="text">{$=take('manage.text-select-node', 'lng')}</span>&nbsp;&nbsp;<select mode="selectOption" name="node" class="s1" val="{$-current-key}" action="{$=htmlEncode($replaceQuerystring('node', null))}">{@}<option value="{$key}">{$key}</option>{@}</select>&nbsp;&nbsp;&nbsp;<icons><btn symbol="{$-symbol}" class="b1 fileselect" title="{$=take('manage.text-tips-fileselect', 'lng')}"></btn></icons>&nbsp;&nbsp;&nbsp;<div class="searchbox"><form action="?type=list" onsubmit="return false"><input type="text" name="keyword" class="keyword" placeholder="{$=take('manage.text-symbol', 'lng')}" value="{$-symbol}" /><input type="submit" class="search" value="" parmname="symbol" /></form></div></rightarea>
     <form class="nodeedit" action="?type=action&amp;action=edit" text-ok="{$=take('::console.iknow', 'lng')}" onsubmit="return false;">
       <table cellpadding="0" cellspacing="0" class="tableF">
         <tbody>

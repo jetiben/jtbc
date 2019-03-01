@@ -16,7 +16,7 @@
         <div class="text">
           <p align="center">{$=htmlEncode($take('index.text-tips-1', 'lng'))}</p>
           <div class="tinyform">
-            <form mode="ajaxpost" action="api.php?type=action&amp;action=add" onsubmit="return false;">
+            <form mode="ajaxPost" action="api.php?type=action&amp;action=add" onsubmit="return false;">
               <ul>
                 <li><input type="text" name="name" placeholder="{$=take('global.config.name', 'lng')}" class="i1" /></li>
                 <li><input type="text" name="mobile" placeholder="{$=take('global.config.mobile', 'lng')}" class="i1" /></li>

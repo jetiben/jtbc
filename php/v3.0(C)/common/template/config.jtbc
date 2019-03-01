@@ -40,7 +40,7 @@
     </item>
     <item>
       <name><![CDATA[pagi-1]]></name>
-      <default><![CDATA[<span>{$-page1}/{$-page2}</span><a class="link first" link="{$-firstpagelink}">&laquo;</a>{@}<a class="link {$-class}" link="{$-link}">{$-num}</a>{@}<a class="link last" link="{$-lastpagelink}">&raquo;</a><input type="text" id="{$-pagiid}-input" class="pagenum" value="{$-next-page-num}" /><a mode="pagigo" baselink="{$-baselink}" class="go">GO</a>]]></default>
+      <default><![CDATA[<span>{$-page1}/{$-page2}</span><a class="link first" link="{$-firstpagelink}">&laquo;</a>{@}<a class="link {$-class}" link="{$-link}">{$-num}</a>{@}<a class="link last" link="{$-lastpagelink}">&raquo;</a><input type="text" id="{$-pagiid}-input" class="pagenum" value="{$-next-page-num}" /><a mode="pagiGo" baselink="{$-baselink}" class="go">GO</a>]]></default>
     </item>
     <item>
       <name><![CDATA[pagi-2]]></name>

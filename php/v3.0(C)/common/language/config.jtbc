@@ -167,6 +167,10 @@
       <zh-cn><![CDATA[状态]]></zh-cn>
     </item>
     <item>
+      <name><![CDATA[tag]]></name>
+      <zh-cn><![CDATA[标签]]></zh-cn>
+    </item>
+    <item>
       <name><![CDATA[template]]></name>
       <zh-cn><![CDATA[模板]]></zh-cn>
     </item>

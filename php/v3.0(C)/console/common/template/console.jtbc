@@ -47,7 +47,7 @@
       <name><![CDATA[fieldformat-dispose]]></name>
       <default><![CDATA[<tr class="show-{$-account-popedom-dispose}">
   <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
-  <td><span mode="inputswitch" class="switch switch-{${$fieldname}}"><b></b><u></u><em></em><input type="hidden" name="{$fieldname}" class="val" value="{${$fieldname}}" /></span></td>
+  <td><span mode="inputSwitch" class="switch switch-{${$fieldname}}"><b></b><u></u><em></em><input type="hidden" name="{$fieldname}" class="val" value="{${$fieldname}}" /></span></td>
 </tr>]]></default>
     </item>
     <item>
@@ -61,7 +61,7 @@
       <name><![CDATA[fieldformat-publish]]></name>
       <default><![CDATA[<tr class="show-{$-account-popedom-publish}">
   <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
-  <td><span mode="inputswitch" class="switch switch-{${$fieldname}}"><b></b><u></u><em></em><input type="hidden" name="{$fieldname}" class="val" value="{${$fieldname}}" /></span></td>
+  <td><span mode="inputSwitch" class="switch switch-{${$fieldname}}"><b></b><u></u><em></em><input type="hidden" name="{$fieldname}" class="val" value="{${$fieldname}}" /></span></td>
 </tr>]]></default>
     </item>
     <item>
@@ -82,7 +82,19 @@
       <name><![CDATA[fieldformat-switch]]></name>
       <default><![CDATA[<tr>
   <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
-  <td><span mode="inputswitch" class="switch switch-{${$fieldname}}"><b></b><u></u><em></em><input type="hidden" name="{$fieldname}" class="val" value="{${$fieldname}}" /></span></td>
+  <td><span mode="inputSwitch" class="switch switch-{${$fieldname}}"><b></b><u></u><em></em><input type="hidden" name="{$fieldname}" class="val" value="{${$fieldname}}" /></span></td>
+</tr>]]></default>
+    </item>
+    <item>
+      <name><![CDATA[fieldformat-tag]]></name>
+      <default><![CDATA[<tr>
+  <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
+  <td>
+    <div class="tagInput" mode="tagInput" name="{$fieldname}">
+      <div class="hints"></div>
+      <div class="tags"><input type="text" class="tag" value="" /><input type="hidden" class="val" name="{$fieldname}" value="{${$fieldname}}" /></div>
+    </div>
+  </td>
 </tr>]]></default>
     </item>
     <item>
@@ -103,7 +115,7 @@
       <name><![CDATA[fieldformat-upfile]]></name>
       <default><![CDATA[<tr>
   <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
-  <td><div mode="upfile" class="upfile"><input type="hidden" name="{$fieldname}" class="upsource" value="{${$fieldname}}" /><input type="text" name="{$fieldname}-fileurl" class="i1 fileurl" text-preview-title="{$=take('::console.att-preview-title', 'lng')}" text-preview-link="{$=take('::console.att-preview-link', 'lng')}" /><div class="upbtn"><button class="b4 upbtn" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><span class="bar"></span><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" action="?type=action&amp;action=upload&amp;limit={$fieldname}" /></div></div></td>
+  <td><div mode="upFile" class="upfile"><input type="hidden" name="{$fieldname}" class="upsource" value="{${$fieldname}}" /><input type="text" name="{$fieldname}-fileurl" class="i1 fileurl" text-preview-title="{$=take('::console.att-preview-title', 'lng')}" text-preview-link="{$=take('::console.att-preview-link', 'lng')}" /><div class="upbtn"><button class="b4 upbtn" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><span class="bar"></span><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" action="?type=action&amp;action=upload&amp;limit={$fieldname}" /></div></div></td>
 </tr>]]></default>
     </item>
     <item>

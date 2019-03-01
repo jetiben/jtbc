@@ -24,7 +24,7 @@
           <td width="130">{$lasttime}</td>
           <td width="60" class="right"><icons><icon class="edit show-{$-account-popedom-edit}" title="{$=take('global.config.edit', 'lng')}"></icon><icon class="delete show-{$-account-popedom-delete}" rspath="{$path}{$topic}" title="{$=take('global.config.delete', 'lng')}" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-delete', 'lng')}[{$topic}]{$=take('::console.q', 'lng')}"></icon></icons></td>
         </tr>{@}
-        <tr mode="alonetips" class="tips hide">
+        <tr mode="aloneTips" class="tips hide">
           <td colspan="3">{$=take('manage.text-tips-list-null', 'lng')}</td>
         </tr>
       </tbody>

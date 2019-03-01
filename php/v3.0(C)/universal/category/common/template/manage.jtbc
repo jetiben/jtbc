@@ -10,10 +10,10 @@
       <name><![CDATA[add]]></name>
       <default><![CDATA[<div class="title">{$=take('manage.text-tit-add', 'lng')}</div>
 <div class="tinyform">
-  <form mode="ajaxpost" action="?type=action&amp;action=add" onsubmit="return false;">
+  <form mode="ajaxPost" action="?type=action&amp;action=add" onsubmit="return false;">
     <ol>
       <li><input type="hidden" name="genre" value="{$-genre}" /><input type="hidden" name="fid" value="{$-fid}" /><input name="topic" type="text" class="i1" placeholder="{$=take('config.topic', 'lng')}" /></li>
-      <li class="show-{$-has_image}"><div mode="upfile" class="upfile"><input type="hidden" name="image" class="upsource" /><input type="text" name="image-fileurl" class="i1 fileurl" placeholder="{$=take('config.image', 'lng')}" /><div class="upbtn"><button class="b4 upbtn show-{$-has_image}" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><span class="bar"></span><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" alert="mini" action="?type=action&amp;action=upload&amp;limit=image" /></div></div></li>
+      <li class="show-{$-has_image}"><div mode="upFile" class="upfile"><input type="hidden" name="image" class="upsource" /><input type="text" name="image-fileurl" class="i1 fileurl" placeholder="{$=take('config.image', 'lng')}" /><div class="upbtn"><button class="b4 upbtn show-{$-has_image}" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><span class="bar"></span><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" alert="mini" action="?type=action&amp;action=upload&amp;limit=image" /></div></div></li>
       <li class="show-{$-has_intro}"><textarea class="t1" name="intro" placeholder="{$=take('config.intro', 'lng')}"></textarea></li>
     </ol>
     <div class="submit"><button class="b2 submit">{$=take('global.config.submit', 'lng')}</button><span class="tips"></span></div>
@@ -24,10 +24,10 @@
       <name><![CDATA[edit]]></name>
       <default><![CDATA[<div class="title">{$=take('manage.text-tit-edit', 'lng')}</div>
 <div class="tinyform">
-  <form mode="ajaxpost" action="?type=action&amp;action=edit&amp;id={$id}" onsubmit="return false;">
+  <form mode="ajaxPost" action="?type=action&amp;action=edit&amp;id={$id}" onsubmit="return false;">
     <ol>
       <li><input name="topic" type="text" class="i1" placeholder="{$=take('config.topic', 'lng')}" value="{$topic}" /></li>
-      <li class="show-{$-has_image}"><div mode="upfile" class="upfile"><input type="hidden" name="image" value="{$image}" class="upsource" /><input type="text" name="image-fileurl" class="i1 fileurl" placeholder="{$=take('config.image', 'lng')}" /><div class="upbtn"><button class="b4 upbtn show-{$-has_image}" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><span class="bar"></span><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" alert="mini" action="?type=action&amp;action=upload&amp;limit=image" /></div></div></li>
+      <li class="show-{$-has_image}"><div mode="upFile" class="upfile"><input type="hidden" name="image" value="{$image}" class="upsource" /><input type="text" name="image-fileurl" class="i1 fileurl" placeholder="{$=take('config.image', 'lng')}" /><div class="upbtn"><button class="b4 upbtn show-{$-has_image}" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><span class="bar"></span><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" alert="mini" action="?type=action&amp;action=upload&amp;limit=image" /></div></div></li>
       <li class="show-{$-has_intro}"><textarea class="t1" name="intro" placeholder="{$=take('config.intro', 'lng')}">{$intro}</textarea></li>
     </ol>
     <div class="submit"><button class="b2 submit">{$=take('global.config.submit', 'lng')}</button><span class="tips"></span></div>
@@ -46,7 +46,7 @@
       <thead>
         <tr>
           <th width="20" class="center show-{$-account-popedom-sort}">{$=take('::console.th-sort', 'lng')}</th>
-          <th width="20" class="center"><label class="checkbox"><input type="checkbox" class="idall" forname="id" value="1" mode="highlightlineall" /><vicon></vicon></label></th>
+          <th width="20" class="center"><label class="checkbox"><input type="checkbox" class="idall" forname="id" value="1" mode="highlightLineAll" /><vicon></vicon></label></th>
           <th width="40" class="center">{$=take('global.config.id', 'lng')}</th>
           <th>{$=take('config.topic', 'lng')}</th>
           <th width="120">{$=take('global.config.time', 'lng')}</th>
@@ -56,19 +56,19 @@
       <tbody>{@}
         <tr>
           <td class="sort move show-{$-account-popedom-sort}"></td>
-          <td class="center"><label class="checkbox"><input type="checkbox" class="id" name="id" value="{$id}" mode="highlightline" /><vicon></vicon></label></td>
+          <td class="center"><label class="checkbox"><input type="checkbox" class="id" name="id" value="{$id}" mode="highlightLine" /><vicon></vicon></label></td>
           <td class="id center">{$id}</td>
           <td><a class="link" link="?type=list&amp;genre={$-current-genre}&amp;fid={$id}"><span class="mainlink hand">{$topic}</span></a></td>
           <td>{$time}</td>
-          <td><icons mode="icontips" text-null="{$=take('::console.nopermission', 'lng')}"><icon rsid="{$id}" class="edit show-{$-account-popedom-edit}" title="{$=take('global.config.edit', 'lng')}"></icon><icon class="delete show-{$-account-popedom-delete}" title="{$=take('global.config.delete', 'lng')}" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-delete-id', 'lng')}[{$id}]{$=take('::console.q', 'lng')}" mode="confirmurlexec" urlexec="?type=action&action=delete&id={$id}"></icon></icons></td>
+          <td><icons mode="iconTips" text-null="{$=take('::console.nopermission', 'lng')}"><icon rsid="{$id}" class="edit show-{$-account-popedom-edit}" title="{$=take('global.config.edit', 'lng')}"></icon><icon class="delete show-{$-account-popedom-delete}" title="{$=take('global.config.delete', 'lng')}" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-delete-id', 'lng')}[{$id}]{$=take('::console.q', 'lng')}" mode="confirmUrlExec" urlexec="?type=action&action=delete&id={$id}"></icon></icons></td>
         </tr>{@}
-        <tr mode="alonetips" class="tips hide">
+        <tr mode="aloneTips" class="tips hide">
           <td colspan="6">{$=take('manage.text-tips-list-null', 'lng')}</td>
         </tr>
       </tbody>
     </table>
     <div class="control">
-      <div mode="batchswitch" class="batch show-{$-batch-show}"><span class="text">{$=take('::console.batch-tips', 'lng')}</span><select class="batch">{$=xmlSelect('::sel_batch.*|null,{$-batch-list}', '', 'select')}</select><span class="ok" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-batch', 'lng')}">{$=take('::console.control-confirm', 'lng')}</span></div>
+      <div mode="batchSwitch" class="batch show-{$-batch-show}"><span class="text">{$=take('::console.batch-tips', 'lng')}</span><select class="batch">{$=xmlSelect('::sel_batch.*|null,{$-batch-list}', '', 'select')}</select><span class="ok" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-batch', 'lng')}">{$=take('::console.control-confirm', 'lng')}</span></div>
       <div class="pagi"></div>
     </div>
   </div>

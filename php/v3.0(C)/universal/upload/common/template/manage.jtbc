@@ -20,7 +20,7 @@
     <table cellpadding="10" cellspacing="1" class="tableL">
       <thead>
         <tr>
-          <th width="20" class="center"><label class="checkbox"><input type="checkbox" class="idall" forname="id" value="1" mode="highlightlineall" /><vicon></vicon></label></th>
+          <th width="20" class="center"><label class="checkbox"><input type="checkbox" class="idall" forname="id" value="1" mode="highlightLineAll" /><vicon></vicon></label></th>
           <th width="40" class="center">{$=take('global.config.id', 'lng')}</th>
           <th>{$=take('config.topic', 'lng')}</th>
           <th width="120" class="center">{$=take('config.genre', 'lng')}</th>
@@ -31,21 +31,21 @@
       </thead>
       <tbody>{@}
         <tr>
-          <td class="center"><label class="checkbox"><input type="checkbox" class="id" name="id" value="{$id}" mode="highlightline" /><vicon></vicon></label></td>
+          <td class="center"><label class="checkbox"><input type="checkbox" class="id" name="id" value="{$id}" mode="highlightLine" /><vicon></vicon></label></td>
           <td class="id center">{$id}</td>
           <td><span class="mainlink" title="{$=take('config.filepath', 'lng')}:&#10;{$filepath}"><em class="upload_status upload_status_{$status}"></em>{$topic}</span></td>
           <td class="center">{$genre}</td>
           <td class="center">{$filesizetext}</td>
           <td>{$time}</td>
-          <td><icons mode="icontips" text-null="{$=take('::console.nopermission', 'lng')}"><icon class="delete show-{$-account-popedom-delete}" title="{$=take('global.config.delete', 'lng')}" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-delete-id', 'lng')}[{$id}]{$=take('::console.q', 'lng')}" mode="confirmurlexec" urlexec="?type=action&action=delete&id={$id}"></icon></icons></td>
+          <td><icons mode="iconTips" text-null="{$=take('::console.nopermission', 'lng')}"><icon class="delete show-{$-account-popedom-delete}" title="{$=take('global.config.delete', 'lng')}" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-delete-id', 'lng')}[{$id}]{$=take('::console.q', 'lng')}" mode="confirmUrlExec" urlexec="?type=action&action=delete&id={$id}"></icon></icons></td>
         </tr>{@}
-        <tr mode="alonetips" class="tips hide">
+        <tr mode="aloneTips" class="tips hide">
           <td colspan="7">{$=take('manage.text-tips-list-null', 'lng')}</td>
         </tr>
       </tbody>
     </table>
     <div class="control">
-      <div mode="batchswitch" class="batch show-{$-batch-show}"><span class="text">{$=take('::console.batch-tips', 'lng')}</span><select class="batch">{$=xmlSelect('::sel_batch.*|null,{$-batch-list}', '', 'select')}</select><span class="ok" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-batch', 'lng')}">{$=take('::console.control-confirm', 'lng')}</span></div>
+      <div mode="batchSwitch" class="batch show-{$-batch-show}"><span class="text">{$=take('::console.batch-tips', 'lng')}</span><select class="batch">{$=xmlSelect('::sel_batch.*|null,{$-batch-list}', '', 'select')}</select><span class="ok" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-batch', 'lng')}">{$=take('::console.control-confirm', 'lng')}</span></div>
       <div class="pagi">{$=pagi('{$-pagi-pagenum}', '{$-pagi-pagetotal}', $replaceQuerystring('page', '[~page]'))}</div>
     </div>
   </div>

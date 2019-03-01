@@ -21,7 +21,7 @@
   <toplink mode="pitchon" pitchon=".mid-add" upitchon="{$=htmlEncode($get('mid'))}">{$=take('{$>this}.part-toplink', 'tpl', '1', array('-group' => '{$-group}'))}</toplink>
   <div class="table">
     <h3>{$=take('manage.text-tit-add', 'lng')}</h3>
-    <form mode="ajaxpost" action="?type=action&amp;action=add" onsubmit="return false;">
+    <form mode="ajaxPost" action="?type=action&amp;action=add" onsubmit="return false;">
       <table cellpadding="10" cellspacing="0" class="tableF">
         <tbody>
           <tr>
@@ -30,11 +30,11 @@
           </tr>
           <tr>
             <th valign="top"><t>{$=take('global.config.group', 'lng')}<r>*</r></t></th>
-            <td><select mode="selectoption" name="group" class="s1" val="{$-group}">{$=xmlSelect('sel_group.*', '', 'select')}</select></td>
+            <td><select mode="selectOption" name="group" class="s1" val="{$-group}">{$=xmlSelect('sel_group.*', '', 'select')}</select></td>
           </tr>
           <tr>
             <th valign="top"><t>{$=take('global.config.image', 'lng')}</t></th>
-            <td><div mode="upfile" class="upfile"><input type="hidden" name="image" class="upsource" /><input type="text" name="image-fileurl" class="i1 fileurl" text-preview-title="{$=take('::console.att-preview-title', 'lng')}" text-preview-link="{$=take('::console.att-preview-link', 'lng')}" /><div class="upbtn"><button class="b4 upbtn" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><span class="bar"></span><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" action="?type=action&amp;action=upload" /></div></div></td>
+            <td><div mode="upFile" class="upfile"><input type="hidden" name="image" class="upsource" /><input type="text" name="image-fileurl" class="i1 fileurl" text-preview-title="{$=take('::console.att-preview-title', 'lng')}" text-preview-link="{$=take('::console.att-preview-link', 'lng')}" /><div class="upbtn"><button class="b4 upbtn" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><span class="bar"></span><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" action="?type=action&amp;action=upload" /></div></div></td>
           </tr>
           <tr>
             <th valign="top"><t>{$=take('global.config.url', 'lng')}<r>*</r></t></th>
@@ -46,7 +46,7 @@
           </tr>
           <tr class="show-{$-account-popedom-publish}">
             <th valign="top"><t>{$=take('global.config.publish', 'lng')}</t></th>
-            <td><span mode="inputswitch" class="switch"><b></b><u></u><em></em><input type="hidden" name="publish" class="val" value="0" /></span></td>
+            <td><span mode="inputSwitch" class="switch"><b></b><u></u><em></em><input type="hidden" name="publish" class="val" value="0" /></span></td>
           </tr>
         </tbody>
       </table>
@@ -64,7 +64,7 @@
   <toplink mode="pitchon" upitchon="{$=htmlEncode($get('mid'))}">{$=take('{$>this}.part-toplink', 'tpl', '1', array('-group' => '{$group}'))}</toplink>
   <div class="table">
     <h3>{$=take('manage.text-tit-edit', 'lng')}</h3>
-    <form mode="ajaxpost" action="?type=action&amp;action=edit&amp;id={$id}" onsubmit="return false;">
+    <form mode="ajaxPost" action="?type=action&amp;action=edit&amp;id={$id}" onsubmit="return false;">
       <table cellpadding="10" cellspacing="0" class="tableF">
         <tbody>
           <tr>
@@ -77,7 +77,7 @@
           </tr>
           <tr>
             <th valign="top"><t>{$=take('global.config.image', 'lng')}</t></th>
-            <td><div mode="upfile" class="upfile"><input type="hidden" name="image" value="{$image}" class="upsource" /><input type="text" name="image-fileurl" class="i1 fileurl" text-preview-title="{$=take('::console.att-preview-title', 'lng')}" text-preview-link="{$=take('::console.att-preview-link', 'lng')}" /><div class="upbtn"><button class="b4 upbtn" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><span class="bar"></span><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" action="?type=action&amp;action=upload" /></div></div></td>
+            <td><div mode="upFile" class="upfile"><input type="hidden" name="image" value="{$image}" class="upsource" /><input type="text" name="image-fileurl" class="i1 fileurl" text-preview-title="{$=take('::console.att-preview-title', 'lng')}" text-preview-link="{$=take('::console.att-preview-link', 'lng')}" /><div class="upbtn"><button class="b4 upbtn" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><span class="bar"></span><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" action="?type=action&amp;action=upload" /></div></div></td>
           </tr>
           <tr>
             <th valign="top"><t>{$=take('global.config.url', 'lng')}<r>*</r></t></th>
@@ -89,7 +89,7 @@
           </tr>
           <tr class="show-{$-account-popedom-publish}">
             <th valign="top"><t>{$=take('global.config.publish', 'lng')}</t></th>
-            <td><span mode="inputswitch" class="switch switch-{$publish}"><b></b><u></u><em></em><input type="hidden" name="publish" class="val" value="{$publish}" /></span></td>
+            <td><span mode="inputSwitch" class="switch switch-{$publish}"><b></b><u></u><em></em><input type="hidden" name="publish" class="val" value="{$publish}" /></span></td>
           </tr>
           <tr>
             <th valign="top"><t>{$=take('global.config.time', 'lng')}</t></th>
@@ -114,7 +114,7 @@
     <table cellpadding="10" cellspacing="1" class="tableL">
       <thead>
         <tr>
-          <th width="20" class="center"><label class="checkbox"><input type="checkbox" class="idall" forname="id" value="1" mode="highlightlineall" /><vicon></vicon></label></th>
+          <th width="20" class="center"><label class="checkbox"><input type="checkbox" class="idall" forname="id" value="1" mode="highlightLineAll" /><vicon></vicon></label></th>
           <th width="40" class="center">{$=take('global.config.id', 'lng')}</th>
           <th>{$=take('global.config.topic', 'lng')}</th>
           <th width="120">{$=take('global.config.time', 'lng')}</th>
@@ -124,20 +124,20 @@
       </thead>
       <tbody>{@}
         <tr>
-          <td class="center"><label class="checkbox"><input type="checkbox" class="id" name="id" value="{$id}" mode="highlightline" /><vicon></vicon></label></td>
+          <td class="center"><label class="checkbox"><input type="checkbox" class="id" name="id" value="{$id}" mode="highlightLine" /><vicon></vicon></label></td>
           <td class="id center">{$id}</td>
           <td><span class="mainlink" mode="shortcut" parent="2" shortcut="icon.edit>a.link">{$topic}</span></td>
           <td>{$time}</td>
           <td class="center"><span class="status status-{$publish}"></span></td>
-          <td><icons mode="icontips" text-null="{$=take('::console.nopermission', 'lng')}"><icon class="edit show-{$-account-popedom-edit}" title="{$=take('global.config.edit', 'lng')}"><a class="link" link="?type=edit&amp;id={$id}"></a></icon><icon class="delete show-{$-account-popedom-delete}" title="{$=take('global.config.delete', 'lng')}" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-delete-id', 'lng')}[{$id}]{$=take('::console.q', 'lng')}" mode="confirmurlexec" urlexec="?type=action&action=delete&id={$id}"></icon></icons></td>
+          <td><icons mode="iconTips" text-null="{$=take('::console.nopermission', 'lng')}"><icon class="edit show-{$-account-popedom-edit}" title="{$=take('global.config.edit', 'lng')}"><a class="link" link="?type=edit&amp;id={$id}"></a></icon><icon class="delete show-{$-account-popedom-delete}" title="{$=take('global.config.delete', 'lng')}" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-delete-id', 'lng')}[{$id}]{$=take('::console.q', 'lng')}" mode="confirmUrlExec" urlexec="?type=action&action=delete&id={$id}"></icon></icons></td>
         </tr>{@}
-        <tr mode="alonetips" class="tips hide">
+        <tr mode="aloneTips" class="tips hide">
           <td colspan="6">{$=take('manage.text-tips-list-null', 'lng')}</td>
         </tr>
       </tbody>
     </table>
     <div class="control">
-      <div mode="batchswitch" class="batch show-{$-batch-show}"><span class="text">{$=take('::console.batch-tips', 'lng')}</span><select class="batch">{$=xmlSelect('::sel_batch.*|null,{$-batch-list}', '', 'select')}</select><span class="ok" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-batch', 'lng')}">{$=take('::console.control-confirm', 'lng')}</span></div>
+      <div mode="batchSwitch" class="batch show-{$-batch-show}"><span class="text">{$=take('::console.batch-tips', 'lng')}</span><select class="batch">{$=xmlSelect('::sel_batch.*|null,{$-batch-list}', '', 'select')}</select><span class="ok" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-batch', 'lng')}">{$=take('::console.control-confirm', 'lng')}</span></div>
       <div class="pagi">{$=pagi('{$-pagi-pagenum}', '{$-pagi-pagetotal}', $replaceQuerystring('page', '[~page]'))}</div>
     </div>
   </div>

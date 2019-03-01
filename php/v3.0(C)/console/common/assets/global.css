@@ -988,6 +988,49 @@ icons icon a.link {
 .tableL tr.tips:hover td {
   background-color: #fff
 }
+.tagInput {
+  width: 400px; padding: 4px 10px 0px 10px; box-sizing: border-box; border: #d1d1d1 1px solid; box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.08); position: relative; z-index: 100; transition: all .3s ease
+}
+.tagInput div.hints {
+  display: none; width: 100%; background: #fff; border: #d1d1d1 1px solid; position: absolute; top: 0px; left: -1px; z-index: 100
+}
+.tagInput div.hints ul {
+  padding: 5px; box-sizing: border-box
+}
+.tagInput div.hints ul:empty {
+  display: none
+}
+.tagInput div.hints ul li {
+  padding: 5px 10px; line-height: 100%; background: #fff; cursor: pointer; transition: all .3s ease
+}
+.tagInput div.hints ul li.on,
+.tagInput div.hints ul li:hover {
+  background: #f6f6f6
+}
+.tagInput div.hints.on {
+  display: block
+}
+.tagInput div.tags {
+  display: inline-block
+}
+.tagInput div.tags span {
+  display: inline-block; margin-bottom: 4px; margin-right: 4px; padding: 0px 6px 0px 10px; line-height: 18px; border: #d1d1d1 1px solid; border-radius: 5px; cursor: pointer
+}
+.tagInput div.tags span em {
+  display: inline-block; font-style: normal
+}
+.tagInput div.tags span x {
+  display: inline-block; width: 1rem; height: 1rem; background: url(icon/close.1.svg) center center no-repeat; margin-left: 4px; vertical-align: middle
+}
+.tagInput input.tag {
+  min-width: 60px; max-width: 100%; background: none; line-height: 20px; border: 0px; margin-bottom: 4px
+}
+.tagInput input.tag::-ms-clear {
+  display: none
+}
+.tagInput.focus {
+  border-color: #5b9dd9; box-shadow: 0px 0px 2px rgba(30, 140, 190, 0.8)
+}
 .upfile {
   display: inline-block; position: relative; z-index: 100
 }

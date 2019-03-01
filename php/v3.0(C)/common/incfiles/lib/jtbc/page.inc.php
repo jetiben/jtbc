@@ -10,19 +10,20 @@ namespace jtbc {
     public static $param = array();
     private static $title = array();
 
-    public static function formatResult($argStatus, $argResult)
+    public static function formatResult($argStatus, $argResult, $argParam = '')
     {
       $status = $argStatus;
       $result = $argResult;
+      $param = $argParam;
       $tmpstr = '<?xml version="1.0" encoding="' . CHARSET . '"?>';
       if (!is_array($result))
       {
         $result = str_replace(']]>', ']]]]><![CDATA[>', $result);
-        $tmpstr .= '<result status="' . base::getNum($status, 0) . '"><![CDATA[' . $result . ']]></result>';
+        $tmpstr .= '<result status="' . base::getNum($status, 0) . '" param="' . base::htmlEncode($param) . '"><![CDATA[' . $result . ']]></result>';
       }
       else
       {
-        $tmpstr .= '<result status="' . base::getNum($status, 0) . '">';
+        $tmpstr .= '<result status="' . base::getNum($status, 0) . '" param="' . base::htmlEncode($param) . '">';
         if (count($result) == count($result, 1))
         {
           $tmpstr .= '<item';

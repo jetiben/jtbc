@@ -10,7 +10,7 @@ jtbc.frontend = {
       if (thisObj.attr('modebinded') != 'true')
       {
         thisObj.attr('modebinded', 'true');
-        if (thisObj.attr('mode') == 'ajaxpost')
+        if (thisObj.attr('mode') == 'ajaxPost')
         {
           thisObj.find('button.submit').on('click', function(){
             var myObj = $(this);

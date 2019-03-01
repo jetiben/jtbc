@@ -16,11 +16,11 @@ jtbc.console = {
       if (thisObj.attr('modebinded') != 'true')
       {
         thisObj.attr('modebinded', 'true');
-        if (thisObj.attr('mode') == 'alonetips')
+        if (thisObj.attr('mode') == 'aloneTips')
         {
           if (thisObj.parent().find(this.tagName).length == thisObj.parent().find(this.tagName + '.hide').length) thisObj.removeClass('hide');
         }
-        else if (thisObj.attr('mode') == 'ajaxpost')
+        else if (thisObj.attr('mode') == 'ajaxPost')
         {
           thisObj.find('button.submit').on('click', function(){
             var btnObj = $(this);
@@ -77,11 +77,11 @@ jtbc.console = {
           }
           else tthis.lib.initAttEvents(myObj);
         }
-        else if (thisObj.attr('mode') == 'categoryfilter')
+        else if (thisObj.attr('mode') == 'categoryFilter')
         {
           tthis.lib.initCategoryFilterEvents(thisObj);
         }
-        else if (thisObj.attr('mode') == 'confirmurlexec')
+        else if (thisObj.attr('mode') == 'confirmUrlExec')
         {
           thisObj.on('click', function(){
             var myObj = $(this);
@@ -92,7 +92,7 @@ jtbc.console = {
             });
           });
         }
-        else if (thisObj.attr('mode') == 'batchswitch')
+        else if (thisObj.attr('mode') == 'batchSwitch')
         {
           tthis.lib.initBatchSwitchEvents(thisObj);
         }
@@ -105,7 +105,7 @@ jtbc.console = {
           tthis.param['editor-index'] = myCurrentEditorIndex;
           tthis.param['editor-instance-' + myCurrentEditorIndex] = tthis.parent.editor.replace(thisObj.get(0));
         }
-        else if (thisObj.attr('mode') == 'highlightline')
+        else if (thisObj.attr('mode') == 'highlightLine')
         {
           thisObj.on('click', function(){
             var myObj = $(this);
@@ -113,7 +113,7 @@ jtbc.console = {
             else myObj.parent().parent().parent().removeClass('selected');
           });
         }
-        else if (thisObj.attr('mode') == 'highlightlineall')
+        else if (thisObj.attr('mode') == 'highlightLineAll')
         {
           thisObj.on('click', function(){
             var myObj = $(this);
@@ -128,12 +128,12 @@ jtbc.console = {
             };
           });
         }
-        else if (thisObj.attr('mode') == 'icontips')
+        else if (thisObj.attr('mode') == 'iconTips')
         {
           thisObj.find('icon').each(function(){ if (!$(this).is(':hidden')) thisObj.attr('icon-hidden', 'no'); });
           if (thisObj.attr('icon-hidden') != 'no') thisObj.append('<span class="ash">' + thisObj.attr('text-null') + '</span>');
         }
-        else if (thisObj.attr('mode') == 'pagigo')
+        else if (thisObj.attr('mode') == 'pagiGo')
         {
           thisObj.on('click', function(){
             var myObj = $(this);
@@ -147,7 +147,7 @@ jtbc.console = {
           var pitchon = thisObj.attr('upitchon') || thisObj.attr('pitchon');
           if (pitchon) thisObj.find(pitchon).addClass('on');
         }
-        else if (thisObj.attr('mode') == 'inputswitch')
+        else if (thisObj.attr('mode') == 'inputSwitch')
         {
           if (thisObj.attr('bind') != '1')
           {
@@ -162,7 +162,7 @@ jtbc.console = {
             });
           };
         }
-        else if (thisObj.attr('mode') == 'searchbox')
+        else if (thisObj.attr('mode') == 'searchBox')
         {
           tthis.lib.initSearchBoxEvents(thisObj);
         }
@@ -177,21 +177,25 @@ jtbc.console = {
             thisObj.addClass('hand').on('click', function(){ pointObj.trigger('click'); });
           };
         }
-        else if (thisObj.attr('mode') == 'singleselect')
+        else if (thisObj.attr('mode') == 'singleSelect')
         {
           thisObj.find(thisObj.attr('childtag')).click(function(){
             var childObj = $(this);
             childObj.parent().find(this.tagName).removeClass('on').eq(childObj.index()).addClass('on');
           });
         }
-        else if (thisObj.attr('mode') == 'selectoption')
+        else if (thisObj.attr('mode') == 'selectOption')
         {
           thisObj.val(thisObj.attr('val'));
         }
-        else if (thisObj.attr('mode') == 'upfile')
+        else if (thisObj.attr('mode') == 'tagInput')
+        {
+          tthis.lib.initTagInputEvents(thisObj);
+        }
+        else if (thisObj.attr('mode') == 'upFile')
         {
           tthis.lib.initUpFileEvents(thisObj);
-        };  
+        };
       };
     });
   },
@@ -900,6 +904,113 @@ jtbc.console.lib = {
       var url = tthis.parent.param['current-main-fileurl'] + thisObj.parent().attr('action') + '&' + parmname + '=' + encodeURIComponent(keyword);
       tthis.parent.loadMainURL(url);
     });
+  },
+  initTagInputEvents: function(argObj)
+  {
+    var tthis = this;
+    var myObj = argObj;
+    myObj.on('init', function(){
+      var thisObj = $(this);
+      var currentVal = myObj.find('input.val').val();
+      if (currentVal)
+      {
+        var currentValArray = JSON.parse(currentVal);
+        for (var i in currentValArray) thisObj.find('input.tag').val(currentValArray[i]).trigger('insert');
+      };
+    });
+    myObj.on('click', function(){
+      var thisObj = $(this);
+      thisObj.find('input.tag').trigger('focus');
+    });
+    myObj.on('selectPrevHint', function(){
+      var thisObj = $(this);
+      var hintsObj = thisObj.find('.hints');
+      var currentOnIndex = hintsObj.find('li.on').index();
+      var currentPrevIndex = currentOnIndex - 1;
+      if (currentOnIndex < 0) currentPrevIndex = hintsObj.find('li').length - 1;
+      hintsObj.find('li').removeClass('on').eq(currentPrevIndex).addClass('on');
+      thisObj.find('input.tag').val(hintsObj.find('li.on').text());
+    });
+    myObj.on('selectNextHint', function(){
+      var thisObj = $(this);
+      var hintsObj = thisObj.find('.hints');
+      var currentOnIndex = hintsObj.find('li.on').index();
+      var currentNextIndex = currentOnIndex + 1;
+      if (currentOnIndex >= hintsObj.find('li').length) currentNextIndex = 0;
+      hintsObj.find('li').removeClass('on').eq(currentNextIndex).addClass('on');
+      thisObj.find('input.tag').val(hintsObj.find('li.on').text());
+    });
+    myObj.on('updateTag', function(){
+      var thisObj = $(this);
+      var currentTag = [];
+      thisObj.find('div.tags').find('span').each(function(){ currentTag.push($(this).find('em').text()); });
+      myObj.find('input.val').val(JSON.stringify(currentTag));
+      myObj.find('.hints').css({'top': (myObj.outerHeight() - 2) + 'px'});
+    });
+    myObj.find('.hints').on('click', 'li', function(){
+      var thisObj = $(this);
+      myObj.find('input.tag').val(thisObj.text()).trigger('insert');
+    });
+    myObj.find('div.tags').on('click', 'span', function(){
+      var thisObj = $(this);
+      thisObj.remove();
+      myObj.trigger('updateTag');
+    });
+    myObj.find('input.tag').on('input', function(){
+      var thisObj = $(this);
+      var thisObjVal = thisObj.val();
+      if (thisObj.attr('lock') != 'true')
+      {
+        thisObj.css({'width': '60px'}).css({'width': (this.scrollWidth + 20) + 'px'});
+        myObj.find('.hints').css({'top': (myObj.outerHeight() - 2) + 'px'});
+        if (!thisObjVal) myObj.find('.hints').removeClass('on');
+        else
+        {
+          thisObj.attr('lock', 'true');
+          var url = tthis.parent.param['current-main-fileurl'] + '?type=getTagHints&key=' + encodeURIComponent(thisObjVal);
+          $.get(url, function(data){
+            var dataObj = $(data);
+            if (dataObj.find('result').attr('status') == '1')
+            {
+              if (dataObj.find('result').attr('param') == thisObjVal)
+              {
+                myObj.find('.hints').html(dataObj.find('result').text()).addClass('on');
+              };
+            };
+            thisObj.attr('lock', 'false');
+          });
+        };
+      };
+    });
+    myObj.find('input.tag').on('keyup', function(e){
+      var thisObj = $(this);
+      if (e.which == 13) thisObj.trigger('insert');
+      else if (e.which == 38) myObj.trigger('selectPrevHint');
+      else if (e.which == 40) myObj.trigger('selectNextHint');
+    });
+    myObj.find('input.tag').on('keydown', function(e){
+      if (e.which == 13) return false;
+    });
+    myObj.find('input.tag').on('insert', function(){
+      var thisObj = $(this);
+      var thisObjVal = thisObj.val();
+      var parentObj = thisObj.parent();
+      if (thisObjVal)
+      {
+        var thisObjValMatch = false;
+        parentObj.find('span').each(function(){
+          var spanObj = $(this);
+          if (spanObj.find('em').text() == thisObjVal) thisObjValMatch = true;
+        });
+        thisObj.val('');
+        parentObj.parent().find('.hints').removeClass('on');
+        if (thisObjValMatch == false) thisObj.before('<span><em>' + tthis.parent.parent.htmlEncode(thisObjVal) + '</em><x></x></span>');
+        myObj.trigger('updateTag');
+      };
+    });
+    myObj.find('input.tag').on('focus', function(){ myObj.addClass('focus'); });
+    myObj.find('input.tag').on('blur', function(){ myObj.removeClass('focus'); });
+    myObj.trigger('init');
   },
   initMainCommon: function(argObj)
   {

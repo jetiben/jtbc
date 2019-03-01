@@ -12,7 +12,7 @@
 <div class="manager" module="edit" genre="{$=$genre}" folder="{$=$folder}" filename="{$=$filename}">
   <div class="table">
     <h3>{$=take('manage.text-tit-edit', 'lng')}</h3>
-    <form mode="ajaxpost" action="?type=action&amp;action=edit" onsubmit="return false;">
+    <form mode="ajaxPost" action="?type=action&amp;action=edit" onsubmit="return false;">
       <table cellpadding="10" cellspacing="0" class="tableF">
         <tbody>
           <tr>
