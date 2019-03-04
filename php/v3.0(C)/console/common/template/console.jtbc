@@ -90,7 +90,7 @@
       <default><![CDATA[<tr>
   <th valign="top"><t>{$=getSwapString($take('config.{$fieldname}', 'lng'), $take('global.config.{$fieldname}', 'lng'))}{$-required}</t></th>
   <td>
-    <div class="tagInput" mode="tagInput" name="{$fieldname}">
+    <div class="tagInput" mode="tagInput" name="{$fieldname}" var1="{$-fieldVar1}">
       <div class="hints"></div>
       <div class="tags"><input type="text" class="tag" value="" /><input type="hidden" class="val" name="{$fieldname}" value="{${$fieldname}}" /></div>
     </div>

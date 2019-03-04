@@ -963,22 +963,25 @@ jtbc.console.lib = {
       {
         thisObj.css({'width': '60px'}).css({'width': (this.scrollWidth + 20) + 'px'});
         myObj.find('.hints').css({'top': (myObj.outerHeight() - 2) + 'px'});
-        if (!thisObjVal) myObj.find('.hints').removeClass('on');
-        else
+        if (myObj.attr('var1') == '1')
         {
-          thisObj.attr('lock', 'true');
-          var url = tthis.parent.param['current-main-fileurl'] + '?type=getTagHints&key=' + encodeURIComponent(thisObjVal);
-          $.get(url, function(data){
-            var dataObj = $(data);
-            if (dataObj.find('result').attr('status') == '1')
-            {
-              if (dataObj.find('result').attr('param') == thisObjVal)
+          if (!thisObjVal) myObj.find('.hints').removeClass('on');
+          else
+          {
+            thisObj.attr('lock', 'true');
+            var url = tthis.parent.param['current-main-fileurl'] + '?type=getTagHints&key=' + encodeURIComponent(thisObjVal);
+            $.get(url, function(data){
+              var dataObj = $(data);
+              if (dataObj.find('result').attr('status') == '1')
               {
-                myObj.find('.hints').html(dataObj.find('result').text()).addClass('on');
+                if (dataObj.find('result').attr('param') == thisObjVal)
+                {
+                  myObj.find('.hints').html(dataObj.find('result').text()).addClass('on');
+                };
               };
-            };
-            thisObj.attr('lock', 'false');
-          });
+              thisObj.attr('lock', 'false');
+            });
+          };
         };
       };
     });

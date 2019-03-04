@@ -247,6 +247,13 @@ namespace jtbc {
               else $fieldFormatLine = tpl::take($tplPath . '.fieldformat-' . $currentFieldType, 'tpl');
               $fieldFormatLine = str_replace('{$-required}', $currentFieldRequired, $fieldFormatLine);
               $fieldFormatLine = str_replace('{$fieldname}', base::htmlEncode($simplifiedFieldName), $fieldFormatLine);
+              $currentFieldVar1 = $currentFieldVar2 = $currentFieldVar3 = 0;
+              if (array_key_exists('fieldVar1', $commentAry)) $currentFieldVar1 = base::getNum($commentAry['fieldVar1'], 0);
+              if (array_key_exists('fieldVar2', $commentAry)) $currentFieldVar1 = base::getNum($commentAry['fieldVar2'], 0);
+              if (array_key_exists('fieldVar3', $commentAry)) $currentFieldVar1 = base::getNum($commentAry['fieldVar3'], 0);
+              $fieldFormatLine = str_replace('{$-fieldVar1}', $currentFieldVar1, $fieldFormatLine);
+              $fieldFormatLine = str_replace('{$-fieldVar2}', $currentFieldVar2, $fieldFormatLine);
+              $fieldFormatLine = str_replace('{$-fieldVar3}', $currentFieldVar3, $fieldFormatLine);
               if ($currentFieldType == 'att')
               {
                 $fieldRelatedEditor = '';
