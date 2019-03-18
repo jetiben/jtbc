@@ -24,38 +24,22 @@ namespace jtbc {
     private function getFileArray()
     {
       $fileArray = array();
-      $bool = @include_once($this -> filename);
-      if ($bool) $fileArray = $GLOBALS['cache-' . $this -> cachename];
-      return $fileArray;
-    }
-
-    private function setFileArray($argData)
-    {
-      $bool = false;
-      $data = $argData;
-      if (is_array($data))
+      $cacheFilename = $this -> filename;
+      if (is_file($cacheFilename))
       {
-        $arrayText = 'array(';
-        foreach($data as $key => $val)
-        {
-          if (is_array($val)) $arrayText = $arrayText . '\'' . $key . '\' => ' . $this -> setFileArray($val) . ',';
-          else $arrayText = $arrayText . '\'' . $key . '\' => \'' . str_replace('\'', '\\\'', $val) . '\',';
-        }
-        $arrayText = $arrayText . ')';
-        $bool = $arrayText;
+        $fileArray = json_decode(file_get_contents($cacheFilename), true);
       }
-      return $bool;
+      return $fileArray;
     }
 
     private function putFileArray($argData)
     {
       $bool = false;
       $data = $argData;
-      $text = '<?php' . chr(13) . chr(10);
-      $text = $text . '$GLOBALS[\'cache-' . $this -> cachename . '\'] = ';
-      $text = $text . $this -> setFileArray($data) . ';' . chr(13) . chr(10);
-      $text = $text . '?>';
-      $bool = file_put_contents($this -> filename, $text);
+      if (is_array($data))
+      {
+        $bool = file_put_contents($this -> filename, json_encode($data));
+      }
       return $bool;
     }
 
@@ -63,7 +47,7 @@ namespace jtbc {
     {
       $bool = false;
       $name = $argName;
-      $cacheFilename = route::getActualRoute(CACHEDIR) . '/' . $name . '.inc.php';
+      $cacheFilename = route::getActualRoute(CACHEDIR) . '/' . $name . '.cache';
       if (is_file($cacheFilename)) $bool = true;
       return $bool;
     }
@@ -75,7 +59,7 @@ namespace jtbc {
       $cacheData = null;
       $cache = new cache();
       $cache -> cachename = $name;
-      $cache -> filename = route::getActualRoute(CACHEDIR) . '/' . $name . '.inc.php';
+      $cache -> filename = route::getActualRoute(CACHEDIR) . '/' . $name . '.cache';
       switch ($type)
       {
         case -1:
@@ -101,7 +85,7 @@ namespace jtbc {
       if (!(is_dir($dir))) @mkdir($dir, 0777);
       $cache = new cache();
       $cache -> cachename = $name;
-      $cache -> filename = $dir . '/' . $name . '.inc.php';
+      $cache -> filename = $dir . '/' . $name . '.cache';
       switch ($type)
       {
         case -1:
@@ -125,7 +109,7 @@ namespace jtbc {
       $dir = route::getActualRoute(CACHEDIR);
       if (!base::isEmpty($name))
       {
-        $cacheFilename = $dir . '/' . $name . '.inc.php';
+        $cacheFilename = $dir . '/' . $name . '.cache';
         $cacheBool = unlink($cacheFilename);
       }
       else

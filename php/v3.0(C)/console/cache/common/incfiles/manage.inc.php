@@ -18,10 +18,10 @@ class ui extends console\page {
       $dir = @dir($path);
       while($entry = $dir -> read())
       {
-        if (is_file($path . $entry) && is_numeric(strpos($entry, '.inc.php')))
+        if (is_file($path . $entry) && is_numeric(strpos($entry, '.cache')))
         {
-          $info['topic'] = base::getLRStr($entry, '.inc.php', 'leftr');
-          $info['-urlencode-topic'] = urlencode(base::getLRStr($entry, '.inc.php', 'leftr'));
+          $info['topic'] = base::getLRStr($entry, '.cache', 'leftr');
+          $info['-urlencode-topic'] = urlencode(base::getLRStr($entry, '.cache', 'leftr'));
           $info['lasttime'] = date('Y-m-d H:i:s', filemtime($path . $entry));
           $info['size'] = base::formatFileSize(filesize($path . $entry));
           array_push($cacheAry, $info);
