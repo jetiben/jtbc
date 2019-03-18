@@ -25,7 +25,7 @@
   <div class="nav">
     <h1>JTBC</h1>
     <h2>{$=take('index.text-ver', 'lng')}{$=VERSION}</h2>
-    <div class="link"><a href="http://www.jtbc.cn/?from=install" target="_blank">{$=take('index.text-link-1', 'lng')}</a>&nbsp; | &nbsp;<a href="http://www.jtbc.cn/contact/?from=install" target="_blank">{$=take('index.text-link-2', 'lng')}</a></div>
+    <div class="link"><a href="http://www.jtbc.cn/?from=install" target="_blank">{$=take('index.text-link-1', 'lng')}</a>&nbsp; | &nbsp;<a href="http://www.jtbc.cn/host/?from=install" target="_blank">{$=take('index.text-link-2', 'lng')}</a></div>
     <div class="step"><span class="on">{$=take('index.text-step-1', 'lng')}</span><span>{$=take('index.text-step-2', 'lng')}</span><span>{$=take('index.text-step-3', 'lng')}</span></div>
   </div>
   <div class="tab_content">
