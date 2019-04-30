@@ -56,6 +56,7 @@ class ui extends console\page {
       $variable['-has_image'] = $hasImage;
       $variable['-has_intro'] = $hasIntro;
       $tmpstr = tpl::takeAndAssign('manage.add', null, $variable);
+      $tmpstr = $account -> replaceAccountTag($tmpstr);
     }
     $tmpstr = self::formatResult($status, $tmpstr);
     return $tmpstr;
@@ -153,8 +154,10 @@ class ui extends console\page {
       {
         $preset = array();
         $preset['order'] = 888888;
+        $preset['publish'] = 0;
         $preset['lang'] = $account -> getLang();
         $preset['time'] = base::getDateTime();
+        if ($account -> checkCurrentGenrePopedom('publish')) $preset['publish'] = base::getNum(request::getPost('publish'), 0);
         $re = auto::autoInsertByRequest($preset);
         if (is_numeric($re))
         {
@@ -188,7 +191,9 @@ class ui extends console\page {
       auto::pushAutoRequestErrorByTable($error);
       if (count($error) == 0)
       {
-        $re = auto::autoUpdateByRequest($id, null, 'fid,order,time,genre,lang');
+        $preset = array();
+        if ($account -> checkCurrentGenrePopedom('publish')) $preset['publish'] = base::getNum(request::getPost('publish'), 0);
+        $re = auto::autoUpdateByRequest($id, $preset, 'fid,order,time,publish,genre,lang');
         if (is_numeric($re))
         {
           $status = 1;

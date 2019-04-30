@@ -826,7 +826,7 @@ icons icon a.link {
   width: 1000px
 }
 .popup_page div.tinyform ol li {
-  padding: 10px 20px; text-align: center; position: relative; z-index: 100
+  padding: 10px 20px; position: relative; z-index: 100
 }
 .popup_page div.tinyform ol li h6 {
   font-size: 1.2rem; font-weight: normal; color: #999; line-height: 30px; margin-top: -15px; position: absolute; right: 50px; top: 50%; z-index: 110

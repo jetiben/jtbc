@@ -13,7 +13,7 @@
     <div class="cupboard clear_float">
       <div class="side">
         <dl class="option clear_float">
-          <dt>{$=take('index.category', 'lng')}</dt>{$=transfer('genre=universal/category;type=@order;baseurl=./;tpl=dd-list', array('fid' => 0, 'genre' => '{$>genre}'))}
+          <dt>{$=take('index.category', 'lng')}</dt>{$=transfer('genre=universal/category;type=order;baseurl=./;tpl=dd-list', array('fid' => 0, 'genre' => '{$>genre}'))}
         </dl>
       </div>
       <div class="main">
@@ -36,7 +36,7 @@
     <div class="cupboard clear_float">
       <div class="side">
         <dl class="option clear_float">
-          <dt>{$=take('index.title', 'lng')}</dt>{$=transfer('genre=universal/category;type=@order;baseurl=./;tpl=dd-list', array('fid' => 0, 'genre' => '{$>genre}'))}
+          <dt>{$=take('index.title', 'lng')}</dt>{$=transfer('genre=universal/category;type=order;baseurl=./;tpl=dd-list', array('fid' => 0, 'genre' => '{$>genre}'))}
         </dl>
       </div>
       <div class="main">

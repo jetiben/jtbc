@@ -7,12 +7,12 @@
   </configure>
   <item_list>
     <item>
-      <name><![CDATA[popedom]]></name>
-      <zh-cn><![CDATA[add,edit,sort,publish,delete]]></zh-cn>
+      <name><![CDATA[0]]></name>
+      <zh-cn><![CDATA[未发布]]></zh-cn>
     </item>
     <item>
-      <name><![CDATA[guide]]></name>
-      <zh-cn><![CDATA[{"text":"分类管理","icon":"","link":"manage.php?type=list"}]]></zh-cn>
+      <name><![CDATA[1]]></name>
+      <zh-cn><![CDATA[已发布]]></zh-cn>
     </item>
   </item_list>
 </xml>

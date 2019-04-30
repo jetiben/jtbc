@@ -16,7 +16,7 @@ CREATE TABLE `jtbc_aboutus` (
   PRIMARY KEY (`a_id`),
   KEY `a_delete` (`a_delete`,`a_lang`,`a_publish`) USING BTREE,
   KEY `a_time` (`a_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of jtbc_aboutus
@@ -39,7 +39,7 @@ CREATE TABLE `jtbc_career` (
   PRIMARY KEY (`c_id`),
   KEY `c_delete` (`c_delete`,`c_lang`,`c_publish`) USING BTREE,
   KEY `c_time` (`c_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for jtbc_case
@@ -59,7 +59,7 @@ CREATE TABLE `jtbc_case` (
   PRIMARY KEY (`c_id`),
   KEY `c_delete` (`c_delete`,`c_lang`,`c_publish`) USING BTREE,
   KEY `c_time` (`c_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for jtbc_console_account
@@ -78,7 +78,7 @@ CREATE TABLE `jtbc_console_account` (
   `ca_delete` int(11) DEFAULT '0' COMMENT '{"manual":"true"}',
   PRIMARY KEY (`ca_id`),
   KEY `ca_username` (`ca_username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for jtbc_console_account_login
@@ -91,7 +91,7 @@ CREATE TABLE `jtbc_console_account_login` (
   `cal_status` int(11) DEFAULT '0',
   PRIMARY KEY (`cal_id`),
   KEY `cal_account_id` (`cal_account_id`,`cal_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for jtbc_console_log
@@ -107,7 +107,7 @@ CREATE TABLE `jtbc_console_log` (
   `cl_delete` int(11) DEFAULT '0' COMMENT '{"manual":"true"}',
   PRIMARY KEY (`cl_id`),
   KEY `cl_account_id` (`cl_account_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for jtbc_console_role
@@ -121,7 +121,7 @@ CREATE TABLE `jtbc_console_role` (
   `cr_time` datetime DEFAULT NULL,
   `cr_delete` int(11) DEFAULT '0' COMMENT '{"manual":"true"}',
   PRIMARY KEY (`cr_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for jtbc_consult
@@ -141,7 +141,7 @@ CREATE TABLE `jtbc_consult` (
   PRIMARY KEY (`c_id`),
   KEY `c_delete` (`c_delete`,`c_lang`,`c_dispose`) USING BTREE,
   KEY `c_time` (`c_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for jtbc_news
@@ -160,7 +160,7 @@ CREATE TABLE `jtbc_news` (
   PRIMARY KEY (`n_id`),
   KEY `n_delete` (`n_delete`,`n_lang`,`n_publish`) USING BTREE,
   KEY `n_time` (`n_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for jtbc_team
@@ -179,7 +179,7 @@ CREATE TABLE `jtbc_team` (
   PRIMARY KEY (`t_id`),
   KEY `t_delete` (`t_delete`,`t_lang`,`t_publish`) USING BTREE,
   KEY `t_time` (`t_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for jtbc_universal_category
@@ -192,13 +192,14 @@ CREATE TABLE `jtbc_universal_category` (
   `uc_intro` varchar(1000) DEFAULT NULL,
   `uc_fid` int(11) DEFAULT '0',
   `uc_order` int(11) DEFAULT '0',
+  `uc_publish` int(11) DEFAULT '0',
   `uc_time` datetime DEFAULT NULL,
   `uc_genre` varchar(200) DEFAULT NULL,
   `uc_lang` int(11) DEFAULT '0',
   `uc_delete` int(11) DEFAULT '0' COMMENT '{"manual":"true"}',
   PRIMARY KEY (`uc_id`),
   KEY `uc_genre` (`uc_genre`,`uc_delete`,`uc_lang`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for jtbc_universal_link
@@ -218,7 +219,7 @@ CREATE TABLE `jtbc_universal_link` (
   PRIMARY KEY (`ul_id`),
   KEY `ul_publish` (`ul_publish`,`ul_lang`,`ul_delete`),
   KEY `ul_group` (`ul_group`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for jtbc_universal_material
@@ -241,7 +242,7 @@ CREATE TABLE `jtbc_universal_material` (
   KEY `um_hot` (`um_hot`),
   KEY `um_lang` (`um_lang`,`um_delete`),
   KEY `um_time` (`um_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for jtbc_universal_upload
@@ -265,4 +266,4 @@ CREATE TABLE `jtbc_universal_upload` (
   PRIMARY KEY (`uu_id`),
   KEY `uu_genre` (`uu_genre`),
   KEY `uu_status` (`uu_status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

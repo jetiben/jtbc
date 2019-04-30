@@ -15,6 +15,7 @@
       <li><input type="hidden" name="genre" value="{$-genre}" /><input type="hidden" name="fid" value="{$-fid}" /><input name="topic" type="text" class="i1" placeholder="{$=take('config.topic', 'lng')}" /></li>
       <li class="show-{$-has_image}"><div mode="upFile" class="upfile"><input type="hidden" name="image" class="upsource" /><input type="text" name="image-fileurl" class="i1 fileurl" placeholder="{$=take('config.image', 'lng')}" /><div class="upbtn"><button class="b4 upbtn show-{$-has_image}" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><span class="bar"></span><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" alert="mini" action="?type=action&amp;action=upload&amp;limit=image" /></div></div></li>
       <li class="show-{$-has_intro}"><textarea class="t1" name="intro" placeholder="{$=take('config.intro', 'lng')}"></textarea></li>
+      <li class="show-{$-account-popedom-publish}">{$=xmlSelect('sel_publish.*', '0', 'radio', 'publish')}</li>
     </ol>
     <div class="submit"><button class="b2 submit">{$=take('global.config.submit', 'lng')}</button><span class="tips"></span></div>
   </form>
@@ -29,6 +30,7 @@
       <li><input name="topic" type="text" class="i1" placeholder="{$=take('config.topic', 'lng')}" value="{$topic}" /></li>
       <li class="show-{$-has_image}"><div mode="upFile" class="upfile"><input type="hidden" name="image" value="{$image}" class="upsource" /><input type="text" name="image-fileurl" class="i1 fileurl" placeholder="{$=take('config.image', 'lng')}" /><div class="upbtn"><button class="b4 upbtn show-{$-has_image}" text="{$=take('global.config.upload', 'lng')}" uploading="{$=take('::console.uploading', 'lng')}">{$=take('global.config.upload', 'lng')}</button><span class="bar"></span><input type="file" class="upfiles hide" text-ok="{$=take('::console.iknow', 'lng')}" alert="mini" action="?type=action&amp;action=upload&amp;limit=image" /></div></div></li>
       <li class="show-{$-has_intro}"><textarea class="t1" name="intro" placeholder="{$=take('config.intro', 'lng')}">{$intro}</textarea></li>
+      <li class="show-{$-account-popedom-publish}">{$=xmlSelect('sel_publish.*', '{$publish}', 'radio', 'publish')}</li>
     </ol>
     <div class="submit"><button class="b2 submit">{$=take('global.config.submit', 'lng')}</button><span class="tips"></span></div>
   </form>
@@ -50,6 +52,7 @@
           <th width="40" class="center">{$=take('global.config.id', 'lng')}</th>
           <th>{$=take('config.topic', 'lng')}</th>
           <th width="120">{$=take('global.config.time', 'lng')}</th>
+          <th width="40" class="center">{$=take('global.config.status', 'lng')}</th>
           <th width="60">{$=take('global.config.control', 'lng')}</th>
         </tr>
       </thead>
@@ -60,10 +63,11 @@
           <td class="id center">{$id}</td>
           <td><a class="link" link="?type=list&amp;genre={$-current-genre}&amp;fid={$id}"><span class="mainlink hand">{$topic}</span></a></td>
           <td>{$time}</td>
+          <td class="center"><span class="status status-{$publish}"></span></td>
           <td><icons mode="iconTips" text-null="{$=take('::console.nopermission', 'lng')}"><icon rsid="{$id}" class="edit show-{$-account-popedom-edit}" title="{$=take('global.config.edit', 'lng')}"></icon><icon class="delete show-{$-account-popedom-delete}" title="{$=take('global.config.delete', 'lng')}" confirm_b3="{$=take('::console.control-cancel', 'lng')}" confirm_b2="{$=take('::console.control-confirm', 'lng')}" confirm_text="{$=take('::console.control-confirm-delete-id', 'lng')}[{$id}]{$=take('::console.q', 'lng')}" mode="confirmUrlExec" urlexec="?type=action&action=delete&id={$id}"></icon></icons></td>
         </tr>{@}
         <tr mode="aloneTips" class="tips hide">
-          <td colspan="6">{$=take('manage.text-tips-list-null', 'lng')}</td>
+          <td colspan="7">{$=take('manage.text-tips-list-null', 'lng')}</td>
         </tr>
       </tbody>
     </table>
