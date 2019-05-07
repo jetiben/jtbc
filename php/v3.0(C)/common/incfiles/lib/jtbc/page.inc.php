@@ -170,12 +170,26 @@ namespace jtbc {
     public static function setHeader()
     {
       $noCache = self::getParam('noCache');
+      $allowOrigin = self::getParam('allowOrigin');
+      $allowHeaders = self::getParam('allowHeaders');
       $contentType = self::getParam('contentType');
       if (base::isEmpty($contentType)) $contentType = 'text/html';
+      $definedAllowOrigin = defined('ALLOW_ORIGIN')? ALLOW_ORIGIN: null;
+      $currentAllowOrigin = is_null($allowOrigin)? $definedAllowOrigin: $allowOrigin;
+      $definedAllowHeaders = defined('ALLOW_HEADERS')? ALLOW_HEADERS: null;
+      $currentAllowHeaders = is_null($allowHeaders)? $definedAllowHeaders: $allowHeaders;
       if ($noCache === true)
       {
         header('Pragma: no-cache');
         header('Cache-Control: no-cache, must-revalidate');
+      }
+      if (!is_null($currentAllowOrigin))
+      {
+        header('Access-Control-Allow-Origin: ' . $currentAllowOrigin);
+      }
+      if (!is_null($currentAllowHeaders))
+      {
+        header('Access-Control-Allow-Headers: ' . $currentAllowHeaders);
       }
       if ($contentType == 'text/html' || $contentType == 'text/xml')
       {
