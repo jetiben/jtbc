@@ -126,6 +126,7 @@ namespace jtbc {
         $tmpstr = str_replace('{$-lastpagelink}', base::htmlEncode(str_replace('[~page]', $num2, $baseLink)), $tmpstr);
         $tmpstr = str_replace('{$-pagiid}', base::htmlEncode($pagiId), $tmpstr);
         $tmpstr = str_replace('{$-baselink}', base::htmlEncode($baseLink), $tmpstr);
+        $tmpstr = str_replace('{$-prev-page-num}', ($num1 == 1? $num1: ($num1 - 1)), $tmpstr);
         $tmpstr = str_replace('{$-next-page-num}', ($num1 == $num1s? $num1: ($num1 + 1)), $tmpstr);
         $tmpstr = tpl::parse($tmpstr);
       }
