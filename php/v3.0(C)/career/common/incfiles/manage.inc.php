@@ -14,8 +14,7 @@ class ui extends console\page {
     $account = self::account();
     if ($account -> checkCurrentGenrePopedom('add'))
     {
-      $vars['-auto-field-format-by-table'] = auto::getAutoFieldFormatByTable();
-      $tmpstr = tpl::takeAndAssign('manage.add', null, null, $vars);
+      $tmpstr = tpl::takeAndAssign('manage.add');
       $tmpstr = $account -> replaceAccountTag($tmpstr);
     }
     $tmpstr = self::formatResult($status, $tmpstr);
@@ -35,8 +34,7 @@ class ui extends console\page {
       $rs = $dal -> select();
       if (is_array($rs))
       {
-        $vars['-auto-field-format-by-table'] = auto::getAutoFieldFormatByTable(1);
-        $tmpstr = tpl::takeAndAssign('manage.edit', $rs, null, $vars);
+        $tmpstr = tpl::takeAndAssign('manage.edit', $rs);
         $tmpstr = $account -> replaceAccountTag($tmpstr);
       }
     }

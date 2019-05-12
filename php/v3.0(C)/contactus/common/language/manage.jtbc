@@ -15,6 +15,10 @@
       <zh-cn><![CDATA[标题不能为空]]></zh-cn>
     </item>
     <item>
+      <name><![CDATA[text-tips-edit-error-others]]></name>
+      <zh-cn><![CDATA[文件保存失败，请检查服务器权限设置]]></zh-cn>
+    </item>
+    <item>
       <name><![CDATA[text-tips-edit-done]]></name>
       <zh-cn><![CDATA[编辑成功]]></zh-cn>
     </item>

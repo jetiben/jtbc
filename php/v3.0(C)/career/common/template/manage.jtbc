@@ -19,7 +19,7 @@
     <h3>{$=take('manage.text-tit-add', 'lng')}</h3>
     <form mode="ajaxPost" action="?type=action&amp;action=add" onsubmit="return false;">
       <table cellpadding="10" cellspacing="0" class="tableF">
-        <tbody>{$-auto-field-format-by-table}</tbody>
+        <tbody>{$<auto::getAutoFieldFormatByTable()}</tbody>
       </table>
       <div class="form_tips"></div>
       <div class="form_button"><button class="b2 submit" doneclick="toplink a.link:first">{$=take('global.config.submit', 'lng')}</button></div>
@@ -37,7 +37,7 @@
     <h3>{$=take('manage.text-tit-edit', 'lng')}</h3>
     <form mode="ajaxPost" action="?type=action&amp;action=edit&amp;id={$id}" onsubmit="return false;">
       <table cellpadding="10" cellspacing="0" class="tableF">
-        <tbody>{$-auto-field-format-by-table}</tbody>
+        <tbody>{$<auto::getAutoFieldFormatByTable(1)}</tbody>
       </table>
       <div class="form_tips"></div>
       <div class="form_button"><button class="b2 submit">{$=take('global.config.submit', 'lng')}</button></div>

@@ -225,7 +225,7 @@ namespace jtbc {
 
     public static function init()
     {
-      self::$param['http'] = request::isHTTPS() ? 'https://' : 'http://';
+      self::$param['http'] = request::isHTTPS()? 'https://': 'http://';
       self::$param['http_host'] = request::server('HTTP_HOST');
       self::$param['route'] = route::getRoute();
       self::$param['genre'] = route::getCurrentGenre();

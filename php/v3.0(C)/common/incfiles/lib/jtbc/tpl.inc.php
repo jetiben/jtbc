@@ -503,6 +503,24 @@ namespace jtbc {
       return $tmpstr;
     }
 
+    public static function preParse($argString, $argMode = 0)
+    {
+      $tmpstr = $argString;
+      $mode = base::getNum($argMode, 0);
+      if (!base::isEmpty($tmpstr))
+      {
+        $regm = preg_match_all('({\$<(.[^\}]*)})', $tmpstr, $regArys);
+        if ($regm)
+        {
+          for ($i = 0; $i <= count($regArys[0]) - 1; $i ++)
+          {
+            $tmpstr = str_replace($regArys[0][$i], self::getEvalValue($regArys[1][$i], $mode), $tmpstr);
+          }
+        }
+      }
+      return $tmpstr;
+    }
+
     public static function replaceTagByAry($argString, $argAry, $argMode = 0, $argModeID = 0, $argEncode = 1)
     {
       $string = $argString;
@@ -603,7 +621,8 @@ namespace jtbc {
             }
           }
         }
-        $bool = $doc -> save($sourceFile);
+        $docSave = $doc -> save($sourceFile);
+        if ($docSave !== false) $bool = true;
       }
       return $bool;
     }
@@ -715,6 +734,7 @@ namespace jtbc {
               $result = str_replace('{$>this.genre.parent}', route::getGenreByAppellation('parent', $thisGenre), $result);
               $result = str_replace('{$>this.genre.grandparent}', route::getGenreByAppellation('grandparent', $thisGenre), $result);
               $result = str_replace('{$>this.genre.greatgrandparent}', route::getGenreByAppellation('greatgrandparent', $thisGenre), $result);
+              $result = self::preParse($result);
             }
             if (is_array($vars))
             {

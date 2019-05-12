@@ -21,12 +21,12 @@
           </tr>
           <tr>
             <th valign="top"><t>{$=take('global.config.content', 'lng')}</t></th>
-            <td><textarea name="content" mode="editor" class="t1 content editor">{$=htmlEncode($takeByNode('index.content', '{$-lang-text}', 'lng'))}</textarea></td>
+            <td><textarea id="editor-content" name="content" mode="editor" class="t1 content editor">{$=htmlEncode($takeByNode('index.content', '{$-lang-text}', 'lng'))}</textarea></td>
           </tr>
           <tr>
             <th valign="top"><t>{$=take('global.config.att', 'lng')}</t></th>
             <td>
-              <div class="att" mode="att" folder="{$=$folder}" editor="textarea.content">
+              <div class="att" mode="att" name="att" folder="{$=$folder}" editor="textarea.content">
                 <div class="icons"><icons><icon class="db" root="{$=getActualRoute()}" title="{$=take('::console.from-material', 'lng')}"></icon><icon class="upload" title="{$=take('global.config.upload', 'lng')}"></icon></icons></div>
                 <h6>{$=take('::console.att-list', 'lng')}<input type="hidden" name="att" value="{$=htmlEncode($takeByNode('index.att', '{$-lang-text}', 'lng'))}" /><input type="file" class="upload hide" multiple="multiple" action="?type=action&action=upload" /></h6>
                 <ul text-null="{$=take('::console.att-list-null', 'lng')}" text-preview-link="{$=take('::console.att-preview-link', 'lng')}" text-insert="{$=take('global.config.insert', 'lng')}" text-delete="{$=take('global.config.delete', 'lng')}">

@@ -21,8 +21,7 @@ class ui extends console\page {
       $variable['-nav-category'] = $category;
       $variable['-my-category'] = $account -> getCurrentGenrePopedom('category');
       $variable['-lang'] = $account -> getLang();
-      $vars['-auto-field-format-by-table'] = auto::getAutoFieldFormatByTable();
-      $tmpstr = tpl::takeAndAssign('manage.add', null, $variable, $vars);
+      $tmpstr = tpl::takeAndAssign('manage.add', null, $variable);
       $tmpstr = $account -> replaceAccountTag($tmpstr);
     }
     $tmpstr = self::formatResult($status, $tmpstr);
@@ -48,8 +47,7 @@ class ui extends console\page {
         $variable['-nav-category'] = $category;
         $variable['-my-category'] = $account -> getCurrentGenrePopedom('category');
         $variable['-lang'] = $account -> getLang();
-        $vars['-auto-field-format-by-table'] = auto::getAutoFieldFormatByTable(1);
-        $tmpstr = tpl::takeAndAssign('manage.edit', $rs, $variable, $vars);
+        $tmpstr = tpl::takeAndAssign('manage.edit', $rs, $variable);
         $tmpstr = $account -> replaceAccountTag($tmpstr);
       }
     }

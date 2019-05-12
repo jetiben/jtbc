@@ -36,10 +36,10 @@ class ui extends console\page {
       if (count($error) == 0)
       {
         $langText = $account -> getLangText();
-        $bool = tpl::bring('index.title', 'lng', request::getPost('title'), $langText);
-        if ($bool) $bool = tpl::bring('index.content', 'lng', request::getPost('content'), $langText);
-        if ($bool) $bool = tpl::bring('index.att', 'lng', request::getPost('att'), $langText);
-        if ($bool)
+        $bool1 = tpl::bring('index.title', 'lng', request::getPost('title'), $langText);
+        $bool2 = tpl::bring('index.content', 'lng', request::getPost('content'), $langText);
+        $bool3 = tpl::bring('index.att', 'lng', request::getPost('att'), $langText);
+        if ($bool1 && $bool2 && $bool3)
         {
           $status = 1;
           universal\upload::statusReset(self::getParam('genre'), 0);
@@ -47,6 +47,7 @@ class ui extends console\page {
           $message = tpl::take('manage.text-tips-edit-done', 'lng');
           $account -> creatCurrentGenreLog('manage.log-edit-1');
         }
+        else $message = tpl::take('manage.text-tips-edit-error-others', 'lng');
       }
     }
     if (!empty($error)) $message = implode('|', $error);
