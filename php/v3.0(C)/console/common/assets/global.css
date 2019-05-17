@@ -275,7 +275,7 @@ icons icon a.link {
   padding: 0px 10px; text-align: left
 }
 .topbar right logout {
-  display: inline-block; width: 50px; height: 50px; background: url(icon/logout.1.svg) center center no-repeat; background-size: 20px; vertical-align: top; transition: background-color .3s ease
+  display: inline-block; width: 40px; height: 50px; background: url(icon/logout.1.svg) center center no-repeat; background-size: 20px; vertical-align: top; transition: background-color .3s ease
 }
 .topbar right logout:hover {
   background-color: #364150
