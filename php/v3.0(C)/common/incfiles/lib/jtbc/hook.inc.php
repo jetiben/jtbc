@@ -42,6 +42,15 @@ namespace jtbc {
       self::$hooks[$name] = $function;
     }
 
+    public static function exists($argName)
+    {
+      $bool = false;
+      $name = $argName;
+      $hooks = self::$hooks;
+      if (array_key_exists($name, $hooks)) $bool = true;
+      return $bool;
+    }
+
     public static function remove($argName)
     {
       $name = $argName;
@@ -56,7 +65,7 @@ namespace jtbc {
 
     public static function trigger()
     {
-      $result = null;
+      $result = array();
       $hooks = self::$hooks;
       $args = func_get_args();
       if (!empty($args))
@@ -77,7 +86,7 @@ namespace jtbc {
               {
                 array_push($myArgs, $args[$i]);
               }
-              $result = call_user_func_array($myHook, $myArgs);
+              array_push($result, call_user_func_array($myHook, $myArgs));
             }
           };
           if (is_object($hook)) $trigger($hook);
