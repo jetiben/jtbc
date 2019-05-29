@@ -38,9 +38,10 @@ namespace jtbc\universal {
 
     public static function getTargetClass()
     {
+      $targetClass = null;
       $ns = __NAMESPACE__;
-      $targetClass = $ns . '\\upload2self';
-      if (defined('UPLOAD_MODE'))
+      if (!defined('UPLOAD_MODE')) $targetClass = $ns . '\\upload2self';
+      else
       {
         if (UPLOAD_MODE == 'OSS' && class_exists($ns . '\\upload2oss')) $targetClass = $ns . '\\upload2oss';
       }
