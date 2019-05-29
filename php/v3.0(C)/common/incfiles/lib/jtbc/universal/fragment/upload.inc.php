@@ -23,30 +23,14 @@ namespace jtbc\universal\fragment {
       else
       {
         $fileArray = array();
-        $upResult = null;
-        $upResultArray = null;
         $fileArray['file'] = request::getFile('file');
         $fileArray['fileSize'] = request::getPost('fileSize');
         $fileArray['chunkCount'] = request::getPost('chunkCount');
         $fileArray['chunkCurrentIndex'] = request::getPost('chunkCurrentIndex');
         $fileArray['chunkParam'] = request::getPost('chunkParam');
         $fileArray['timeStringRandom'] = request::getPost('timeStringRandom');
-        if (!defined('UPLOAD_MODE'))
-        {
-          $upResult = universal\upload::up2self($fileArray, $limit);
-          $upResultArray = json_decode($upResult, 1);
-        }
-        else
-        {
-          if (UPLOAD_MODE == 'OSS')
-          {
-            if (class_exists('jtbc\universal\upload2oss'))
-            {
-              $upResult = universal\upload2oss::up2oss($fileArray, $limit);
-              $upResultArray = json_decode($upResult, 1);
-            }
-          }
-        }
+        $upResult = universal\upload::upFile($fileArray, $limit);
+        $upResultArray = json_decode($upResult, 1);
         if (is_array($upResultArray))
         {
           $status = $upResultArray['status'];

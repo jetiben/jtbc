@@ -70,7 +70,7 @@ class ui extends console\page {
       $fileArray['chunkCount'] = request::getPost('chunkCount');
       $fileArray['chunkCurrentIndex'] = request::getPost('chunkCurrentIndex');
       $fileArray['timeStringRandom'] = request::getPost('timeStringRandom');
-      $upResult = universal\upload::up2self($fileArray, '', '', false);
+      $upResult = universal\upload::upFile($fileArray, '', '', false);
       $upResultArray = json_decode($upResult, 1);
       if (is_array($upResultArray))
       {
@@ -129,7 +129,7 @@ class ui extends console\page {
         $fileArray['chunkCurrentIndex'] = request::getPost('chunkCurrentIndex');
         $fileArray['timeStringRandom'] = request::getPost('timeStringRandom');
         $rsFilePath = base::getString($dal -> val('filepath'));
-        $upResult = universal\upload::up2self($fileArray, '', $rsFilePath, false);
+        $upResult = universal\upload::upFile($fileArray, '', $rsFilePath, false);
         $upResultArray = json_decode($upResult, 1);
         if (is_array($upResultArray))
         {
