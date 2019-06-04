@@ -178,6 +178,7 @@ namespace jtbc {
       $currentAllowOrigin = is_null($allowOrigin)? $definedAllowOrigin: $allowOrigin;
       $definedAllowHeaders = defined('ALLOW_HEADERS')? ALLOW_HEADERS: null;
       $currentAllowHeaders = is_null($allowHeaders)? $definedAllowHeaders: $allowHeaders;
+      $definedAllowCredentials = defined('ALLOW_CREDENTIALS')? ALLOW_CREDENTIALS: null;
       if ($noCache === true)
       {
         header('Pragma: no-cache');
@@ -185,7 +186,16 @@ namespace jtbc {
       }
       if (!is_null($currentAllowOrigin))
       {
-        header('Access-Control-Allow-Origin: ' . $currentAllowOrigin);
+        if (is_array($currentAllowOrigin))
+        {
+          $httpOrigin = request::getHeaderParam('origin');
+          if (in_array($httpOrigin, $currentAllowOrigin)) $currentAllowOrigin = $httpOrigin;
+        }
+        if (is_string($currentAllowOrigin))
+        {
+          header('Access-Control-Allow-Origin: ' . $currentAllowOrigin);
+          if ($definedAllowCredentials == true) header('Access-Control-Allow-Credentials: true');
+        }
       }
       if (!is_null($currentAllowHeaders))
       {
