@@ -39,7 +39,7 @@
             <div class="info">
               <h3><span>{$=take('index.text-step-2-tit', 'lng')}</span></h3>
               <ul>
-                <li><input type="text" name="db_host" class="text" placeholder="{$=take('index.text-db_host', 'lng')}" /></li>
+                <li><input type="text" name="db_host" class="text" placeholder="{$=take('index.text-db_host', 'lng')}" value="localhost" /></li>
                 <li><input type="text" name="db_username" class="text" placeholder="{$=take('index.text-db_username', 'lng')}" /></li>
                 <li><input type="password" name="db_password" class="text" placeholder="{$=take('index.text-db_password', 'lng')}" /></li>
                 <li><input type="text" name="db_database" class="text" placeholder="{$=take('index.text-db_database', 'lng')}" /></li>
