@@ -7,6 +7,10 @@
   </configure>
   <item_list>
     <item>
+      <name><![CDATA[option]]></name>
+      <default><![CDATA[{@}<option value="{$id}">{$topic}</option>{@}]]></default>
+    </item>
+    <item>
       <name><![CDATA[li]]></name>
       <default><![CDATA[{@}<li><a href="{$-baseurl}{$=htmlEncode($createURL('detail', '{$id}', null, '{$-genre}'))}">{$topic}</a></li>{@}]]></default>
     </item>
