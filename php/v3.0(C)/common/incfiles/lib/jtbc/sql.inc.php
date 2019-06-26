@@ -191,7 +191,7 @@ namespace jtbc {
         $fieldStr = 'count(*) as count';
       }
       $sql = "select " . $fieldStr . " from " . $table . $this -> getWhere($autoFilter);
-      if (!is_null($manualOrderBy)) $sql .= $manualOrderBy;
+      if (!is_null($manualOrderBy)) $sql .= " order by " . $manualOrderBy;
       else
       {
         if (!is_null($orderBy))
