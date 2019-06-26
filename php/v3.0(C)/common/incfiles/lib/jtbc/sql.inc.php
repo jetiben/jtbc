@@ -9,7 +9,8 @@ namespace jtbc {
     private $table;
     private $prefix;
     private $pocket = array();
-    private $orderby = null;
+    private $orderBy = null;
+    private $manualOrderBy = null;
     private $source = array();
     private $additionalSQL = null;
     private $limitStart = null;
@@ -171,7 +172,8 @@ namespace jtbc {
       $db = $this -> db;
       $table = $this -> table;
       $prefix = $this -> prefix;
-      $orderby = $this -> orderby;
+      $orderBy = $this -> orderBy;
+      $manualOrderBy = $this -> manualOrderBy;
       $limitStart = $this -> limitStart;
       $limitLength = $this -> limitLength;
       $fullColumns = $db -> showFullColumns($table);
@@ -189,38 +191,42 @@ namespace jtbc {
         $fieldStr = 'count(*) as count';
       }
       $sql = "select " . $fieldStr . " from " . $table . $this -> getWhere($autoFilter);
-      if (!is_null($orderby))
+      if (!is_null($manualOrderBy)) $sql .= $manualOrderBy;
+      else
       {
-        $orderbyType = gettype($orderby);
-        if ($orderbyType == 'string')
+        if (!is_null($orderBy))
         {
-          $currentField = $prefix . $orderby;
-          $currentFieldInfo = $this -> getFieldInfo($fullColumns, $currentField);
-          if (is_array($currentFieldInfo)) $sql .= " order by " . $currentField . " desc";
-        }
-        else if ($orderbyType == 'array')
-        {
-          $newOrderBy = array();
-          foreach ($orderby as $key => $val)
+          $orderByType = gettype($orderBy);
+          if ($orderByType == 'string')
           {
-            $currentVal = $val;
-            if (is_array($currentVal))
+            $currentField = $prefix . $orderBy;
+            $currentFieldInfo = $this -> getFieldInfo($fullColumns, $currentField);
+            if (is_array($currentFieldInfo)) $sql .= " order by " . $currentField . " desc";
+          }
+          else if ($orderByType == 'array')
+          {
+            $newOrderBy = array();
+            foreach ($orderBy as $key => $val)
             {
-              $orderType = 'desc';
-              $currentValCount = count($currentVal);
-              if ($currentValCount >= 1)
+              $currentVal = $val;
+              if (is_array($currentVal))
               {
-                $currentField = $prefix . $currentVal[0];
-                if ($currentValCount >= 2)
+                $orderType = 'desc';
+                $currentValCount = count($currentVal);
+                if ($currentValCount >= 1)
                 {
-                  if (strtolower($currentVal[1]) == 'asc') $orderType = 'asc';
+                  $currentField = $prefix . $currentVal[0];
+                  if ($currentValCount >= 2)
+                  {
+                    if (strtolower($currentVal[1]) == 'asc') $orderType = 'asc';
+                  }
+                  $currentFieldInfo = $this -> getFieldInfo($fullColumns, $currentField);
+                  if (is_array($currentFieldInfo)) array_push($newOrderBy, $currentField . ' ' . $orderType);
                 }
-                $currentFieldInfo = $this -> getFieldInfo($fullColumns, $currentField);
-                if (is_array($currentFieldInfo)) array_push($newOrderBy, $currentField . ' ' . $orderType);
               }
             }
+            if (!empty($newOrderBy)) $sql .= " order by " . implode(',', $newOrderBy);
           }
-          if (!empty($newOrderBy)) $sql .= " order by " . implode(',', $newOrderBy);
         }
       }
       if (!is_null($limitStart) && !is_null($limitLength)) $sql .= " limit " . $limitStart . ", " . $limitLength;
@@ -419,26 +425,26 @@ namespace jtbc {
       $field = $argField;
       $descOrAsc = $argDescOrAsc;
       if (strtolower($descOrAsc) == 'asc') $descOrAsc = 'asc';
-      $orderby = $this -> orderby;
-      if (!is_array($orderby))
+      $orderBy = $this -> orderBy;
+      if (!is_array($orderBy))
       {
-        if (!is_null($orderby))
+        if (!is_null($orderBy))
         {
-          $tempOrderby = $orderby;
-          $orderby = array();
-          array_push($orderby, array($tempOrderby));
+          $tempOrderBy = $orderBy;
+          $orderBy = array();
+          array_push($orderBy, array($tempOrderBy));
         }
         else
         {
-          $orderby = array();
-          array_push($orderby, array($field, $descOrAsc));
+          $orderBy = array();
+          array_push($orderBy, array($field, $descOrAsc));
         }
       }
       else
       {
-        array_push($orderby, array($field, $descOrAsc));
+        array_push($orderBy, array($field, $descOrAsc));
       }
-      $this -> orderby = $orderby;
+      $this -> orderBy = $orderBy;
       return $this;
     }
 
@@ -505,6 +511,12 @@ namespace jtbc {
       return $this;
     }
 
+    public function setManualOrderBy($argManualOrderBy)
+    {
+      $this -> manualOrderBy = $argManualOrderBy;
+      return $this;
+    }
+
     public function __set($argName, $argValue)
     {
       $this -> set($argName, $argValue);
@@ -531,7 +543,7 @@ namespace jtbc {
       $this -> db = $argDb;
       $this -> table = $argTable;
       $this -> prefix = $argPrefix;
-      $this -> orderby = $argOrderBy;
+      $this -> orderBy = $argOrderBy;
     }
   }
 }
