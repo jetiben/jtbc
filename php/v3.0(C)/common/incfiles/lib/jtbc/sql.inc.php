@@ -9,6 +9,9 @@ namespace jtbc {
     private $table;
     private $prefix;
     private $pocket = array();
+    private $groupMode = false;
+    private $groupIndex = 0;
+    private $groupPocket = array();
     private $orderBy = null;
     private $manualOrderBy = null;
     private $source = array();
@@ -48,7 +51,6 @@ namespace jtbc {
       $db = $this -> db;
       $table = $this -> table;
       $prefix = $this -> prefix;
-      $pocket = $this -> pocket;
       $additionalSQL = $this -> additionalSQL;
       $fullColumns = $db -> showFullColumns($table);
       $hasWhere = false;
@@ -63,104 +65,191 @@ namespace jtbc {
         }
       }
       if ($hasWhere != true) $where .= " where 1=1";
-      if (!empty($pocket))
+      $formatItemByPocket = function($argPocket) use ($prefix, $fullColumns, &$formatItemByPocket)
       {
-        foreach ($pocket as $key => $val)
+        $currentItemAry = array();
+        $currentPocket = $argPocket;
+        if (!empty($currentPocket))
         {
-          if (is_array($val) && count($val) == 2)
+          $currentIndex = 0;
+          foreach ($currentPocket as $key => $val)
           {
-            $currentKey = $val[0];
-            $currentVal = $val[1];
-            $currentField = null;
-            $currentConcat = 'and';
-            $currentRelation = '=';
-            $keyType = gettype($currentKey);
-            if ($keyType == 'string')
+            if (is_array($val) && count($val) == 2)
             {
-              $currentField = $prefix . $currentKey;
-            }
-            else if ($keyType == 'array')
-            {
-              $keyCount = count($currentKey);
-              if ($keyCount >= 1)
+              $currentKey = $val[0];
+              $currentVal = $val[1];
+              $currentField = null;
+              $currentConcat = 'and';
+              $currentRelation = '=';
+              if (is_array($currentKey))
               {
-                $currentField = $prefix . $currentKey[0];
-              }
-              if ($keyCount >= 2)
-              {
-                $tempRelation = strtolower($currentKey[1]);
-                if ($tempRelation == 'in') $currentRelation = 'in';
-                else if ($tempRelation == 'like') $currentRelation = 'like';
-                else if ($tempRelation == '!=') $currentRelation = '!=';
-                else if ($tempRelation == '>=') $currentRelation = '>=';
-                else if ($tempRelation == '<=') $currentRelation = '<=';
-              }
-              if ($keyCount >= 3)
-              {
-                $tempConcat = strtolower($currentKey[2]);
-                if ($tempConcat == 'or') $currentConcat = 'or';
-              }
-            }
-            if (!is_null($currentField))
-            {
-              $currentFieldInfo = $this -> getFieldInfo($fullColumns, $currentField);
-              if (is_array($currentFieldInfo))
-              {
-                $valType = gettype($currentVal);
-                if ($currentRelation == 'in')
+                $currentIndex += 1;
+                $keyCount = count($currentKey);
+                if ($keyCount >= 1) $currentField = $prefix . $currentKey[0];
+                if ($keyCount >= 2) $currentRelation = strtolower($currentKey[1]);
+                if ($keyCount >= 3)
                 {
-                  if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . " in (" . base::getNum($currentVal, 0) . ")";
-                  else if ($valType == 'string')
+                  $tempConcat = strtolower($currentKey[2]);
+                  if ($tempConcat == 'or') $currentConcat = 'or';
+                }
+                if (!is_null($currentField))
+                {
+                  $currentFieldInfo = $this -> getFieldInfo($fullColumns, $currentField);
+                  if (is_array($currentFieldInfo))
                   {
-                    if (base::checkIDAry($currentVal)) $where .= " " . $currentConcat . " " . $currentField  . " in (" . addslashes($currentVal) . ")";
-                  }
-                  else if ($valType == 'array')
-                  {
-                    $currentNewVal = '';
-                    foreach ($currentVal as $newVal)
+                    $valType = gettype($currentVal);
+                    $currentFieldTypeName = $currentFieldInfo['TypeName'];
+                    if ($currentRelation == 'in')
                     {
-                      $currentNewVal .= "'" . addslashes($newVal) . "',";
+                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, " in (" . base::getNum($currentVal, 0) . ")"));
+                      else if ($valType == 'string')
+                      {
+                        if (base::checkIDAry($currentVal)) array_push($currentItemAry, array($currentConcat, $currentField, " in (" . addslashes($currentVal) . ")"));
+                      }
+                      else if ($valType == 'array')
+                      {
+                        $currentNewVal = '';
+                        foreach ($currentVal as $newVal)
+                        {
+                          $currentNewVal .= "'" . addslashes($newVal) . "',";
+                        }
+                        if (!base::isEmpty($currentNewVal)) array_push($currentItemAry, array($currentConcat, $currentField, " in (" . rtrim($currentNewVal, ',') . ")"));
+                      }
+                      else $this -> err = 485;
                     }
-                    if (!base::isEmpty($currentNewVal)) $where .= " " . $currentConcat . " " . $currentField  . " in (" . rtrim($currentNewVal, ',') . ")";
+                    else if ($currentRelation == 'like')
+                    {
+                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, " like " . base::getNum($currentVal, 0)));
+                      else if ($valType == 'string') array_push($currentItemAry, array($currentConcat, $currentField, " like '" . addslashes($currentVal) . "'"));
+                      else $this -> err = 484;
+                    }
+                    else if ($currentRelation == '!=')
+                    {
+                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, "!=" . base::getNum($currentVal, 0)));
+                      else if ($valType == 'string') array_push($currentItemAry, array($currentConcat, $currentField, "!='" . addslashes($currentVal) . "'"));
+                      else if ($valType == 'NULL') array_push($currentItemAry, array($currentConcat, $currentField, " is not null"));
+                      else $this -> err = 483;
+                    }
+                    else if ($currentRelation == '>')
+                    {
+                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, ">" . base::getNum($currentVal, 0)));
+                      else if ($currentFieldTypeName == 'datetime' && $valType == 'string')
+                      {
+                        if (!base::isDate($currentVal)) $this -> err = 482;
+                        else
+                        {
+                          array_push($currentItemAry, array($currentConcat, $currentField, ">'" . base::formatDate($currentVal) . "'"));
+                        }
+                      }
+                      else $this -> err = 482;
+                    }
+                    else if ($currentRelation == '>=')
+                    {
+                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, ">=" . base::getNum($currentVal, 0)));
+                      else if ($currentFieldTypeName == 'datetime' && $valType == 'string')
+                      {
+                        if (!base::isDate($currentVal)) $this -> err = 482;
+                        else
+                        {
+                          array_push($currentItemAry, array($currentConcat, $currentField, ">='" . base::formatDate($currentVal) . "'"));
+                        }
+                      }
+                      else $this -> err = 482;
+                    }
+                    else if ($currentRelation == '<')
+                    {
+                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, "<" . base::getNum($currentVal, 0)));
+                      else if ($currentFieldTypeName == 'datetime' && $valType == 'string')
+                      {
+                        if (!base::isDate($currentVal)) $this -> err = 481;
+                        else
+                        {
+                          array_push($currentItemAry, array($currentConcat, $currentField, "<'" . base::formatDate($currentVal) . "'"));
+                        }
+                      }
+                      else $this -> err = 481;
+                    }
+                    else if ($currentRelation == '<=')
+                    {
+                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, "<=" . base::getNum($currentVal, 0)));
+                      else if ($currentFieldTypeName == 'datetime' && $valType == 'string')
+                      {
+                        if (!base::isDate($currentVal)) $this -> err = 481;
+                        else
+                        {
+                          array_push($currentItemAry, array($currentConcat, $currentField, "<='" . base::formatDate($currentVal) . "'"));
+                        }
+                      }
+                      else $this -> err = 481;
+                    }
+                    else if ($currentRelation == '=')
+                    {
+                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, "=" . base::getNum($currentVal, 0)));
+                      else if ($valType == 'string') array_push($currentItemAry, array($currentConcat, $currentField, "='" . addslashes($currentVal) . "'"));
+                      else if ($valType == 'NULL') array_push($currentItemAry, array($currentConcat, $currentField, " is null"));
+                      else $this -> err = 480;
+                    }
                   }
-                  else $this -> err = 485;
-                }
-                else if ($currentRelation == 'like')
-                {
-                  if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . " like " . base::getNum($currentVal, 0);
-                  else if ($valType == 'string') $where .= " " . $currentConcat . " " . $currentField  . " like '" . addslashes($currentVal) . "'";
-                  else $this -> err = 484;
-                }
-                else if ($currentRelation == '!=')
-                {
-                  if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . "!=" . base::getNum($currentVal, 0);
-                  else if ($valType == 'string') $where .= " " . $currentConcat . " " . $currentField  . "!='" . addslashes($currentVal) . "'";
-                  else if ($valType == 'NULL') $where .= " " . $currentConcat . " " . $currentField  . " is not null";
-                  else $this -> err = 483;
-                }
-                else if ($currentRelation == '>=')
-                {
-                  if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . ">=" . base::getNum($currentVal, 0);
-                  else $this -> err = 482;
-                }
-                else if ($currentRelation == '<=')
-                {
-                  if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . "<=" . base::getNum($currentVal, 0);
-                  else $this -> err = 481;
-                }
-                else if ($currentRelation == '=')
-                {
-                  if ($valType == 'integer' || $valType == 'double') $where .= " " . $currentConcat . " " . $currentField . "=" . base::getNum($currentVal, 0);
-                  else if ($valType == 'string') $where .= " " . $currentConcat . " " . $currentField  . "='" . addslashes($currentVal) . "'";
-                  else if ($valType == 'NULL') $where .= " " . $currentConcat . " " . $currentField  . " is null";
-                  else $this -> err = 480;
+                  else $this -> err = 500;
                 }
               }
-              else $this -> err = 500;
+              else if (is_string($currentKey))
+              {
+                if ($currentKey == 'group') array_push($currentItemAry, array('group' => $formatItemByPocket($currentVal)));
+              }
             }
           }
         }
-      }
+        return $currentItemAry;
+      };
+      $this -> groupAutoClose();
+      $pocket = $this -> pocket;
+      $formatSQLGroupDepth = 0;
+      $formatSQLGroupStatus = 0;
+      $formatSQLByItem = function($argItemAry, $argIsGroup = false) use (&$formatSQLGroupStatus, &$formatSQLGroupDepth, &$formatSQLByItem)
+      {
+        $currentSQL = '';
+        $currentItemAry = $argItemAry;
+        $currentIsGroup = $argIsGroup;
+        if (is_array($currentItemAry))
+        {
+          foreach ($currentItemAry as $val)
+          {
+            if (count($val) == 1)
+            {
+              if (array_key_exists('group', $val))
+              {
+                if ($formatSQLGroupStatus == 1)
+                {
+                  $formatSQLGroupDepth = 0;
+                  $formatSQLGroupStatus = 0;
+                }
+                $formatSQLGroupDepth += 1;
+                $currentSQL .= $formatSQLByItem($val['group'], true);
+              }
+            }
+            else if (count($val) == 3)
+            {
+              if ($currentIsGroup == false) $currentSQL .= ' ' . $val[0] . ' ' . $val[1] . $val[2];
+              else
+              {
+                if ($formatSQLGroupStatus == 0)
+                {
+                  $formatSQLGroupStatus = 1;
+                  $currentSQL .= ' ' . $val[0] . ' ' . base::getRepeatedString('(', $formatSQLGroupDepth) . $val[1] . $val[2];
+                }
+                else
+                {
+                  $currentSQL .= ' ' . $val[0] . ' ' . $val[1] . $val[2];
+                }
+              }
+            }
+          }
+          if ($currentIsGroup == true) $currentSQL .= ')';
+        }
+        return $currentSQL;
+      };
+      $where .= $formatSQLByItem($formatItemByPocket($pocket));
       if (!is_null($additionalSQL)) $where .= $additionalSQL;
       return $where;
     }
@@ -402,6 +491,43 @@ namespace jtbc {
       return $sql;
     }
 
+    public function groupOpen()
+    {
+      $this -> groupMode = true;
+      $this -> groupIndex += 1;
+      $this -> groupPocket[$this -> groupIndex] = array();
+      return $this;
+    }
+
+    public function groupClose()
+    {
+      $currentGroupIndex = $this -> groupIndex;
+      if ($currentGroupIndex > 0)
+      {
+        if ($currentGroupIndex == 1)
+        {
+          $pocket = $this -> pocket;
+          array_push($pocket, array('group', $this -> groupPocket[$currentGroupIndex]));
+          $this -> pocket = $pocket;
+          $this -> groupMode = false;
+        }
+        else
+        {
+          $parentGroupIndex = $currentGroupIndex - 1;
+          $parentGroupPocket = $this -> groupPocket[$parentGroupIndex];
+          array_push($parentGroupPocket, array('group', $this -> groupPocket[$currentGroupIndex]));
+          $this -> groupPocket[$parentGroupIndex] = $parentGroupPocket;
+        }
+        $this -> groupIndex -= 1;
+      }
+      return $this;
+    }
+
+    public function groupAutoClose()
+    {
+      while($this -> groupIndex > 0) $this -> groupClose();
+    }
+
     public function limit()
     {
       $start = 0;
@@ -452,38 +578,59 @@ namespace jtbc {
     {
       $name = $argName;
       $value = $argValue;
-      $pocket = $this -> pocket;
-      array_push($pocket, array($name, $value));
-      $this -> pocket = $pocket;
+      if ($this -> groupMode == false)
+      {
+        $pocket = $this -> pocket;
+        array_push($pocket, array($name, $value));
+        $this -> pocket = $pocket;
+      }
+      else
+      {
+        $groupPocket = $this -> groupPocket[$this -> groupIndex];
+        array_push($groupPocket, array($name, $value));
+        $this -> groupPocket[$this -> groupIndex] = $groupPocket;
+      }
       return $this;
     }
 
-    public function setMin($argName, $argValue)
+    public function setMin($argName, $argValue, $argEqual = true, $argAndOr = 'and')
     {
       $name = $argName;
       $value = $argValue;
-      return $this -> set(array($name, '>='), $value);
+      $equal = $argEqual;
+      $andOr = $argAndOr;
+      $return = $this;
+      if ($equal == true) $return = $this -> set(array($name, '>=', $andOr), $value);
+      else $return = $this -> set(array($name, '>', $andOr), $value);
+      return $return;
     }
 
-    public function setMax($argName, $argValue)
+    public function setMax($argName, $argValue, $argEqual = true, $argAndOr = 'and')
     {
       $name = $argName;
       $value = $argValue;
-      return $this -> set(array($name, '<='), $value);
+      $equal = $argEqual;
+      $andOr = $argAndOr;
+      $return = $this;
+      if ($equal == true) $return = $this -> set(array($name, '<=', $andOr), $value);
+      else $return = $this -> set(array($name, '<', $andOr), $value);
+      return $return;
     }
 
-    public function setIn($argName, $argValue)
+    public function setIn($argName, $argValue, $argAndOr = 'and')
     {
       $name = $argName;
       $value = $argValue;
-      return $this -> set(array($name, 'in'), $value);
+      $andOr = $argAndOr;
+      return $this -> set(array($name, 'in', $andOr), $value);
     }
 
-    public function setLike($argName, $argValue)
+    public function setLike($argName, $argValue, $argAndOr = 'and')
     {
       $name = $argName;
       $value = $argValue;
-      return $this -> set(array($name, 'like'), $value);
+      $andOr = $argAndOr;
+      return $this -> set(array($name, 'like', $andOr), $value);
     }
 
     public function setFuzzyLike($argName, $argValue)
@@ -498,11 +645,20 @@ namespace jtbc {
       return $this;
     }
 
-    public function setUnequal($argName, $argValue)
+    public function setEqual($argName, $argValue, $argAndOr = 'and')
     {
       $name = $argName;
       $value = $argValue;
-      return $this -> set(array($name, '!='), $value);
+      $andOr = $argAndOr;
+      return $this -> set(array($name, '=', $andOr), $value);
+    }
+
+    public function setUnequal($argName, $argValue, $argAndOr = 'and')
+    {
+      $name = $argName;
+      $value = $argValue;
+      $andOr = $argAndOr;
+      return $this -> set(array($name, '!=', $andOr), $value);
     }
 
     public function setAdditionalSQL($argAdditionalSQL)
@@ -519,7 +675,7 @@ namespace jtbc {
 
     public function __set($argName, $argValue)
     {
-      $this -> set($argName, $argValue);
+      $this -> setEqual($argName, $argValue);
     }
 
     public static function getCutKeywordSQL($argField, $argKeyword)

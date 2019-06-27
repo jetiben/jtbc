@@ -65,7 +65,7 @@ namespace jtbc {
       return $string;
     }
 
-    public static function formatDate($argDate, $argType)
+    public static function formatDate($argDate, $argType = '0')
     {
       $tmpstr = '';
       $date = $argDate;
@@ -289,6 +289,11 @@ namespace jtbc {
       if (self::isDate($date))
       {
         $arys = explode(' ', $date);
+        if (count($arys) == 1)
+        {
+          $date .= ' 0:00:00';
+          $arys = explode(' ', $date);
+        }
         $arys2 = explode('-', $arys[0]);
         $arys3 = explode(':', $arys[1]);
         $month = self::getNum($arys2[1], 0);
