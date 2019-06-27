@@ -9,9 +9,9 @@ namespace jtbc {
     private $table;
     private $prefix;
     private $pocket = array();
-    private $groupMode = false;
-    private $groupIndex = 0;
-    private $groupPocket = array();
+    private $fenceMode = false;
+    private $fenceIndex = 0;
+    private $fencePocket = array();
     private $orderBy = null;
     private $manualOrderBy = null;
     private $source = array();
@@ -195,48 +195,48 @@ namespace jtbc {
               }
               else if (is_string($currentKey))
               {
-                if ($currentKey == 'group') array_push($currentItemAry, array('group' => $formatItemByPocket($currentVal)));
+                if ($currentKey == 'fence') array_push($currentItemAry, array('fence' => $formatItemByPocket($currentVal)));
               }
             }
           }
         }
         return $currentItemAry;
       };
-      $this -> groupAutoClose();
+      $this -> fenceAutoPull();
       $pocket = $this -> pocket;
-      $formatSQLGroupDepth = 0;
-      $formatSQLGroupStatus = 0;
-      $formatSQLByItem = function($argItemAry, $argIsGroup = false) use (&$formatSQLGroupStatus, &$formatSQLGroupDepth, &$formatSQLByItem)
+      $formatSQLFenceDepth = 0;
+      $formatSQLFenceStatus = 0;
+      $formatSQLByItem = function($argItemAry, $argIsFence = false) use (&$formatSQLFenceStatus, &$formatSQLFenceDepth, &$formatSQLByItem)
       {
         $currentSQL = '';
         $currentItemAry = $argItemAry;
-        $currentIsGroup = $argIsGroup;
+        $currentIsFence = $argIsFence;
         if (is_array($currentItemAry))
         {
           foreach ($currentItemAry as $val)
           {
             if (count($val) == 1)
             {
-              if (array_key_exists('group', $val))
+              if (array_key_exists('fence', $val))
               {
-                if ($formatSQLGroupStatus == 1)
+                if ($formatSQLFenceStatus == 1)
                 {
-                  $formatSQLGroupDepth = 0;
-                  $formatSQLGroupStatus = 0;
+                  $formatSQLFenceDepth = 0;
+                  $formatSQLFenceStatus = 0;
                 }
-                $formatSQLGroupDepth += 1;
-                $currentSQL .= $formatSQLByItem($val['group'], true);
+                $formatSQLFenceDepth += 1;
+                $currentSQL .= $formatSQLByItem($val['fence'], true);
               }
             }
             else if (count($val) == 3)
             {
-              if ($currentIsGroup == false) $currentSQL .= ' ' . $val[0] . ' ' . $val[1] . $val[2];
+              if ($currentIsFence == false) $currentSQL .= ' ' . $val[0] . ' ' . $val[1] . $val[2];
               else
               {
-                if ($formatSQLGroupStatus == 0)
+                if ($formatSQLFenceStatus == 0)
                 {
-                  $formatSQLGroupStatus = 1;
-                  $currentSQL .= ' ' . $val[0] . ' ' . base::getRepeatedString('(', $formatSQLGroupDepth) . $val[1] . $val[2];
+                  $formatSQLFenceStatus = 1;
+                  $currentSQL .= ' ' . $val[0] . ' ' . base::getRepeatedString('(', $formatSQLFenceDepth) . $val[1] . $val[2];
                 }
                 else
                 {
@@ -245,7 +245,7 @@ namespace jtbc {
               }
             }
           }
-          if ($currentIsGroup == true) $currentSQL .= ')';
+          if ($currentIsFence == true) $currentSQL .= ')';
         }
         return $currentSQL;
       };
@@ -491,41 +491,50 @@ namespace jtbc {
       return $sql;
     }
 
-    public function groupOpen()
+    public function fence($argFlag = true)
     {
-      $this -> groupMode = true;
-      $this -> groupIndex += 1;
-      $this -> groupPocket[$this -> groupIndex] = array();
+      $flag = $argFlag;
+      $return = $this;
+      if ($flag == true) $return = $this -> fencePush();
+      else $return = $this -> fencePull();
+      return $return;
+    }
+
+    public function fencePush()
+    {
+      $this -> fenceMode = true;
+      $this -> fenceIndex += 1;
+      $this -> fencePocket[$this -> fenceIndex] = array();
       return $this;
     }
 
-    public function groupClose()
+    public function fencePull()
     {
-      $currentGroupIndex = $this -> groupIndex;
-      if ($currentGroupIndex > 0)
+      $currentFenceIndex = $this -> fenceIndex;
+      if ($currentFenceIndex > 0)
       {
-        if ($currentGroupIndex == 1)
+        if ($currentFenceIndex == 1)
         {
           $pocket = $this -> pocket;
-          array_push($pocket, array('group', $this -> groupPocket[$currentGroupIndex]));
+          array_push($pocket, array('fence', $this -> fencePocket[$currentFenceIndex]));
           $this -> pocket = $pocket;
-          $this -> groupMode = false;
+          $this -> fenceMode = false;
         }
         else
         {
-          $parentGroupIndex = $currentGroupIndex - 1;
-          $parentGroupPocket = $this -> groupPocket[$parentGroupIndex];
-          array_push($parentGroupPocket, array('group', $this -> groupPocket[$currentGroupIndex]));
-          $this -> groupPocket[$parentGroupIndex] = $parentGroupPocket;
+          $parentFenceIndex = $currentFenceIndex - 1;
+          $parentFencePocket = $this -> fencePocket[$parentFenceIndex];
+          array_push($parentFencePocket, array('fence', $this -> fencePocket[$currentFenceIndex]));
+          $this -> fencePocket[$parentFenceIndex] = $parentFencePocket;
         }
-        $this -> groupIndex -= 1;
+        $this -> fenceIndex -= 1;
       }
       return $this;
     }
 
-    public function groupAutoClose()
+    public function fenceAutoPull()
     {
-      while($this -> groupIndex > 0) $this -> groupClose();
+      while($this -> fenceIndex > 0) $this -> fencePull();
     }
 
     public function limit()
@@ -578,7 +587,7 @@ namespace jtbc {
     {
       $name = $argName;
       $value = $argValue;
-      if ($this -> groupMode == false)
+      if ($this -> fenceMode == false)
       {
         $pocket = $this -> pocket;
         array_push($pocket, array($name, $value));
@@ -586,9 +595,9 @@ namespace jtbc {
       }
       else
       {
-        $groupPocket = $this -> groupPocket[$this -> groupIndex];
-        array_push($groupPocket, array($name, $value));
-        $this -> groupPocket[$this -> groupIndex] = $groupPocket;
+        $fencePocket = $this -> fencePocket[$this -> fenceIndex];
+        array_push($fencePocket, array($name, $value));
+        $this -> fencePocket[$this -> fenceIndex] = $fencePocket;
       }
       return $this;
     }
