@@ -851,6 +851,28 @@ jtbc.console.lib = {
         tthis.previewAtt(null, thisObj.attr('text-preview-title'), currentFileURL, thisObj.attr('text-preview-link'), '0');
       };
     });
+    myObj.find('input.fileurl').on('input', function(){
+      var thisObj = $(this);
+      var upsourceObj = thisObj.parent().find('input.upsource');
+      if (!thisObj.val()) upsourceObj.val('');
+      else
+      {
+        var newUpsourceArray = new Object();
+        var lastFileURL = upsourceObj.attr('last-fileurl');
+        var lastUploadId = upsourceObj.attr('last-uploadid');
+        if (thisObj.val() == lastFileURL)
+        {
+          newUpsourceArray.fileurl = lastFileURL;
+          newUpsourceArray.uploadid = lastUploadId;
+        }
+        else
+        {
+          newUpsourceArray.fileurl = thisObj.val();
+          newUpsourceArray.uploadid = '0';
+        };
+        upsourceObj.val(JSON.stringify(newUpsourceArray)).trigger('update');
+      };
+    });
     myObj.find('input.upfiles').on('change', function(){
       var thisObj = $(this);
       var btnObj = thisObj.parent().find('button.upbtn');
@@ -871,8 +893,7 @@ jtbc.console.lib = {
               var paramArray = JSON.parse(param);
               upsourceArray.fileurl = paramArray['fileurl'];
               upsourceArray.uploadid = paramArray['uploadid'];
-              thisObj.parent().parent().find('input.upsource').val(JSON.stringify(upsourceArray));
-              thisObj.parent().parent().find('input.fileurl').val(paramArray['fileurl']);
+              thisObj.parent().parent().find('input.upsource').val(JSON.stringify(upsourceArray)).trigger('update');
             }
             else
             {
@@ -884,14 +905,23 @@ jtbc.console.lib = {
         };
       };
     });
-    myObj.find('input.upsource').each(function(){
+    myObj.find('input.upsource').on('update', function(){
       var thisObj = $(this);
       if (thisObj.val())
       {
         var paramArray = JSON.parse(thisObj.val());
-        thisObj.parent().find('input.fileurl').val(paramArray['fileurl']);
-      };
+        var currentFileURL = paramArray['fileurl'];
+        var currentUploadId = paramArray['uploadid'];
+        thisObj.parent().find('input.fileurl').val(currentFileURL);
+        if (currentUploadId != '0')
+        {
+          thisObj.attr('last-fileurl', currentFileURL);
+          thisObj.attr('last-uploadid', currentUploadId);
+        };
+      }
+      else thisObj.parent().find('input.fileurl').val('');
     });
+    myObj.find('input.upsource').trigger('update');
   },
   initSearchBoxEvents: function(argObj)
   {
