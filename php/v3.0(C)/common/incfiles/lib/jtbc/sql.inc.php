@@ -99,12 +99,12 @@ namespace jtbc {
                   {
                     $valType = gettype($currentVal);
                     $currentFieldTypeName = $currentFieldInfo['TypeName'];
-                    if ($currentRelation == 'in')
+                    if ($currentRelation == 'in' || $currentRelation == 'not in')
                     {
-                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, " in (" . base::getNum($currentVal, 0) . ")"));
+                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, " " . $currentRelation . " (" . base::getNum($currentVal, 0) . ")"));
                       else if ($valType == 'string')
                       {
-                        if (base::checkIDAry($currentVal)) array_push($currentItemAry, array($currentConcat, $currentField, " in (" . addslashes($currentVal) . ")"));
+                        if (base::checkIDAry($currentVal)) array_push($currentItemAry, array($currentConcat, $currentField, " " . $currentRelation . " (" . addslashes($currentVal) . ")"));
                       }
                       else if ($valType == 'array')
                       {
@@ -113,79 +113,53 @@ namespace jtbc {
                         {
                           $currentNewVal .= "'" . addslashes($newVal) . "',";
                         }
-                        if (!base::isEmpty($currentNewVal)) array_push($currentItemAry, array($currentConcat, $currentField, " in (" . rtrim($currentNewVal, ',') . ")"));
+                        if (!base::isEmpty($currentNewVal)) array_push($currentItemAry, array($currentConcat, $currentField, " " . $currentRelation . " (" . rtrim($currentNewVal, ',') . ")"));
                       }
                       else $this -> err = 485;
                     }
-                    else if ($currentRelation == 'like')
+                    else if ($currentRelation == 'like' || $currentRelation == 'not like')
                     {
-                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, " like " . base::getNum($currentVal, 0)));
-                      else if ($valType == 'string') array_push($currentItemAry, array($currentConcat, $currentField, " like '" . addslashes($currentVal) . "'"));
+                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, " " . $currentRelation . " " . base::getNum($currentVal, 0)));
+                      else if ($valType == 'string') array_push($currentItemAry, array($currentConcat, $currentField, " " . $currentRelation . " '" . addslashes($currentVal) . "'"));
                       else $this -> err = 484;
                     }
                     else if ($currentRelation == '!=')
                     {
-                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, "!=" . base::getNum($currentVal, 0)));
-                      else if ($valType == 'string') array_push($currentItemAry, array($currentConcat, $currentField, "!='" . addslashes($currentVal) . "'"));
+                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, $currentRelation . base::getNum($currentVal, 0)));
+                      else if ($valType == 'string') array_push($currentItemAry, array($currentConcat, $currentField, $currentRelation . "'" . addslashes($currentVal) . "'"));
                       else if ($valType == 'NULL') array_push($currentItemAry, array($currentConcat, $currentField, " is not null"));
                       else $this -> err = 483;
                     }
-                    else if ($currentRelation == '>')
+                    else if ($currentRelation == '>' || $currentRelation == '>=')
                     {
-                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, ">" . base::getNum($currentVal, 0)));
+                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, $currentRelation . base::getNum($currentVal, 0)));
                       else if ($currentFieldTypeName == 'datetime' && $valType == 'string')
                       {
                         if (!base::isDate($currentVal)) $this -> err = 482;
                         else
                         {
-                          array_push($currentItemAry, array($currentConcat, $currentField, ">'" . base::formatDate($currentVal) . "'"));
+                          array_push($currentItemAry, array($currentConcat, $currentField, $currentRelation . "'" . base::formatDate($currentVal) . "'"));
                         }
                       }
                       else $this -> err = 482;
                     }
-                    else if ($currentRelation == '>=')
+                    else if ($currentRelation == '<' || $currentRelation == '<=')
                     {
-                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, ">=" . base::getNum($currentVal, 0)));
-                      else if ($currentFieldTypeName == 'datetime' && $valType == 'string')
-                      {
-                        if (!base::isDate($currentVal)) $this -> err = 482;
-                        else
-                        {
-                          array_push($currentItemAry, array($currentConcat, $currentField, ">='" . base::formatDate($currentVal) . "'"));
-                        }
-                      }
-                      else $this -> err = 482;
-                    }
-                    else if ($currentRelation == '<')
-                    {
-                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, "<" . base::getNum($currentVal, 0)));
+                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, $currentRelation . base::getNum($currentVal, 0)));
                       else if ($currentFieldTypeName == 'datetime' && $valType == 'string')
                       {
                         if (!base::isDate($currentVal)) $this -> err = 481;
                         else
                         {
-                          array_push($currentItemAry, array($currentConcat, $currentField, "<'" . base::formatDate($currentVal) . "'"));
-                        }
-                      }
-                      else $this -> err = 481;
-                    }
-                    else if ($currentRelation == '<=')
-                    {
-                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, "<=" . base::getNum($currentVal, 0)));
-                      else if ($currentFieldTypeName == 'datetime' && $valType == 'string')
-                      {
-                        if (!base::isDate($currentVal)) $this -> err = 481;
-                        else
-                        {
-                          array_push($currentItemAry, array($currentConcat, $currentField, "<='" . base::formatDate($currentVal) . "'"));
+                          array_push($currentItemAry, array($currentConcat, $currentField, $currentRelation . "'" . base::formatDate($currentVal) . "'"));
                         }
                       }
                       else $this -> err = 481;
                     }
                     else if ($currentRelation == '=')
                     {
-                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, "=" . base::getNum($currentVal, 0)));
-                      else if ($valType == 'string') array_push($currentItemAry, array($currentConcat, $currentField, "='" . addslashes($currentVal) . "'"));
+                      if ($valType == 'integer' || $valType == 'double') array_push($currentItemAry, array($currentConcat, $currentField, $currentRelation . base::getNum($currentVal, 0)));
+                      else if ($valType == 'string') array_push($currentItemAry, array($currentConcat, $currentField, $currentRelation . "'" . addslashes($currentVal) . "'"));
                       else if ($valType == 'NULL') array_push($currentItemAry, array($currentConcat, $currentField, " is null"));
                       else $this -> err = 480;
                     }
@@ -634,12 +608,28 @@ namespace jtbc {
       return $this -> set(array($name, 'in', $andOr), $value);
     }
 
+    public function setNotIn($argName, $argValue, $argAndOr = 'and')
+    {
+      $name = $argName;
+      $value = $argValue;
+      $andOr = $argAndOr;
+      return $this -> set(array($name, 'not in', $andOr), $value);
+    }
+
     public function setLike($argName, $argValue, $argAndOr = 'and')
     {
       $name = $argName;
       $value = $argValue;
       $andOr = $argAndOr;
       return $this -> set(array($name, 'like', $andOr), $value);
+    }
+
+    public function setNotLike($argName, $argValue, $argAndOr = 'and')
+    {
+      $name = $argName;
+      $value = $argValue;
+      $andOr = $argAndOr;
+      return $this -> set(array($name, 'not like', $andOr), $value);
     }
 
     public function setFuzzyLike($argName, $argValue)
