@@ -107,45 +107,74 @@ namespace jtbc {
     public static function getResult()
     {
       $tmpstr = '';
-      $type = request::get('type');
-      $action = request::get('action');
-      if (base::isEmpty($type)) $type = 'default';
-      $intercepted = false;
-      $class = get_called_class();
-      if (is_callable(array($class, 'start'))) call_user_func(array($class, 'start'));
-      if (is_callable(array($class, 'intercept')))
+      $allow = true;
+      $remortIP = self::getParam('remort_ip');
+      if (defined('ALLOW_IP'))
       {
-        $interceptResult = call_user_func(array($class, 'intercept'));
-        if (!is_null($interceptResult))
+        $allow = false;
+        if (is_string(ALLOW_IP))
         {
-          $intercepted = true;
-          $tmpstr = $interceptResult;
+          if (ALLOW_IP == $remortIP) $allow = true;
+        }
+        else if (is_array(ALLOW_IP))
+        {
+          if (in_array($remortIP, ALLOW_IP)) $allow = true;
         }
       }
-      if ($intercepted != true)
+      if (defined('DENY_IP'))
       {
-        $module = 'module' . ucfirst($type);
-        if ($type == 'action') $module = 'moduleAction' . ucfirst($action);
-        if (is_callable(array($class, $module))) $tmpstr = call_user_func(array($class, $module));
-        else
+        if (is_string(DENY_IP))
         {
-          if ($type != 'default') self::$errorCode = 404;
+          if (DENY_IP == $remortIP) $allow = false;
+        }
+        else if (is_array(DENY_IP))
+        {
+          if (in_array($remortIP, DENY_IP)) $allow = false;
+        }
+      }
+      if ($allow == false) self::$errorCode = 403;
+      else
+      {
+        $type = request::get('type');
+        $action = request::get('action');
+        if (base::isEmpty($type)) $type = 'default';
+        $intercepted = false;
+        $class = get_called_class();
+        if (is_callable(array($class, 'start'))) call_user_func(array($class, 'start'));
+        if (is_callable(array($class, 'intercept')))
+        {
+          $interceptResult = call_user_func(array($class, 'intercept'));
+          if (!is_null($interceptResult))
+          {
+            $intercepted = true;
+            $tmpstr = $interceptResult;
+          }
+        }
+        if ($intercepted != true)
+        {
+          $module = 'module' . ucfirst($type);
+          if ($type == 'action') $module = 'moduleAction' . ucfirst($action);
+          if (is_callable(array($class, $module))) $tmpstr = call_user_func(array($class, $module));
           else
           {
-            $tmpstr = tpl::take('.default', 'tpl');
-            $tmpstr = tpl::parse($tmpstr);
-            if (base::isEmpty($tmpstr))
+            if ($type != 'default') self::$errorCode = 404;
+            else
             {
-              $adjunctDefault = self::getParam('adjunct_default');
-              $adjunctDefaultModule = 'module' . ucfirst($adjunctDefault);
-              if (!is_callable(array($class, $adjunctDefaultModule))) self::$errorCode = 404;
-              else $tmpstr = call_user_func(array($class, $adjunctDefaultModule));
+              $tmpstr = tpl::take('.default', 'tpl');
+              $tmpstr = tpl::parse($tmpstr);
+              if (base::isEmpty($tmpstr))
+              {
+                $adjunctDefault = self::getParam('adjunct_default');
+                $adjunctDefaultModule = 'module' . ucfirst($adjunctDefault);
+                if (!is_callable(array($class, $adjunctDefaultModule))) self::$errorCode = 404;
+                else $tmpstr = call_user_func(array($class, $adjunctDefaultModule));
+              }
             }
           }
         }
+        self::setHeader();
+        self::setParam('processtime', (microtime(true) - STARTTIME));
       }
-      self::setHeader();
-      self::setParam('processtime', (microtime(true) - STARTTIME));
       //$tmpstr .= '<!--Processed in ' . base::formatSecond(self::getParam('processtime')) . '-->';
       return $tmpstr;
     }
@@ -245,6 +274,7 @@ namespace jtbc {
       self::$param['filename'] = route::getCurrentFilename();
       self::$param['lang'] = request::getForeLang();
       self::$param['referer'] = request::server('HTTP_REFERER');
+      self::$param['remort_ip'] = request::getRemortIP();
       self::$param['uri'] = route::getScriptName();
       self::$param['urs'] = request::server('QUERY_STRING');
       self::$param['url'] = base::isEmpty(self::$param['urs'])? self::$param['uri']: self::$param['uri'] . '?' . self::$param['urs'];
