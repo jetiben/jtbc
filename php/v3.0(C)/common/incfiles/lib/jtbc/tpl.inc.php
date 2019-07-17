@@ -138,10 +138,24 @@ namespace jtbc {
       }
       if (!base::isEmpty($key))
       {
-        if ($key == 'language') $tmpstr = is_null(env::$language)? LANGUAGE: env::$language;
-        else if ($key == 'template') $tmpstr = is_null(env::$template)? TEMPLATE: env::$template;
-        $cookieValue = base::getString(request::getCookie('config', $key));
-        if (!base::isEmpty($cookieValue)) $tmpstr = $cookieValue;
+        if ($key == 'language')
+        {
+          if (!is_null(env::$language)) $tmpstr = env::$language;
+          else
+          {
+            $cookieValue = base::getString(request::getCookie('config', $key));
+            $tmpstr = base::isEmpty($cookieValue)? LANGUAGE: $cookieValue;
+          }
+        }
+        else if ($key == 'template')
+        {
+          if (!is_null(env::$template)) $tmpstr = env::$template;
+          else
+          {
+            $cookieValue = base::getString(request::getCookie('config', $key));
+            $tmpstr = base::isEmpty($cookieValue)? TEMPLATE: $cookieValue;
+          }
+        }
       }
       return $tmpstr;
     }

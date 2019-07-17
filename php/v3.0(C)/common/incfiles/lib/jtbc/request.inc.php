@@ -52,13 +52,22 @@ namespace jtbc {
 
     public static function getForeLang()
     {
-      $language = is_null(env::$language)? LANGUAGE: env::$language;
-      $lang = base::getNum(tpl::take('global.config.lang-' . $language, 'cfg'), 0);
-      $cookieValue = base::getString(self::getCookie('config', 'language'));
-      if (!base::isEmpty($cookieValue))
+      $lang = 0;
+      $language = env::$language;
+      if (!is_null($language))
       {
-        $cookieLang = base::getNum(tpl::take('global.config.lang-' . $cookieValue, 'cfg'), -1);
-        if ($cookieLang != -1) $lang = $cookieLang;
+        $lang = base::getNum(tpl::take('global.config.lang-' . $language, 'cfg'), 0);
+      }
+      else
+      {
+        $language = LANGUAGE;
+        $lang = base::getNum(tpl::take('global.config.lang-' . $language, 'cfg'), 0);
+        $cookieValue = base::getString(self::getCookie('config', 'language'));
+        if (!base::isEmpty($cookieValue))
+        {
+          $cookieLang = base::getNum(tpl::take('global.config.lang-' . $cookieValue, 'cfg'), -1);
+          if ($cookieLang != -1) $lang = $cookieLang;
+        }
       }
       return $lang;
     }
