@@ -3,6 +3,7 @@
 // JTBC Powered by jtbc.cn      //
 //******************************//
 namespace jtbc\console {
+  use jtbc\env;
   use jtbc\page as oripage;
   class page extends oripage
   {
@@ -26,6 +27,7 @@ namespace jtbc\console {
     public static function getResult()
     {
       $tmpstr = '';
+      env::$majorGenre = CONSOLEDIR;
       $account = self::account();
       $class = get_called_class();
       if (method_exists($class, 'consolePageInit')) call_user_func(array($class, 'consolePageInit'));

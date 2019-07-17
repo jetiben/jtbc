@@ -52,7 +52,7 @@ namespace jtbc {
 
     public static function getForeLang()
     {
-      $language = LANGUAGE;
+      $language = is_null(env::$language)? LANGUAGE: env::$language;
       $lang = base::getNum(tpl::take('global.config.lang-' . $language, 'cfg'), 0);
       $cookieValue = base::getString(self::getCookie('config', 'language'));
       if (!base::isEmpty($cookieValue))

@@ -107,6 +107,8 @@ namespace jtbc {
     public static function getResult()
     {
       $tmpstr = '';
+      $class = get_called_class();
+      if (is_callable(array($class, 'start'))) call_user_func(array($class, 'start'));
       $allow = true;
       $remortIP = self::getParam('remort_ip');
       if (defined('ALLOW_IP'))
@@ -139,8 +141,6 @@ namespace jtbc {
         $action = request::get('action');
         if (base::isEmpty($type)) $type = 'default';
         $intercepted = false;
-        $class = get_called_class();
-        if (is_callable(array($class, 'start'))) call_user_func(array($class, 'start'));
         if (is_callable(array($class, 'intercept')))
         {
           $interceptResult = call_user_func(array($class, 'intercept'));

@@ -138,8 +138,8 @@ namespace jtbc {
       }
       if (!base::isEmpty($key))
       {
-        if ($key == 'language') $tmpstr = LANGUAGE;
-        else if ($key == 'template') $tmpstr = TEMPLATE;
+        if ($key == 'language') $tmpstr = is_null(env::$language)? LANGUAGE: env::$language;
+        else if ($key == 'template') $tmpstr = is_null(env::$template)? TEMPLATE: env::$template;
         $cookieValue = base::getString(request::getCookie('config', $key));
         if (!base::isEmpty($cookieValue)) $tmpstr = $cookieValue;
       }
@@ -198,8 +198,15 @@ namespace jtbc {
           {
             if (substr_count($codename, '.') == 2) $codename = 'global.' . base::getLRStr($codename, '.', 'rightr');
           }
-          else if (substr($codename, 0, 2) == '::') $codename = 'global.' . CONSOLEDIR . ':' . base::getLRStr($codename, '::', 'right');
-          else if (substr($codename, 0, 2) == ':/') $codename = 'global.' . CONSOLEDIR . '/' . base::getLRStr($codename, ':/', 'right');
+          else
+          {
+            $majorGenre = env::$majorGenre;
+            if (!is_null($majorGenre))
+            {
+              if (substr($codename, 0, 2) == '::') $codename = 'global.' . $majorGenre . ':' . base::getLRStr($codename, '::', 'right');
+              else if (substr($codename, 0, 2) == ':/') $codename = 'global.' . $majorGenre . '/' . base::getLRStr($codename, ':/', 'right');
+            }
+          }
         }
       }
       return $codename;

@@ -220,13 +220,18 @@ namespace jtbc {
       return $result;
     }
 
-    public static function getAutoFieldFormat($argFieldArray, $argMode = 0, $argVars = null, $argTplPath = '::console')
+    public static function getAutoFieldFormat($argFieldArray, $argMode = 0, $argVars = null, $argTplPath = null)
     {
       $tmpstr = '';
       $fieldArray = $argFieldArray;
       $mode = $argMode;
       $vars = $argVars;
       $tplPath = $argTplPath;
+      if (is_null($tplPath))
+      {
+        $tplPath = '';
+        if (!is_null(env::$majorGenre)) $tplPath = '::' . env::$majorGenre;
+      }
       if (is_array($fieldArray))
       {
         foreach ($fieldArray as $i => $item)
@@ -420,7 +425,7 @@ namespace jtbc {
       return $tmpstr;
     }
 
-    public static function pushAutoRequestErrorByTable(&$error, $argTable = null, $argPrefix = null, $argDbLink = 'any', $argNamePre = '', $argNameSuffix = '', $argTplPath = '::console')
+    public static function pushAutoRequestErrorByTable(&$error, $argTable = null, $argPrefix = null, $argDbLink = 'any', $argNamePre = '', $argNameSuffix = '', $argTplPath = null)
     {
       $table = $argTable;
       $prefix = $argPrefix;
@@ -428,6 +433,11 @@ namespace jtbc {
       $namePre = $argNamePre;
       $nameSuffix = $argNameSuffix;
       $tplPath = $argTplPath;
+      if (is_null($tplPath))
+      {
+        $tplPath = '';
+        if (!is_null(env::$majorGenre)) $tplPath = '::' . env::$majorGenre;
+      }
       $dal = new dal($table, $prefix, $dbLink);
       $db = $dal -> db;
       if (!is_null($db))
