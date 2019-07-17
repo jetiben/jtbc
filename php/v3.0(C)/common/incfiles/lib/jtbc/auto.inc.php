@@ -374,8 +374,7 @@ namespace jtbc {
           }
         }
       }
-      if (is_null($tplPath)) $tmpstr = self::getAutoFieldFormat($fieldArray, $mode, $vars);
-      else $tmpstr = self::getAutoFieldFormat($fieldArray, $mode, $vars, $tplPath);
+      $tmpstr = self::getAutoFieldFormat($fieldArray, $mode, $vars, $tplPath);
       return $tmpstr;
     }
 
@@ -419,8 +418,7 @@ namespace jtbc {
             }
           }
         }
-        if (is_null($tplPath)) $tmpstr = self::getAutoFieldFormat($fieldArray, $mode, $vars);
-        else $tmpstr = self::getAutoFieldFormat($fieldArray, $mode, $vars, $tplPath);
+        $tmpstr = self::getAutoFieldFormat($fieldArray, $mode, $vars, $tplPath);
       }
       return $tmpstr;
     }
