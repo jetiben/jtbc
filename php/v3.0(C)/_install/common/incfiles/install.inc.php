@@ -3,6 +3,7 @@ namespace jtbc;
 class ui extends page {
   public static function start()
   {
+    env::$majorGenre = CONSOLEDIR;
     self::setParam('noCache', true);
     self::setParam('contentType', 'text/xml');
   }
