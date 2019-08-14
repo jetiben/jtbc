@@ -134,7 +134,7 @@ icons btn.b1 {
   background: url(icon/select.1.svg) center center no-repeat; background-size: 24px 24px
 }
 icons icon {
-  display: inline-block; width: 16px; height: 16px; margin-right: 5px; opacity: 0.6; cursor: pointer; transition: all .3s ease
+  display: inline-block; vertical-align: middle; width: 16px; height: 16px; margin-right: 5px; opacity: 0.6; cursor: pointer; transition: all .3s ease
 }
 icons icon:hover {
   opacity: 1
@@ -179,7 +179,7 @@ icons icon a.link {
   text-align: center !important
 }
 .status {
-  display: inline-block; width: 16px; height: 16px; background: url(icon/status.0.svg)
+  display: inline-block; width: 16px; height: 16px; background: url(icon/status.0.svg); vertical-align: middle
 }
 .status-1 {
   background-image: url(icon/status.1.svg)
