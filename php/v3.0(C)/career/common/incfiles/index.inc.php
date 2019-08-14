@@ -14,6 +14,7 @@ class ui extends page {
     $dal = new dal();
     $dal -> publish = 1;
     $dal -> lang = self::getParam('lang');
+    $dal -> orderBy('time', 'desc');
     $pagi = new pagi($dal);
     $rsAry = $pagi -> getDataAry($page, $pagesize);
     $tmpstr = tpl::takeAndAssign('index.list', $rsAry, $pagi -> getVars());
