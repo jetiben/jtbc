@@ -341,6 +341,11 @@ namespace jtbc {
               $fieldString .= $fieldName . ',';
               $fieldValues .= "'" . addslashes(base::getLeft($fieldValue, $fieldTypeLength)) . "',";
             }
+            else if ($fieldTypeName == 'date')
+            {
+              $fieldString .= $fieldName . ',';
+              $fieldValues .= "'" . addslashes(base::formatDate(base::getDateTime($fieldValue), '1')) . "',";
+            }
             else if ($fieldTypeName == 'datetime')
             {
               $fieldString .= $fieldName . ',';
@@ -425,6 +430,10 @@ namespace jtbc {
             else if ($fieldTypeName == 'varchar')
             {
               $fieldStringValues .= $fieldName . "='" . addslashes(base::getLeft($fieldValue, $fieldTypeLength)) . "',";
+            }
+            else if ($fieldTypeName == 'date')
+            {
+              $fieldStringValues .= $fieldName . "='" . addslashes(base::formatDate(base::getDateTime($fieldValue), '1')) . "',";
             }
             else if ($fieldTypeName == 'datetime')
             {
