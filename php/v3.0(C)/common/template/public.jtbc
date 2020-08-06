@@ -18,7 +18,7 @@
 <meta name="description" content="{$=htmlEncode($getPageParam('description'))}" />
 <meta name="viewport" content="width=640,target-densitydpi=device-dpi,user-scalable=no" />
 <title>{$=htmlEncode($getPageTitle())}</title>
-<script type="text/javascript" src="{$=$global.assetspath}/js/jquery-3.5.0.min.js"></script>
+<script type="text/javascript" src="{$=$global.assetspath}/js/jquery-3.5.1.min.js"></script>
 <script type="text/javascript" src="{$=$global.assetspath}/js/jtbc.js"></script>
 <script type="text/javascript" src="{$=$global.assetspath}/js/jtbc.frontend.js"></script>
 <link type="text/css" rel="stylesheet" href="{$=$global.assetspath}/themes/{$=THEME}/global.css" />
